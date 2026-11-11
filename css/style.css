@@ -925,3 +925,10 @@ header{padding:18px 28px;background:#fff}.header-inner{max-width:1440px}.brand{d
 .brand-mark{background:transparent!important;overflow:hidden;border-radius:50%!important}
 .brand-mark img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%}
 .loading img{border-radius:50%;object-fit:cover}
+
+
+/* Compact header logo: keeps the navigation balanced on desktop and mobile. */
+header .brand{grid-template-columns:64px minmax(0,1fr)!important;gap:2px 12px}
+header .brand-mark{display:flex!important;width:64px!important;height:64px!important;min-width:64px!important;max-width:64px!important;min-height:64px!important;max-height:64px!important;align-items:center!important;justify-content:center!important;background:transparent!important;border-radius:50%!important;overflow:hidden!important}
+header .brand-mark img{display:block!important;width:56px!important;height:56px!important;max-width:56px!important;max-height:56px!important;object-fit:contain!important;border-radius:50%!important}
+@media(max-width:600px){header .brand{grid-template-columns:48px minmax(0,1fr)!important}header .brand-mark{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;max-width:48px!important;max-height:48px!important}header .brand-mark img{width:44px!important;height:44px!important;max-width:44px!important;max-height:44px!important}}
