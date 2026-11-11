@@ -1031,3 +1031,7 @@ header .brand-mark img{width:58px!important;height:58px!important;max-width:58px
 .start-here-card>span:last-child{margin-top:24px;color:#2457a6;font-size:13px;font-weight:800}
 @media(max-width:800px){.start-here-grid{grid-template-columns:1fr}.start-here-card{min-height:0}}
 @media(max-width:600px){#startHere{padding:50px 16px}.start-here-card{padding:22px}.start-here-card h4{margin-top:20px}}
+
+
+/* The simplified navigation now has seven primary items, so keep each visible. */
+#mainNavigation .nav-item:nth-child(n){display:block!important}
