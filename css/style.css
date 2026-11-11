@@ -991,3 +991,26 @@ header .brand-mark img{width:56px!important;height:56px!important;max-width:56px
 .hero .search-box input{height:56px!important;padding:0 20px!important;font-size:16px!important}
 .hero .search-box button{height:56px!important;min-width:118px!important;font-size:15px!important}
 @media(max-width:600px){header{padding:10px 16px!important}header .brand{grid-template-columns:48px minmax(0,1fr)!important}header .brand-mark{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;max-width:48px!important;max-height:48px!important}header .brand-mark img{width:44px!important;height:44px!important;max-width:44px!important;max-height:44px!important}.brand h1{font-size:17px!important}.brand p{font-size:8px!important}.hero{min-height:410px!important}.hero h2{font-size:42px!important}.hero-description{font-size:15px!important;margin-bottom:25px!important}.hero .search-box input{height:54px!important}.hero .search-box button{height:54px!important;min-width:90px!important}}
+
+
+/* Exact original ICP composition, retaining the V2 navy, blue and gold colours. */
+header{padding:18px 24px!important}
+.header-inner{max-width:1200px!important;gap:20px!important}
+header .brand{grid-template-columns:64px minmax(0,1fr)!important;gap:3px 12px!important}
+header .brand-mark{width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;max-width:64px!important;max-height:64px!important}
+header .brand-mark img{width:58px!important;height:58px!important;max-width:58px!important;max-height:58px!important}
+.brand h1{font-size:24px!important}
+.brand p{margin:4px 0 0!important;font-size:12px!important;letter-spacing:3px!important}
+#mainNavigation{gap:16px!important}
+#mainNavigation .nav-item-row>a,#mainNavigation .nav-item>a{font-size:14px!important}
+#mainNavigation .nav-item:nth-child(6),#mainNavigation .nav-item:nth-child(7),#mainNavigation .nav-item:nth-child(8),#mainNavigation .nav-item:nth-child(10){display:none!important}
+.hero{display:block!important;min-height:0!important;padding:80px 24px!important;text-align:center!important}
+.hero-inner{max-width:900px!important;margin:0 auto!important;text-align:center!important}
+.hero h2{font-size:clamp(42px,5vw,66px)!important;margin:0 0 15px!important;line-height:1.05!important}
+.hero-tagline{margin:0 0 15px!important;font-size:16px!important}
+.hero-description{max-width:720px!important;margin:0 auto!important;font-size:17px!important;line-height:1.7!important}
+.hero .search-box{display:flex!important;max-width:720px!important;margin:30px auto 0!important;border-radius:12px!important}
+.hero .search-box input{flex:1!important;height:auto!important;padding:16px!important;font-size:15px!important}
+.hero .search-box button{height:auto!important;min-width:120px!important;padding:0 24px!important;font-size:15px!important}
+@media(max-width:1240px){#mainNavigation .nav-item:nth-child(6),#mainNavigation .nav-item:nth-child(7),#mainNavigation .nav-item:nth-child(8),#mainNavigation .nav-item:nth-child(10){display:none!important}}
+@media(max-width:600px){header{padding:14px 18px!important}header .brand{grid-template-columns:52px minmax(0,1fr)!important}header .brand-mark{width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;max-width:52px!important;max-height:52px!important}header .brand-mark img{width:48px!important;height:48px!important;max-width:48px!important;max-height:48px!important}.brand h1{font-size:20px!important}.brand p{font-size:9px!important;letter-spacing:2px!important}.hero{padding:55px 20px!important}.hero h2{font-size:32px!important}.hero .search-box input{padding:14px!important}.hero .search-box button{padding:0 16px!important;min-width:96px!important}}
