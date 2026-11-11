@@ -796,8 +796,8 @@ footer p { color: #b8c2d4; margin: 6px 0; }
 /* ICP AI Assistant */
 .icp-ai-launcher{position:fixed;right:22px;bottom:22px;z-index:80;display:flex;align-items:center;gap:9px;border:0;border-radius:999px;padding:8px 15px 8px 8px;background:#17233d;color:#fff;box-shadow:0 14px 38px rgba(15,23,42,.28);font:700 14px/1.2 inherit;cursor:pointer;transition:transform .2s,box-shadow .2s}
 .icp-ai-launcher:hover{transform:translateY(-2px);box-shadow:0 18px 42px rgba(15,23,42,.34)}
-.icp-ai-launcher:focus-visible{outline:3px solid #f5b9c4;outline-offset:3px}
-.icp-ai-launcher-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#b4233c,#7b1329);font-size:12px;letter-spacing:.04em}
+.icp-ai-launcher:focus-visible{outline:3px solid #d5a744;outline-offset:3px}
+.icp-ai-launcher-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#2457a6,#123b64);font-size:12px;letter-spacing:.04em}
 .icp-ai-page{display:block!important;max-width:none!important;width:100%;padding:0!important}
 .icp-ai-shell{--ai-border:#dce2eb;--ai-muted:#657087;--ai-navy:#17233d;display:grid;grid-template-columns:260px minmax(0,1fr);height:min(760px,calc(100vh - 190px));min-height:600px;overflow:hidden;border:1px solid var(--ai-border);border-radius:18px;background:#fff;box-shadow:0 18px 50px rgba(15,23,42,.09);text-align:left}
 .icp-ai-sidebar{display:flex;min-width:0;flex-direction:column;padding:18px 14px;background:#f5f7fa;border-right:1px solid var(--ai-border)}

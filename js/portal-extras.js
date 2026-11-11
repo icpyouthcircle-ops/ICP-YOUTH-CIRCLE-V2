@@ -206,7 +206,7 @@ function renderPreparationTracker(){
   document.getElementById('focusDuration').onchange=event=>{stop();remaining=Number(event.target.value)*60;focusStatus.textContent='';paint();};
   button.onclick=()=>{if(running){remaining=Math.max(0,Math.ceil((end-Date.now())/1000));stop();button.textContent='Resume';}else{if(!remaining)remaining=Number(document.getElementById('focusDuration').value)*60;end=Date.now()+remaining*1000;running=true;button.textContent='Pause';focusStatus.textContent='Session running. Keep this page open.';}};
   document.getElementById('focusReset').onclick=()=>{stop();remaining=Number(document.getElementById('focusDuration').value)*60;focusStatus.textContent='Session reset.';paint();};
-  const timer=setInterval(()=>{if(!clock.isConnected){clearInterval(timer);return;}if(running){remaining=Math.max(0,Math.ceil((end-Date.now())/1000));paint();if(!remaining){stop();focusStatus.textContent='Session complete. Take a moment to rest.';}}},250);draw();
+  const timer=setInterval(()=>{if(!clock.isConnected||document.getElementById('dynamicPage').style.display==='none'){clearInterval(timer);return;}if(running){remaining=Math.max(0,Math.ceil((end-Date.now())/1000));paint();if(!remaining){stop();focusStatus.textContent='Session complete. Take a moment to rest.';}}},250);draw();
 }
 
 function appendStudyNextSteps(content){
