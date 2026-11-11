@@ -655,7 +655,11 @@ function renderNavigation(items) {
         Number(b.DisplayOrder || 0)
     );
 
-  parents.forEach(parent => {
+  const secondaryNavigationSlugs = new Set(['career','ai-smart-tools','community','islamic']);
+  const secondaryParents = parents.filter(parent => secondaryNavigationSlugs.has(String(parent.Slug || '').toLowerCase()));
+  const visibleParents = parents.filter(parent => !secondaryNavigationSlugs.has(String(parent.Slug || '').toLowerCase()));
+
+  visibleParents.forEach(parent => {
 
     const wrapper = document.createElement('div');
     wrapper.className = 'nav-item';
@@ -683,6 +687,11 @@ function renderNavigation(items) {
           Number(a.DisplayOrder || 0) -
           Number(b.DisplayOrder || 0)
       );
+
+    // Keep the header easy to scan while retaining every major portal area.
+    if (String(parent.Slug || '').toLowerCase() === 'explore') {
+      secondaryParents.forEach(item => children.unshift(item));
+    }
 
     if (children.length > 0) {
 
