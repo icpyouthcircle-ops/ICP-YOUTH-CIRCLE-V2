@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Admin Dashboard | ICP YOUTH CIRCLE</title>
   <link rel="stylesheet" href="css/style.css?v=20261111-v2">
-  <link rel="stylesheet" href="css/admin.css?v=20260927-publishing-suite">
+  <link rel="stylesheet" href="css/admin.css?v=20261111-owner-control-center">
 </head>
 <body class="admin-page">
   <header>
@@ -31,6 +31,21 @@
         <div><h2 id="adminTitle">Content dashboard</h2><p id="adminUser"></p></div>
         <button id="adminSignOut" type="button">Sign out</button>
       </div>
+
+      <section class="admin-control-center" aria-labelledby="adminControlCenterTitle">
+        <div class="admin-control-center-intro">
+          <p class="admin-kicker">OWNER CONTROL CENTER</p>
+          <h3 id="adminControlCenterTitle">Run the portal without technical spreadsheet work.</h3>
+          <p>Choose a task below. The dashboard guides your content changes while the database structure stays protected in the background.</p>
+        </div>
+        <div class="admin-quick-actions" aria-label="Quick actions">
+          <button class="admin-quick-action" type="button" data-admin-table="RESOURCES"><strong>Resources</strong><span>Add notes, past papers and study material.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-table="ANNOUNCEMENTS"><strong>Announcements</strong><span>Publish verified student updates.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-table="ADMISSIONS"><strong>Admissions</strong><span>Manage opening dates and official links.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-table="SCHOLARSHIPS"><strong>Scholarships</strong><span>Keep opportunities current and clear.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-table="SETTINGS"><strong>Portal settings</strong><span>Review advanced website configuration.</span></button>
+        </div>
+      </section>
 
       <div class="admin-layout">
         <aside class="admin-sidebar">
@@ -101,7 +116,7 @@
       </div>
     </section>
   </main>
-  <script src="js/admin.js?v=20260927-publishing-suite"></script>
+  <script src="js/admin.js?v=20261111-owner-control-center"></script>
   <script src="js/admin-performance.js?v=20260927-publishing-suite"></script>
 </body>
 </html>
