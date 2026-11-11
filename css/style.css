@@ -1014,3 +1014,20 @@ header .brand-mark img{width:58px!important;height:58px!important;max-width:58px
 .hero .search-box button{height:auto!important;min-width:120px!important;padding:0 24px!important;font-size:15px!important}
 @media(max-width:1240px){#mainNavigation .nav-item:nth-child(6),#mainNavigation .nav-item:nth-child(7),#mainNavigation .nav-item:nth-child(8),#mainNavigation .nav-item:nth-child(10){display:none!important}}
 @media(max-width:600px){header{padding:14px 18px!important}header .brand{grid-template-columns:52px minmax(0,1fr)!important}header .brand-mark{width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;max-width:52px!important;max-height:52px!important}header .brand-mark img{width:48px!important;height:48px!important;max-width:48px!important;max-height:48px!important}.brand h1{font-size:20px!important}.brand p{font-size:9px!important;letter-spacing:2px!important}.hero{padding:55px 20px!important}.hero h2{font-size:32px!important}.hero .search-box input{padding:14px!important}.hero .search-box button{padding:0 16px!important;min-width:96px!important}}
+
+
+/* Clear orientation for first-time visitors. */
+#startHere{padding:68px 24px;background:#fff}
+.start-here-container{max-width:1200px;margin:0 auto}
+#startHere .section-title{max-width:700px;margin:0 auto 34px;text-align:center}
+#startHere .section-title h3{margin:0;color:#071f3d;font-size:clamp(30px,3.7vw,44px);line-height:1.18}
+#startHere .section-title p:last-child{margin:12px auto 0;color:#5b6b7e;line-height:1.65}
+.start-here-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.start-here-card{position:relative;display:flex;min-height:220px;flex-direction:column;padding:26px;border:1px solid #dfe5ec;border-radius:14px;background:#faf8f3;color:#071f3d;text-decoration:none;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.start-here-card:hover{transform:translateY(-4px);border-color:#2457a6;box-shadow:0 16px 34px rgba(7,31,61,.1)}
+.start-here-number{color:#2457a6;font-size:12px;font-weight:850;letter-spacing:.14em}
+.start-here-card h4{margin:25px 0 10px;font-size:21px;line-height:1.2}
+.start-here-card p{margin:0;flex:1;color:#5b6b7e;line-height:1.65}
+.start-here-card>span:last-child{margin-top:24px;color:#2457a6;font-size:13px;font-weight:800}
+@media(max-width:800px){.start-here-grid{grid-template-columns:1fr}.start-here-card{min-height:0}}
+@media(max-width:600px){#startHere{padding:50px 16px}.start-here-card{padding:22px}.start-here-card h4{margin-top:20px}}
