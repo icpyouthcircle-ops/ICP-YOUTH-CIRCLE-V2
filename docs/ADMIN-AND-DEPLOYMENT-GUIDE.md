@@ -18,6 +18,17 @@ The homepage, category navigation, preparation tracker, focus timer and marks ca
 
 There is no separate default username or password. Opening the admin page does not grant editing access. The server verifies a Firebase identity token and checks the private Admins sheet for every admin operation.
 
+## Everyday owner workflow
+
+Use the website's `/admin.html` dashboard for routine work instead of editing technical spreadsheet tabs.
+
+1. **Resources** — publish notes, past papers, study resources and approved PDFs.
+2. **Announcements** — create verified updates, then keep them as Draft until ready to publish.
+3. **Admissions and scholarships** — add official dates and source links only.
+4. **Portal settings** — use only for deliberate advanced configuration changes. Keep the `Key` and `Value` headers unchanged.
+
+The Owner Control Center at the top of the dashboard opens these areas directly. Technical spreadsheet tabs remain safely in the background because they support portal features, authentication, notifications, Q&A, and study tools. They do not need daily editing.
+
 ## 3. Grant your first administrator access
 
 Use the owner Google account to open the existing private portal spreadsheet. Do not share spreadsheet editing access with students.
