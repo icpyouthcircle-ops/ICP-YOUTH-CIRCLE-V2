@@ -95,6 +95,15 @@ function adminRenderSession(session) {
     const option=document.createElement('option');option.value=table.key;option.textContent=table.label+' ('+table.rowCount+')';select.appendChild(option);
   });
   select.onchange=()=>adminLoadTable();
+  document.querySelectorAll('[data-admin-table]').forEach(button=>{
+    button.onclick=()=>{
+      const option=[...select.options].find(item=>item.value===button.dataset.adminTable);
+      if(!option) { adminSetStatus('This section is not available for your administrator account.','error'); return; }
+      select.value=option.value;
+      adminLoadTable();
+      document.querySelector('.admin-layout').scrollIntoView({behavior:'smooth',block:'start'});
+    };
+  });
   adminLoadTable();
 }
 
