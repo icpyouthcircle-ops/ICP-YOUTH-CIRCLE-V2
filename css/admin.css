@@ -89,3 +89,14 @@
 .admin-field span { color: #344054; }
 .admin-field small { color: #667085; }
 #adminHeaders { background: #f8fafc; border: 1px solid #e6e8ec; }
+
+.admin-control-center { display: grid; grid-template-columns: minmax(260px,.9fr) minmax(0,1.6fr); gap: 24px; margin: 0 0 28px; padding: 26px; border: 1px solid #d9e3f1; border-radius: 18px; background: linear-gradient(135deg,#071f3d 0%,#123b64 100%); box-shadow: 0 16px 36px rgba(7,31,61,.17); }
+.admin-control-center-intro h3 { margin: 7px 0 9px; color: #fff; font-size: clamp(20px,2vw,27px); letter-spacing: -.025em; }
+.admin-control-center-intro > p:last-child { margin: 0; color: #dae8fa; line-height: 1.6; }
+.admin-kicker { margin: 0; color: #f4e4bb; font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+.admin-quick-actions { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 11px; align-content: center; }
+.admin-quick-action { display: grid; gap: 6px; min-height: 103px; padding: 15px; border: 1px solid rgba(244,228,187,.46); border-radius: 12px; background: rgba(255,255,255,.1); color: #fff; text-align: left; cursor: pointer; transition: transform .2s ease,background .2s ease,border-color .2s ease; }
+.admin-quick-action:hover { transform: translateY(-2px); border-color: #f4e4bb; background: rgba(255,255,255,.18); }
+.admin-quick-action strong { color: #fff; font-size: 14px; }
+.admin-quick-action span { color: #dfeafa; font-size: 12px; line-height: 1.42; }
+@media (max-width: 850px) { .admin-control-center { grid-template-columns: 1fr; padding: 20px; } }
