@@ -2,7 +2,7 @@
 
 The admin dashboard is a private editing surface for the public portal. The page is visible at:
 
-`https://icpyouthcircle-ops.github.io/ICP-YOUTH-CIRCLE/admin.html`
+Your production Vercel domain followed by `/admin.html`. You can also use **Admin portal** in the public footer. See [the full owner guide](ADMIN-AND-DEPLOYMENT-GUIDE.md).
 
 Seeing the page does not grant access. Every dashboard request is checked on the Apps Script server against the signed-in Google account and the `Admins` sheet.
 
@@ -28,7 +28,7 @@ After adding the row, deploy the updated Apps Script `Code.gs` as a new web-app 
 
 Choose a portal section from the dashboard. Use **New record** for one row, or **Paste multiple rows** for a Google Sheets block. The dashboard displays the exact headers required for the selected sheet. Copy those headers into Row 1 of your pasted block without changing their spelling or order.
 
-New records default to `Inactive` when the selected sheet has a `Status` column. Review the row and set it to `Active` only after checking the source, link, wording, dates and permissions. The dashboard archives records by changing `Status` to `Inactive`; it does not delete them.
+Resources, Scholarships, Announcements, Countdowns and Notifications default to `Draft`; other records default to `Inactive` when the selected sheet has a `Status` column. Review the row and set it to `Active` only after checking the source, link, wording, dates and permissions. The dashboard archives publishing records as `Archived` and other records as `Inactive`; it does not delete them.
 
 The dashboard deliberately excludes `Admins`, `Notification_Reads`, `Notification_Preferences`, `MDCAT_Sessions`, `MDCAT_Session_Questions`, `MDCAT_Test_Attempts`, `MDCAT_Attempt_Answers`, and `MDCAT_Progress` from the editable list. Student notification state, preferences, attempts, and answer keys remain protected by authenticated routes.
 

@@ -355,7 +355,7 @@ function warmPublicBundle() {
 }
 
 function warmPublicModules() {
-  if (location.hostname !== 'icpyouthcircle-ops.github.io' && !window.__ICP_ENABLE_PREFETCH__) return;
+  if (['localhost','127.0.0.1',''].includes(location.hostname) && !window.__ICP_ENABLE_PREFETCH__) return;
   const modules = [
     ['announcements'], ['entryTests'], ['admissions'], ['scholarships'],
     ['opportunities'], ['aiTools'], ['islamicContent'], ['blog'], ['videos'], ['mcqs'],
@@ -434,6 +434,7 @@ function loadPortal() {
 
       // The already-rendered snapshot keeps the portal usable while the API recovers.
     });
+  initializeDeploymentMetadata();
   warmPublicModules();
   registerPortalServiceWorker();
 }
@@ -957,7 +958,7 @@ function portalRouteHash(item) {
 
 function navigationItemForLocation() {
   if(!portalData || !Array.isArray(portalData.navigation))return null;
-  const raw=decodeURIComponent(String(window.location.hash || '').replace(/^#\/?/,''));
+  let raw;try{raw=decodeURIComponent(String(window.location.hash || '').replace(/^#\/?/,''));}catch(_){return {Slug:'home',Label:'Home'};}
   if(!raw)return {Slug:'home',Label:'Home'};
   if(raw==='account')return {Slug:'account',Label:'My account'};
   if(raw.startsWith('search='))return {Slug:'search',Query:raw.slice(7)};
@@ -1109,6 +1110,7 @@ function getRouteDescription(slug, label) {
     'submit-resource':'Recommend a useful student resource for administrator review.',
     'student-help-desk':'Send a question or request support from the portal administrators.',
     'suggestions':'Share anonymous feedback to help improve the student portal.',
+    'prep-tracker':'Plan study tasks, track completion and focus on your next session.',
     'faq':'Search answers to frequently asked questions about the portal.'
     ,'questions':'Ask subject questions, share moderated answers and recognise verified contributors.'
   };
@@ -1294,6 +1296,8 @@ function handleNavigation(item,options={}) {
     document.getElementById('dynamicPageContent');
 
   content.className = 'grid';
+  document.getElementById('resourceFilters').replaceChildren();
+  document.getElementById('resourceFilters').style.display='none';
 
   const itemLabel=item.Label || item.Name || 'Portal';
   const parentSlug=getNavigationParentSlug(item);
@@ -1365,7 +1369,7 @@ if (item.Slug === 'ai-assistant') {
 } else if (item.Slug === 'contact') {
   renderContactPage();
 } else if (item.Slug === 'prep-tracker') {
-  renderSectionNotice('No public preparation tracker has been published yet. MDCAT students can use My activity and Study plan inside the MDCAT 2027 hub.');
+  renderPreparationTracker();
 } else if (item.Slug === 'submit-resource') {
   renderPublicPortalForm('resource');
 } else if (item.Slug === 'student-help-desk') {
@@ -1378,7 +1382,7 @@ if (item.Slug === 'ai-assistant') {
   content.innerHTML='<p>Loading student questions…</p>';
   loadPortalQAFeatures().then(()=>{if(requestVersion===navigationVersion)openPortalQA();}).catch(error=>{if(requestVersion===navigationVersion)renderSectionNotice(error.message || 'Unable to load Student Q&A.');});
 } else if (item.Slug === 'forum') {
-  renderSectionNotice(itemLabel+' is not publicly available yet. An official link will appear here when it is published.');
+  loadPortalQAFeatures().then(()=>{if(requestVersion===navigationVersion)openPortalQA();}).catch(()=>{if(requestVersion===navigationVersion)renderSectionNotice('The student discussion area could not be loaded. Please try Student Q&A again.');});
 } else {
   renderSectionNotice('No published content is available in '+itemLabel+' yet.');
 }
@@ -1617,6 +1621,7 @@ function drawResourceCards(resources) {
 
     content.innerHTML =
       '<p>No matching resources found.</p>';
+    appendStudyNextSteps(content);
 
     return;
   }
@@ -1805,6 +1810,8 @@ function showResourceError(error) {
 
   content.innerHTML =
     '<p>Unable to load resources right now.</p>';
+  const retry=document.createElement('button');retry.type='button';retry.className='resource-button';retry.textContent='Try again';retry.onclick=()=>{const item=navigationItemForLocation();if(item)handleNavigation(item);};content.append(retry);
+  appendStudyNextSteps(content);
 
   console.error(error);
 }
