@@ -9,7 +9,7 @@
     content="width=device-width, initial-scale=1.0"
   >
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="theme-color" content="#991b2f">
+  <meta name="theme-color" content="#071F3D">
   <meta name="description" content="ICP YOUTH CIRCLE helps students find learning resources, entry-test support, scholarships, admissions guidance and verified opportunities.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,11 +46,13 @@
 
   <link
     rel="stylesheet"
-    href="css/style.css?v=20261013-ai-v4"
+    href="css/style.css?v=20261111-v2"
   >
 </head>
 
 <body>
+  <a class="skip-link" href="#mainContent">Skip to content</a>
+  <noscript><p class="noscript-message">Enable JavaScript to browse the interactive student portal.</p></noscript>
 
     <div id="loading" class="loading">
     <img src="assets/icons/icon-192.png" alt="" width="72" height="72">
@@ -64,6 +66,7 @@
       <div class="header-inner">
 
         <div class="brand">
+          <a class="brand-mark" href="./" aria-label="ICP Youth Circle home">ICP<span>YOUTH CIRCLE</span></a>
           <h1 id="siteName">ICP YOUTH CIRCLE</h1>
           <p id="tagline">LEARN • CONNECT • GROW</p>
         </div>
@@ -78,10 +81,12 @@
       </div>
     </header>
 
-    <main>
+    <main id="mainContent" tabindex="-1">
 
     <section class="hero" id="homeHero">
         <div class="hero-inner">
+          <p class="hero-eyebrow"><span></span> A COMMUNITY BUILT AROUND STUDENTS</p>
+          <p class="hero-headline">Your next chapter<br>starts <em>here.</em></p>
 
           <h2 id="heroTitle">
             ICP YOUTH CIRCLE
@@ -101,6 +106,7 @@
           <div class="search-box">
             <input
               id="searchInput"
+              aria-label="Search student resources"
               type="text"
               placeholder="Search resources, notes, past papers..."
             >
@@ -110,6 +116,13 @@
             </button>
           </div>
 
+          <div class="hero-shortcuts" aria-label="Popular destinations">
+            <span>Start exploring</span>
+            <a href="#/study/notes">Study notes ↗</a>
+            <a href="#/entry-tests/mdcat">MDCAT preparation ↗</a>
+            <a href="#/scholarships">Scholarships ↗</a>
+          </div>
+          <div class="hero-bottom"><span>FOR EVERY STAGE OF YOUR STUDENT JOURNEY</span><a href="#homeExplore">Find your direction ↓</a></div>
         </div>
       </section>
 
@@ -118,7 +131,8 @@
         <div class="container">
 
           <div class="section-title">
-            <h3>Explore ICP YOUTH CIRCLE</h3>
+            <p class="section-eyebrow">YOUR STUDENT TOOLKIT</p>
+            <h3>A little guidance. A world of possibility.</h3>
             <p>
               Resources, opportunities and guidance
               for students.
@@ -129,7 +143,8 @@
             id="categoryGrid"
             class="grid">
           </div>
-
+          <div class="home-study-banner"><div><p class="section-eyebrow">MAKE TODAY COUNT</p><h3>Big goals start with a small plan.</h3><p>Organise your subjects, track your progress, and make time for focused study.</p></div><a class="resource-button" href="#/study/prep-tracker">Build my study plan ↗</a></div>
+          <div class="home-values"><article><span>01 / LEARN</span><h3>Find your starting point.</h3><p>Explore notes, past papers and practice tools for your next study session.</p></article><article><span>02 / CONNECT</span><h3>Ask. Share. Grow together.</h3><p>Get support through student Q&amp;A and contribute useful resources.</p></article><article><span>03 / GROW</span><h3>See what comes next.</h3><p>Discover admissions guidance, scholarships and career opportunities.</p></article></div>
         </div>
       </section>
 <section id="dynamicPage" style="display:none;">
@@ -215,8 +230,8 @@
 
   </div>
 
-<script src="js/app.js?v=20261013-ai-v5"></script>
-  <script src="js/portal-extras.js?v=20260927-publishing-suite"></script>
+<script src="js/app.js?v=20261111-v2"></script>
+  <script src="js/portal-extras.js?v=20261111-v2"></script>
 
 </body>
 </html>

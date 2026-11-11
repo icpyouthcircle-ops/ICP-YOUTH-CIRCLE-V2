@@ -166,3 +166,54 @@ function initializePortalExtras(){
 }
 
 document.addEventListener('DOMContentLoaded',initializePortalExtras);
+
+// A deployment stays on its own domain when shared or installed.
+function initializeDeploymentMetadata(){
+  if(!/^https?:$/.test(location.protocol))return;
+  const home=new URL('./',location.href);home.hash='';home.search='';
+  const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=home.href;
+  for(const selector of ['meta[property="og:image"]','meta[name="twitter:image"]']){const el=document.querySelector(selector);if(el)el.content=new URL('assets/social/portal-share-1200x630.png',home).href;}
+  const schema=document.querySelector('script[type="application/ld+json"]');if(schema){try{const data=JSON.parse(schema.textContent);data.url=home.href;schema.textContent=JSON.stringify(data);}catch(_){}}
+}
+
+const PREPARATION_KEY='icp-preparation-v2';
+function preparationRead(){try{const rows=JSON.parse(localStorage.getItem(PREPARATION_KEY));return Array.isArray(rows)?rows.filter(row=>row&&typeof row.id==='string'&&typeof row.title==='string').slice(0,200):[];}catch(_){return [];}}
+function renderPreparationTracker(){
+  const content=document.getElementById('dynamicPageContent');
+  content.innerHTML=`<div class="study-workspace"><div class="study-intro"><span class="section-eyebrow">ONE SMALL STEP AT A TIME</span><h2>Your preparation, your pace.</h2><p>Turn a big syllabus into manageable tasks. Your plan is saved in this browser on this device.</p></div><div class="study-stats" aria-live="polite"><article><strong id="planTotal">0</strong><span>Planned tasks</span></article><article><strong id="planDone">0</strong><span>Completed</span></article><article><strong id="planPercent">0%</strong><span>Progress</span></article></div><progress id="planProgress" max="100" value="0" aria-label="Study plan completion"></progress><form id="planForm" class="study-task-form"><label>What will you study?<input name="title" maxlength="160" required placeholder="e.g. Revise C++ variables"></label><label>Subject<input name="subject" maxlength="60" placeholder="e.g. Computer Science"></label><label>Target date<input name="due" type="date"></label><button class="resource-button" type="submit">Add task +</button></form><p id="planStatus" role="status"></p><div class="study-toolbar"><label>Show <select id="planFilter"><option value="all">All tasks</option><option value="pending">To do</option><option value="done">Completed</option></select></label><button type="button" id="planExport" class="secondary-button">Export plan</button></div><div id="planTasks"></div><div class="study-utilities"><section class="study-utility"><span class="section-eyebrow">TIME TO FOCUS</span><h3>A little focus goes a long way.</h3><p>Choose a session, settle in, and take a break when you finish.</p><label>Session <select id="focusDuration"><option value="25">25 minutes</option><option value="45">45 minutes</option><option value="5">5 minute break</option></select></label><output id="focusClock" class="focus-clock" aria-label="Time remaining">25:00</output><div class="qa-actions"><button id="focusToggle" class="resource-button" type="button">Start session</button><button id="focusReset" class="secondary-button" type="button">Reset</button></div><p id="focusStatus" role="status"></p></section><section class="study-utility"><span class="section-eyebrow">KNOW WHERE YOU STAND</span><h3>Marks percentage calculator</h3><p>Calculate a percentage from your obtained and total marks.</p><form id="marksForm"><label>Obtained marks<input name="obtained" type="number" min="0" step="any" required></label><label>Total marks<input name="total" type="number" min="0.01" step="any" required></label><button class="resource-button" type="submit">Calculate</button><p id="marksResult" role="status"></p></form></section></div></div>`;
+  let tasks=preparationRead();const status=document.getElementById('planStatus');
+  const save=()=>{try{localStorage.setItem(PREPARATION_KEY,JSON.stringify(tasks));status.textContent='Plan saved on this device.';}catch(_){status.textContent='Your browser could not save this plan. Export it to keep a copy.';}draw();};
+  const draw=()=>{
+    const done=tasks.filter(t=>t.done).length;const percent=tasks.length?Math.round(done/tasks.length*100):0;
+    document.getElementById('planTotal').textContent=tasks.length;document.getElementById('planDone').textContent=done;document.getElementById('planPercent').textContent=percent+'%';document.getElementById('planProgress').value=percent;
+    const list=document.getElementById('planTasks');list.replaceChildren();const filter=document.getElementById('planFilter').value;
+    const visible=tasks.filter(t=>filter==='all'||(filter==='done'?t.done:!t.done));
+    if(!visible.length){const empty=document.createElement('p');empty.className='study-empty';empty.textContent=tasks.length?'No tasks in this view.':'A fresh start. Add your first study task above.';list.append(empty);}
+    visible.forEach(task=>{
+      const row=document.createElement('article');row.className='study-task'+(task.done?' is-done':'');
+      const label=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.checked=!!task.done;check.onchange=()=>{task.done=check.checked;save();};
+      const copy=document.createElement('span');const title=document.createElement('strong');title.textContent=task.title;const detail=document.createElement('small');detail.textContent=[task.subject,task.due?'Due '+task.due:''].filter(Boolean).join(' · ');copy.append(title,detail);label.append(check,copy);
+      const remove=document.createElement('button');remove.type='button';remove.className='secondary-button';remove.textContent='Remove';remove.setAttribute('aria-label','Remove '+task.title);remove.onclick=()=>{tasks=tasks.filter(t=>t.id!==task.id);save();};row.append(label,remove);list.append(row);
+    });
+  };
+  document.getElementById('planFilter').onchange=draw;
+  document.getElementById('planForm').onsubmit=event=>{event.preventDefault();const form=event.currentTarget;const values=new FormData(form);const title=String(values.get('title')).trim();if(!title){status.textContent='Enter a study task.';return;}if(tasks.length>=200){status.textContent='Your plan holds up to 200 tasks. Remove a completed task to add another.';return;}tasks.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),title,subject:String(values.get('subject')).trim(),due:String(values.get('due')),done:false});form.reset();save();form.elements.title.focus();};
+  document.getElementById('planExport').onclick=()=>{const file=new Blob([JSON.stringify({name:'ICP Youth Circle study plan',tasks},null,2)],{type:'application/json'});const url=URL.createObjectURL(file);const a=document.createElement('a');a.href=url;a.download='ICP-study-plan.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+  document.getElementById('marksForm').onsubmit=event=>{event.preventDefault();const values=new FormData(event.currentTarget);const obtained=Number(values.get('obtained')),total=Number(values.get('total'));document.getElementById('marksResult').textContent=obtained>total?'Obtained marks cannot exceed total marks.':(obtained/total*100).toFixed(2)+'%';};
+  let remaining=25*60,end=0,running=false;const clock=document.getElementById('focusClock'),button=document.getElementById('focusToggle'),focusStatus=document.getElementById('focusStatus');
+  const paint=()=>{clock.textContent=Math.floor(remaining/60).toString().padStart(2,'0')+':'+(remaining%60).toString().padStart(2,'0');};
+  const stop=()=>{running=false;button.textContent='Start session';};
+  document.getElementById('focusDuration').onchange=event=>{stop();remaining=Number(event.target.value)*60;focusStatus.textContent='';paint();};
+  button.onclick=()=>{if(running){remaining=Math.max(0,Math.ceil((end-Date.now())/1000));stop();button.textContent='Resume';}else{if(!remaining)remaining=Number(document.getElementById('focusDuration').value)*60;end=Date.now()+remaining*1000;running=true;button.textContent='Pause';focusStatus.textContent='Session running. Keep this page open.';}};
+  document.getElementById('focusReset').onclick=()=>{stop();remaining=Number(document.getElementById('focusDuration').value)*60;focusStatus.textContent='Session reset.';paint();};
+  const timer=setInterval(()=>{if(!clock.isConnected){clearInterval(timer);return;}if(running){remaining=Math.max(0,Math.ceil((end-Date.now())/1000));paint();if(!remaining){stop();focusStatus.textContent='Session complete. Take a moment to rest.';}}},250);draw();
+}
+
+function appendStudyNextSteps(content){
+  const aside=document.createElement('aside');aside.className='study-next-steps';
+  const title=document.createElement('h3');title.textContent='Keep your learning moving.';
+  const copy=document.createElement('p');copy.textContent='Organise your next study session, or contribute a useful resource for other students.';
+  const links=document.createElement('div');links.className='qa-actions';
+  for(const [label,href] of [['Build a study plan','#/study/prep-tracker'],['Submit a resource','#/community/submit-resource']]){const link=document.createElement('a');link.className='resource-button';link.textContent=label;link.href=href;links.append(link);}
+  aside.append(title,copy,links);content.append(aside);
+}

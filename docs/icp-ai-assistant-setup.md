@@ -30,7 +30,7 @@ The JSON response should report `"success":true`, `"enabled":true`, and both nam
 ## Operational defaults
 
 - 30 student messages per rolling 24 hours
-- verified ICP sources enabled by default
+- general questions supported; ICP source lookup used when relevant
 - private conversation history scoped to the signed-in Firebase user
 - OpenAI moderation and provider safety controls
 - automatic fallback from OpenAI to Gemini for temporary service, rate-limit, or configuration failures

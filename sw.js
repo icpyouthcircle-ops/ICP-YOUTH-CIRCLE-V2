@@ -1,4 +1,4 @@
-const CACHE_NAME = 'icp-portal-shell-20261013-v17';
+const CACHE_NAME = 'icp-portal-shell-20261111-v2';
 const SHELL_ASSETS = [
   './',
   './index.html',
@@ -7,9 +7,9 @@ const SHELL_ASSETS = [
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
   './assets/icons/icon-maskable-512.png',
-  './css/style.css?v=20261013-ai-v4',
-  './js/app.js?v=20261013-ai-v5',
-  './js/portal-extras.js?v=20260927-publishing-suite',
+  './css/style.css?v=20261111-v2',
+  './js/app.js?v=20261111-v2',
+  './js/portal-extras.js?v=20261111-v2',
   './assets/social/portal-share-1200x630.png'
 ];
 const LAZY_ASSETS = [

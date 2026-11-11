@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>Admin Dashboard | ICP YOUTH CIRCLE</title>
-  <link rel="stylesheet" href="css/style.css?v=20260927-publishing-suite">
+  <link rel="stylesheet" href="css/style.css?v=20261111-v2">
   <link rel="stylesheet" href="css/admin.css?v=20260927-publishing-suite">
 </head>
 <body class="admin-page">
@@ -22,6 +22,7 @@
       <h2 id="adminLoginTitle">Administrator sign-in</h2>
       <p>Use the Google account listed as Active in the private <strong>Admins</strong> sheet.</p>
       <button id="adminSignIn" class="resource-button" type="button">Continue with Google</button>
+      <details class="admin-access-help"><summary>Need help signing in?</summary><p>Use the Google email listed as Active in the private Admins sheet. The website owner must also authorize this website's hostname in Firebase Authentication settings.</p><p>There is no default admin password. If Google sign-in succeeds but access is denied, check the Admins row and the deployed Apps Script backend.</p></details>
       <p id="adminLoginStatus" role="status" aria-live="polite"></p>
     </section>
 
