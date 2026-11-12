@@ -304,7 +304,7 @@ function aiBuildShell(content){
   const heading=aiEl('div','icp-ai-heading');heading.append(aiEl('strong',null,'ICP AI'),aiEl('span',null,'Study assistant'));
   const controls=aiEl('div','icp-ai-controls');
   const provider=document.createElement('select');provider.id='icpAiProvider';provider.setAttribute('aria-label','AI provider');
-  const available=new Set(icpAssistantState.config.availableProviders||[]);icpAssistantState.config.providers.forEach(value=>{const option=aiEl('option',null,value);option.value=value;option.disabled=value!=='Auto'&&!available.has(value);provider.appendChild(option);});
+  const available=new Set(icpAssistantState.config.availableProviders||[]);icpAssistantState.config.providers.forEach(value=>{const option=aiEl('option',null,value);option.value=value;option.disabled=value!=='Auto'&&!available.has(value);provider.appendChild(option);});provider.value=available.has('Gemini')?'Gemini':available.has('OpenAI')?'OpenAI':'Auto';
   const mode=document.createElement('select');mode.id='icpAiMode';mode.setAttribute('aria-label','Assistant mode');icpAssistantState.config.modes.forEach(value=>{const option=aiEl('option',null,value);option.value=value;mode.appendChild(option);});
   const language=document.createElement('select');language.id='icpAiLanguage';language.setAttribute('aria-label','Answer language');icpAssistantState.config.languages.forEach(value=>{const option=aiEl('option',null,value);option.value=value;language.appendChild(option);});
   controls.append(provider,mode,language);header.append(historyButton,heading,controls);
