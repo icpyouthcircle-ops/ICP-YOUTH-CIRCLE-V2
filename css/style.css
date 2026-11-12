@@ -1128,3 +1128,16 @@ footer{background:var(--icp-forest-dark)!important}
 .icp-ai-actions button,.icp-ai-secondary{color:var(--ai-navy)}
 .icp-ai-actions button:hover,.icp-ai-secondary:hover{background:#f3eddf;color:var(--ai-burgundy)}
 .icp-ai-thinking-dots span{background:var(--ai-burgundy)}
+
+
+/* Premium ICP AI information hierarchy */
+.icp-ai-heading{gap:2px}
+.icp-ai-availability{display:inline-flex;align-items:center;gap:5px;margin-top:2px;color:#587264;font-size:11px;font-weight:650}
+.icp-ai-availability::before{content:'';width:7px;height:7px;border-radius:50%;background:#37805a;box-shadow:0 0 0 3px #e6f1e8}
+.icp-ai-welcome{max-width:650px}
+.icp-ai-welcome>p{max-width:560px}
+.icp-ai-prompts{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:24px}
+.icp-ai-prompt{min-height:0;padding:14px 15px;border-radius:12px}
+.icp-ai-prompt span{display:none}
+.icp-ai-response-meta .icp-ai-confidence{display:none}
+@media(max-width:720px){.icp-ai-prompts{grid-template-columns:1fr}.icp-ai-prompt span{display:block}}
