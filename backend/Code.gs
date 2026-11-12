@@ -2122,7 +2122,12 @@ function aiGenerateOpenAI_(body,sources,prompt,settings) {
   if(!settings.enabled)mdcatError_('NOT_CONFIGURED','OpenAI is not enabled for ICP AI Assistant.');
   aiModerate_(body.message,settings);
   const instructions=prompt.instructions,input=prompt.input;
-  const request={model:settings.model,store:false,instructions:instructions,input:input,max_output_tokens:2600,text:{format:{type:'json_schema',name:'icp_ai_answer',strict:true,schema:aiSchema_()}}};
+  const content=[{type:'input_text',text:input}];
+  if(body.attachment){
+    if(body.attachment.mimeType==='application/pdf')content.push({type:'input_file',filename:body.attachment.name,file_data:body.attachment.data});
+    else content.push({type:'input_image',image_url:body.attachment.data});
+  }
+  const request={model:settings.model,store:false,instructions:instructions,input:body.attachment?[{role:'user',content:content}]:input,max_output_tokens:2600,text:{format:{type:'json_schema',name:'icp_ai_answer',strict:true,schema:aiSchema_()}}};
   const response=UrlFetchApp.fetch('https://api.openai.com/v1/responses',{method:'post',contentType:'application/json',headers:{Authorization:'Bearer '+settings.apiKey},payload:JSON.stringify(request),muteHttpExceptions:true});
   if(response.getResponseCode()===429)mdcatError_('RATE_LIMIT','The AI service is busy. Please wait and try again.');
   if(response.getResponseCode()>=500)mdcatError_('AI_UNAVAILABLE','The AI service is temporarily unavailable.');
@@ -2138,6 +2143,7 @@ function aiGeminiOutputText_(response) {
 }
 
 function aiGenerateGemini_(body,sources,prompt,settings) {
+  if(body.attachment)mdcatError_('BAD_REQUEST','Image and PDF questions temporarily use OpenAI. Select OpenAI and try again.');
   if(!settings.geminiEnabled)mdcatError_('NOT_CONFIGURED','Gemini is not enabled for ICP AI Assistant.');
   const request={
     systemInstruction:{parts:[{text:prompt.instructions}]},
@@ -2159,6 +2165,7 @@ function aiGenerateGemini_(body,sources,prompt,settings) {
 function aiGenerate_(user,body,conversation,sources,history) {
   const settings=aiSettings_();const provider=String(body.provider || 'Auto');const prompt=aiPrompt_(body,conversation,sources,history);
   if(provider==='OpenAI')return aiGenerateOpenAI_(body,sources,prompt,settings);
+  if(body.attachment)return aiGenerateOpenAI_(body,sources,prompt,settings);
   if(provider==='Gemini')return aiGenerateGemini_(body,sources,prompt,settings);
   if(!settings.enabled && !settings.geminiEnabled)mdcatError_('NOT_CONFIGURED','ICP AI Assistant is not enabled yet.');
   if(settings.enabled){
@@ -2168,16 +2175,32 @@ function aiGenerate_(user,body,conversation,sources,history) {
   return aiGenerateGemini_(body,sources,prompt,settings);
 }
 
+function aiAttachment_(value) {
+  if(!value)return null;
+  if(typeof value!=='object' || Array.isArray(value))mdcatError_('BAD_REQUEST','Invalid attachment.');
+  const mimeType=String(value.mimeType||'').trim().toLowerCase();
+  const allowed=['image/jpeg','image/png','image/webp','application/pdf'];
+  if(!allowed.includes(mimeType))mdcatError_('BAD_REQUEST','Attach a JPG, PNG, WebP image or PDF.');
+  const name=String(value.name||'attachment').replace(/[^A-Za-z0-9._() -]/g,'_').slice(0,120)||'attachment';
+  const data=String(value.data||'').trim();const prefix='data:'+mimeType+';base64,';
+  if(!data.startsWith(prefix))mdcatError_('BAD_REQUEST','Invalid attachment data.');
+  const base64=data.slice(prefix.length);
+  if(!/^[A-Za-z0-9+/=]+$/.test(base64)||base64.length>4000000)mdcatError_('BAD_REQUEST','Attachment is too large. Use a file smaller than 3 MB.');
+  return {name:name,mimeType:mimeType,data:data};
+}
+
 function aiChat_(user,body) {
   const message=aiText_(body.message,'Message',2,ICP_AI_.maxPrompt);
   const mode=String(body.mode || 'Explain');const language=String(body.language || 'English');const provider=String(body.provider || 'Auto');
   if(!ICP_AI_.modes.includes(mode) || !ICP_AI_.languages.includes(language) || !ICP_AI_.providers.includes(provider))mdcatError_('BAD_REQUEST','Choose a valid assistant provider, mode and language.');
+  const attachment=aiAttachment_(body.attachment);
+  if(attachment && provider==='Gemini')mdcatError_('BAD_REQUEST','Image and PDF questions temporarily use OpenAI. Select OpenAI and try again.');
   const requestId=String(body.requestId || '').trim();
   if(!/^[A-Za-z0-9-]{20,80}$/.test(requestId))mdcatError_('BAD_REQUEST','The request reference is invalid.');
   const existing=getSheetData_(CONFIG.SHEETS.AI_MESSAGES).find(row=>String(row.UserID)===user.uid && String(row.RequestID)===requestId && String(row.Role)==='assistant');
   if(existing)return {conversationId:String(existing.ConversationID),message:aiMessagePublic_(existing)};
   aiRateLimit_(user);
-  const normalized=Object.assign({},body,{message:message,mode:mode,language:language,provider:provider,verifiedOnly:body.verifiedOnly===true});
+  const normalized=Object.assign({},body,{message:message,mode:mode,language:language,provider:provider,attachment:attachment,verifiedOnly:body.verifiedOnly===true});
   const conversation=aiConversation_(user,body.conversationId,normalized);const history=aiMessageRows_(user,conversation.ID);const sources=normalized.verifiedOnly?aiSources_(message):[];
   const result=aiGenerate_(user,normalized,conversation,sources,history);const now=new Date().toISOString();
   const userMessage={ID:'AIM-'+Utilities.getUuid(),ConversationID:conversation.ID,UserID:user.uid,RequestID:requestId,Role:'user',Content:message,PayloadJSON:'{}',Saved:'No',Status:'Active',CreatedAt:now,UpdatedAt:now};
