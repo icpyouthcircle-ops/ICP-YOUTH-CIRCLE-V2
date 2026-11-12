@@ -1073,3 +1073,58 @@ footer{background:var(--icp-forest-dark)!important}
 
 /* The hero is homepage-only. JavaScript switches its inline display value by route. */
 #homeHero[style*="display: none"] { display: none !important; }
+
+
+/* ICP AI professional cream, green, burgundy and gold theme */
+.icp-ai-shell{
+  --ai-border:#e4ddc8;
+  --ai-muted:#687167;
+  --ai-navy:#074b35;
+  --ai-burgundy:#8d2030;
+  --ai-burgundy-dark:#681522;
+  --ai-gold:#c79b42;
+  --ai-cream:#fbf7eb;
+  --ai-surface:#fffef9;
+  background:var(--ai-surface);
+  border-color:var(--ai-border);
+  box-shadow:0 16px 42px rgba(6,75,53,.10);
+}
+.icp-ai-sidebar{background:var(--ai-cream);border-color:var(--ai-border)}
+.icp-ai-sidebar-top,.icp-ai-heading strong{color:var(--ai-navy)}
+.icp-ai-heading span,.icp-ai-history-empty,.icp-ai-privacy{color:var(--ai-muted)}
+.icp-ai-new-chat{border-color:#d8cba6;background:#fffdf7;color:var(--ai-navy)}
+.icp-ai-new-chat:hover{border-color:var(--ai-burgundy);color:var(--ai-burgundy)}
+.icp-ai-history-row:hover,.icp-ai-history-row.is-current{background:#f3eddf}
+.icp-ai-history-open{color:#254536}
+.icp-ai-history-open small{color:var(--ai-muted)}
+.icp-ai-main{background:var(--ai-surface)}
+.icp-ai-header{background:var(--ai-cream);border-bottom-color:var(--ai-border)}
+.icp-ai-controls select{border-color:#d8cba6;background:#fffef9;color:#254536}
+.icp-ai-messages{background:var(--ai-surface)}
+.icp-ai-mark{background:linear-gradient(135deg,var(--ai-navy),#0a6949 62%,var(--ai-burgundy));box-shadow:0 12px 28px rgba(6,75,53,.18)}
+.icp-ai-welcome h3,.icp-ai-prompt strong,.icp-ai-answer h4{color:var(--ai-navy)}
+.icp-ai-welcome>p,.icp-ai-prompt span{color:var(--ai-muted)}
+.icp-ai-prompt{border-color:var(--ai-border);background:#fffef9;color:#254536}
+.icp-ai-prompt:hover{border-color:#c7a85d;box-shadow:0 10px 22px rgba(6,75,53,.08)}
+.icp-ai-message-body{color:#233a2e}
+.icp-ai-message.is-user .icp-ai-message-body{background:#f3eddf;color:#263f31}
+.icp-ai-avatar{background:#f1ead8;color:var(--ai-navy)}
+.icp-ai-message.is-assistant .icp-ai-avatar{background:linear-gradient(135deg,var(--ai-navy),var(--ai-burgundy));color:#fff}
+.icp-ai-badge.is-grounded{background:#e8f2e9;color:#17633a}
+.icp-ai-badge.is-guidance{background:#fbf0d5;color:#805a16}
+.icp-ai-provider-badge{border-color:#d8cba6;color:#526558}
+.icp-ai-confidence{color:#788174}
+.icp-ai-composer-area{background:linear-gradient(transparent,var(--ai-surface) 18%)}
+.icp-ai-status{color:var(--ai-muted)}
+.icp-ai-status.is-error{color:var(--ai-burgundy)}
+.icp-ai-status.is-success{color:#17633a}
+.icp-ai-composer{border-color:#d8cba6;background:#fffef9;box-shadow:0 8px 24px rgba(6,75,53,.09)}
+.icp-ai-composer:focus-within{border-color:var(--ai-burgundy);box-shadow:0 8px 25px rgba(141,32,48,.14)}
+.icp-ai-composer textarea{color:#233a2e}
+.icp-ai-composer textarea::placeholder{color:#879087}
+.icp-ai-send{background:var(--ai-burgundy)}
+.icp-ai-send:hover{background:var(--ai-burgundy-dark)}
+.icp-ai-disclaimer{color:#798175}
+.icp-ai-actions button,.icp-ai-secondary{color:var(--ai-navy)}
+.icp-ai-actions button:hover,.icp-ai-secondary:hover{background:#f3eddf;color:var(--ai-burgundy)}
+.icp-ai-thinking-dots span{background:var(--ai-burgundy)}
