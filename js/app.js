@@ -14,7 +14,7 @@ const PORTAL_MDCAT_SCRIPTS = [
   'js/mdcat-account.js?v=20261112-ai-timeout-v1'
 ];
 const PORTAL_QA_SCRIPT = 'js/qa.js?v=20261013-community-v1';
-const PORTAL_AI_SCRIPT = 'js/assistant.js?v=20261112-general-chat-v1';
+const PORTAL_AI_SCRIPT = 'js/assistant.js?v=20261112-gemini-default-v1';
 const publicModuleMemory = new Map();
 const publicModuleRequests = new Map();
 const portalFeaturePrefetches = new Set();
