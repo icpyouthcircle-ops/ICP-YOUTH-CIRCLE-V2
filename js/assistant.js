@@ -92,13 +92,12 @@ function aiWelcome(){
   const feed=document.getElementById('icpAiMessages');if(!feed)return;
   feed.replaceChildren();
   const welcome=aiEl('section','icp-ai-welcome');
-  welcome.append(aiEl('span','icp-ai-mark','ICP AI'),aiEl('h3',null,'What can I help with?'),aiEl('p',null,'Ask any safe question like you would in ChatGPT or Gemini. Study, writing, maths, ideas and practical plans work even when no portal resource exists.'));
+  welcome.append(aiEl('span','icp-ai-mark','ICP AI'),aiEl('h3',null,'How can ICP AI help?'),aiEl('p',null,'Ask about study, writing, ideas or practical plans. Keep passwords, bank information and other sensitive details private.'));
   const prompts=aiEl('div','icp-ai-prompts');
   [
-    ['Ask any question','Why does the sky appear blue?','Explain'],
-    ['Solve step by step','Help me solve a difficult maths problem.','Solve'],
-    ['Improve my writing','Make my paragraph clear and professional.','Check My Answer'],
-    ['Learn with a plan','Create a practical seven-day study plan.','Study Plan']
+    ['Explain a topic','Explain photosynthesis in simple words.','Explain'],
+    ['Create MCQs','Create five MCQs about a topic I am studying.','Quiz Me'],
+    ['Make a study plan','Create a practical seven-day study plan.','Study Plan']
   ].forEach(([label,prompt,mode])=>{
     const button=aiEl('button','icp-ai-prompt');button.type='button';
     button.append(aiEl('strong',null,label),aiEl('span',null,prompt));
@@ -318,7 +317,7 @@ function aiBuildShell(content){
 
   const main=aiEl('section','icp-ai-main');
   const header=aiEl('header','icp-ai-header');const historyButton=aiIconButton('Open conversation history','☰',()=>shell.classList.add('is-history-open'));historyButton.classList.add('icp-ai-history-toggle');
-  const heading=aiEl('div','icp-ai-heading');heading.append(aiEl('strong',null,'ICP AI'),aiEl('span',null,'Study assistant'));
+  const heading=aiEl('div','icp-ai-heading');const title=aiEl('strong',null,'ICP AI Assistant');const subtitle=aiEl('span',null,'Student support');const availability=aiEl('span','icp-ai-availability','Ready to help');heading.append(title,subtitle,availability);
   const controls=aiEl('div','icp-ai-controls');
   const provider=document.createElement('select');provider.id='icpAiProvider';provider.setAttribute('aria-label','AI provider');
   const available=new Set(icpAssistantState.config.availableProviders||[]);icpAssistantState.config.providers.forEach(value=>{const option=aiEl('option',null,value);option.value=value;option.disabled=value!=='Auto'&&!available.has(value);provider.appendChild(option);});provider.value=available.has('Gemini')?'Gemini':available.has('OpenAI')?'OpenAI':'Auto';
