@@ -1158,3 +1158,15 @@ body:has(.icp-ai-page) .icp-ai-launcher{display:none!important}
   .icp-ai-messages{flex:1;min-height:500px;overflow:visible;padding-bottom:32px}
   .icp-ai-composer-area{position:sticky;bottom:0;z-index:11;background:var(--ai-surface);box-shadow:0 -12px 24px rgba(6,75,53,.05)}
 }
+
+
+/* ICP AI mobile full-screen conversation mode */
+@media(max-width:900px){
+  body:has(.icp-ai-page) .portal-notice{display:none}
+  body:has(.icp-ai-page) #dynamicPage .container{max-width:none;padding:0}
+  body:has(.icp-ai-page) header{position:sticky;top:0;z-index:50}
+  .icp-ai-shell{height:calc(100dvh - 88px)!important;min-height:520px;border-radius:0;border-left:0;border-right:0}
+  .icp-ai-main{min-height:0}
+  .icp-ai-messages{padding-bottom:24px}
+  .icp-ai-composer-area{position:sticky;bottom:0;z-index:12;background:var(--ai-surface);box-shadow:0 -10px 20px rgba(6,75,53,.06)}
+}
