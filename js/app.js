@@ -1299,7 +1299,7 @@ function handleNavigation(item,options={}) {
   // Hide them before a section starts loading, including if that section has no content yet.
   document.getElementById('homeHero').style.display = 'none';
   document.getElementById('homeExplore').style.display = 'none';
-  const homeTools=document.getElementById('homeTools');if(homeTools)homeTools.hidden=true;
+  const routeHomeTools=document.getElementById('homeTools');if(routeHomeTools)routeHomeTools.hidden=true;
 
   const title =
     document.getElementById('dynamicPageTitle');
