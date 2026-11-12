@@ -60,7 +60,7 @@ const PORTAL_BOOTSTRAP_DATA = {
     ['NAV-055','Duas / Motivation','duas-motivation','NAV-010'],
     ['NAV-056','Study Abroad','study-abroad','NAV-011'],['NAV-057','Blog','blog','NAV-011'],
     ['NAV-058','About','about','NAV-011'],['NAV-059','Contact','contact','NAV-011'],
-    ['NAV-060','Frequently Asked Questions','faq','NAV-008'],['NAV-061','Student Q&A','questions','NAV-008']
+    ['NAV-060','Frequently Asked Questions','faq','NAV-008'],['NAV-061','Student Q&A','questions','NAV-008'],['NAV-062','Roadmaps','roadmaps','NAV-011']
   ].map((row,index)=>({ID:row[0],Label:row[1],Slug:row[2],ParentID:row[3],DisplayOrder:index+1})),
   categories: [
     ['Study','study','Study materials and learning resources'],['Entry Tests','entry-tests','Entry test preparation and related content'],
@@ -461,6 +461,10 @@ function registerPortalServiceWorker() {
       if(!navigation.some(item=>String(item.Slug)==='help')){
         const community=navigation.find(item=>String(item.Slug)==='community');
         navigation.push({ID:'PORTAL-HELP',Label:'Help Centre',Slug:'help',ParentID:community ? community.ID : '',DisplayOrder:999});
+      }
+      if(!navigation.some(item=>String(item.Slug)==='roadmaps')){
+        const explore=navigation.find(item=>String(item.Slug)==='explore');
+        navigation.push({ID:'PORTAL-ROADMAPS',Label:'Roadmaps',Slug:'roadmaps',ParentID:explore ? explore.ID : '',DisplayOrder:998});
       }
       if(!navigation.some(item=>String(item.Slug)==='privacy')){
         const explore=navigation.find(item=>String(item.Slug)==='explore');
@@ -1149,6 +1153,7 @@ function getRouteDescription(slug, label) {
     'updates':'Stay informed about exams, results, merit lists and important student notices.',
     'islamic':'Read carefully presented Islamic reminders, hadith and duas for daily reflection.',
     'explore':'Discover study-abroad guidance, articles, information about us and official contact channels.',
+    'roadmaps':'Follow clear, student-friendly stages for your academic and career goals.',
     'about':'Learn about the purpose and student-focused direction of ICP YOUTH CIRCLE.',
     'contact':'Contact ICP YOUTH CIRCLE through an official communication channel.',
     'notes':'Browse published study notes by subject and level.',
@@ -1431,6 +1436,8 @@ if (item.Slug === 'ai-assistant') {
   renderPrivacyPage();
 } else if (item.Slug === 'help') {
   renderHelpPage();
+} else if (item.Slug === 'roadmaps' || item.Slug.indexOf('roadmap-')===0) {
+  loadRoadmaps(item.Slug);
 } else if (item.Slug === 'prep-tracker') {
   renderPreparationTracker();
 } else if (item.Slug === 'submit-resource') {
@@ -1501,6 +1508,58 @@ function showHome(options={}) {
     behavior: 'smooth'
   });
 }
+function roadmapStages(value) {
+  return String(value||'').split('|').map(step=>step.trim()).filter(Boolean).map(step=>{
+    const match=step.match(/^([^:]{1,80}):\s*(.+)$/);
+    return match?{title:match[1].trim(),text:match[2].trim()}:{title:'Next step',text:step};
+  });
+}
+
+function loadRoadmaps(route='roadmaps') {
+  const requestVersion=navigationVersion;const content=document.getElementById('dynamicPageContent');
+  content.innerHTML='<div class="roadmap-loading">Preparing roadmaps…</div>';
+  loadPublicModule('roadmaps').then(items=>{
+    if(requestVersion!==navigationVersion)return;
+    const rows=Array.isArray(items)?items:[];
+    const slug=route.indexOf('roadmap-')===0?route.slice('roadmap-'.length):'';
+    if(slug){const roadmap=rows.find(item=>item.Slug===slug);if(roadmap){renderRoadmapDetail(roadmap);return;}}
+    renderRoadmapHub(rows);
+  }).catch(error=>{if(requestVersion===navigationVersion)renderSectionNotice(error.message||'Roadmaps could not be loaded. Please try again.');});
+}
+
+function renderRoadmapHub(rows) {
+  const content=document.getElementById('dynamicPageContent');content.replaceChildren();
+  const intro=document.createElement('section');intro.className='roadmap-intro';
+  intro.innerHTML='<p class="roadmap-kicker">STUDENT ROADMAPS</p><h4>Choose a goal. Follow the next right steps.</h4><p>These guides give students a practical starting path. Always confirm requirements, fees and deadlines with official institutions.</p>';
+  const grid=document.createElement('div');grid.className='roadmap-grid';
+  rows.forEach((roadmap,index)=>{
+    const card=document.createElement('article');card.className='roadmap-card';card.style.setProperty('--roadmap-index',String(index));
+    const eyebrow=document.createElement('span');eyebrow.className='roadmap-card-audience';eyebrow.textContent=roadmap.Audience||'Students';
+    const title=document.createElement('h5');title.textContent=roadmap.Title;
+    const summary=document.createElement('p');summary.textContent=roadmap.Summary;
+    const meta=document.createElement('span');meta.className='roadmap-card-meta';meta.textContent=roadmap.Duration||'Step-by-step guide';
+    const button=document.createElement('button');button.type='button';button.className='resource-button';button.textContent='Open roadmap';button.onclick=()=>handleNavigation({Slug:'roadmap-'+roadmap.Slug,Label:roadmap.Title,ParentID:'PORTAL-ROADMAPS'});
+    card.append(eyebrow,title,summary,meta,button);grid.appendChild(card);
+  });
+  if(!rows.length){renderSectionNotice('Roadmaps are being prepared. Please check back soon.');return;}
+  content.append(intro,grid);
+}
+
+function renderRoadmapDetail(roadmap) {
+  const content=document.getElementById('dynamicPageContent');content.replaceChildren();
+  const page=document.createElement('section');page.className='roadmap-detail';
+  const back=document.createElement('button');back.type='button';back.className='roadmap-back';back.textContent='← All roadmaps';back.onclick=()=>handleNavigation({Slug:'roadmaps',Label:'Roadmaps',ParentID:'NAV-011'});
+  const eyebrow=document.createElement('p');eyebrow.className='roadmap-kicker';eyebrow.textContent=roadmap.Audience||'STUDENT ROADMAP';
+  const heading=document.createElement('h4');heading.textContent=roadmap.Title;
+  const summary=document.createElement('p');summary.className='roadmap-detail-summary';summary.textContent=roadmap.Summary;
+  const duration=document.createElement('p');duration.className='roadmap-duration';duration.textContent=roadmap.Duration||'Step-by-step guide';
+  const steps=document.createElement('ol');steps.className='roadmap-steps';
+  roadmapStages(roadmap.Stages).forEach(stage=>{const item=document.createElement('li');const title=document.createElement('strong');title.textContent=stage.title;const text=document.createElement('p');text.textContent=stage.text;item.append(title,text);steps.appendChild(item);});
+  page.append(back,eyebrow,heading,summary,duration,steps);
+  if(roadmap.OfficialURL){const link=document.createElement('a');link.className='resource-button';link.href=roadmap.OfficialURL;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Visit official source';page.appendChild(link);}
+  content.appendChild(page);
+}
+
 function loadResourcesByCategory(categoryName) {
   const requestVersion = navigationVersion;
 
