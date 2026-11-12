@@ -100,3 +100,10 @@
 .admin-quick-action strong { color: #fff; font-size: 14px; }
 .admin-quick-action span { color: #dfeafa; font-size: 12px; line-height: 1.42; }
 @media (max-width: 850px) { .admin-control-center { grid-template-columns: 1fr; padding: 20px; } }
+
+
+/* Owner actions and polished dashboard states */
+.admin-control-center-note{grid-column:1/-1;margin:0;color:#dfeafa;font-size:12px;line-height:1.5}
+.admin-quick-action-alert{border-color:rgba(244,228,187,.82);background:rgba(151,32,50,.22)}
+.admin-state{display:grid;gap:6px;place-items:center;min-height:190px;padding:32px;text-align:center;color:#62706a}.admin-state strong{color:#064b35;font-size:16px}.admin-state-error{border:1px solid #f1c2c7;background:#fff6f6;color:#8d1c2b}.admin-state-error strong{color:#8d1c2b}.admin-skeleton-list{display:grid;gap:12px;padding:20px}.admin-skeleton-line{display:block;height:46px;border-radius:10px;background:linear-gradient(90deg,#f4f2e8 25%,#fffdf7 40%,#f4f2e8 60%);background-size:400% 100%;animation:adminShimmer 1.3s ease infinite}.admin-skeleton-line:nth-child(2){width:88%}.admin-skeleton-line:nth-child(3){width:75%}.admin-skeleton-line:nth-child(4){width:92%}@keyframes adminShimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.admin-quick-action,.admin-skeleton-line{transition:none;animation:none}}
