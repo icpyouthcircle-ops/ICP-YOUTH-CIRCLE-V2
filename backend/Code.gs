@@ -1174,7 +1174,7 @@ function getPublicVideos_() {
 }
 
 function getPublicAdmissions_() {
-  const admissions = getActiveSheetData_(
+  const admissions = getPublishedSheetData_(
     CONFIG.SHEETS.ADMISSIONS
   );
 
@@ -1221,10 +1221,7 @@ function getPublicScholarships_() {
   }));
 }
 function getPublicOpportunities_() {
-  const rows =
-    getActiveSheetData_(
-      CONFIG.SHEETS.OPPORTUNITIES
-    );
+  const rows = getPublishedSheetData_(CONFIG.SHEETS.OPPORTUNITIES);
 
   return rows.map(item => ({
     ID: item.ID,
