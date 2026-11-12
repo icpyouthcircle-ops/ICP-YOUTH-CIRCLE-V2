@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Admin Dashboard | ICP YOUTH CIRCLE</title>
   <link rel="stylesheet" href="css/style.css?v=20261111-v2">
-  <link rel="stylesheet" href="css/admin.css?v=20261111-owner-control-center">
+  <link rel="stylesheet" href="css/admin.css?v=20261112-owner-actions-v1">
 </head>
 <body class="admin-page">
   <header>
@@ -38,14 +38,13 @@
           <h3 id="adminControlCenterTitle">Run the portal without technical spreadsheet work.</h3>
           <p>Choose a task below. The dashboard guides your content changes while the database structure stays protected in the background.</p>
         </div>
-        <div class="admin-quick-actions" aria-label="Quick actions">
-          <button class="admin-quick-action" type="button" data-admin-table="RESOURCES"><strong>Resources</strong><span>Add notes, past papers and study material.</span></button>
-          <button class="admin-quick-action" type="button" data-admin-table="ANNOUNCEMENTS"><strong>Announcements</strong><span>Publish verified student updates.</span></button>
-          <button class="admin-quick-action" type="button" data-admin-table="ADMISSIONS"><strong>Admissions</strong><span>Manage opening dates and official links.</span></button>
-          <button class="admin-quick-action" type="button" data-admin-table="SCHOLARSHIPS"><strong>Scholarships</strong><span>Keep opportunities current and clear.</span></button>
-          <button class="admin-quick-action" type="button" data-admin-table="SETTINGS"><strong>Portal settings</strong><span>Review advanced website configuration.</span></button>
-          <a class="admin-quick-action" href="https://github.com/icpyouthcircle-ops/ICP-YOUTH-CIRCLE-V2/blob/main/docs/SIMPLE-OWNER-GUIDE.md" target="_blank" rel="noopener noreferrer"><strong>Owner guide</strong><span>Open the simple publishing and editing guide.</span></a>
+        <div class="admin-quick-actions" aria-label="Owner actions">
+          <button class="admin-quick-action" type="button" data-admin-task="publish-update"><strong>Publish update</strong><span>Create a verified announcement for students.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-task="add-opportunity"><strong>Add opportunity</strong><span>Publish a scholarship or admission opportunity.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-task="add-resource"><strong>Add study resource</strong><span>Add notes, past papers or study material.</span></button>
+          <button class="admin-quick-action admin-quick-action-alert" type="button" data-admin-task="archive-expired"><strong>Review expired content</strong><span>Archive past deadlines and enable daily expiry checks.</span></button>
         </div>
+        <p class="admin-control-center-note">Need advanced settings or the owner guide? Use the Portal section menu below.</p>
       </section>
 
       <div class="admin-layout">
@@ -117,7 +116,7 @@
       </div>
     </section>
   </main>
-  <script src="js/admin.js?v=20261111-owner-control-center"></script>
+  <script src="js/admin.js?v=20261112-owner-actions-v1"></script>
   <script src="js/admin-performance.js?v=20260927-publishing-suite"></script>
 </body>
 </html>
