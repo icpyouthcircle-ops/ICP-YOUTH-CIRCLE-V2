@@ -16,7 +16,8 @@ const icpAssistantState={
   historyOpen:false,
   recognition:null,
   requestController:null,
-  requestCancelled:false
+  requestCancelled:false,
+  attachment:null
 };
 
 function aiEl(tag,className,text){
@@ -76,6 +77,32 @@ function aiStop(){
   icpAssistantState.requestCancelled=true;
   controller.abort();
   aiSetStatus('Stopping the answer…');
+}
+
+function aiAttachmentClear(){
+  icpAssistantState.attachment=null;
+  const input=document.getElementById('icpAiAttachment');if(input)input.value='';
+  aiRenderAttachment();
+}
+
+function aiRenderAttachment(){
+  const holder=document.getElementById('icpAiAttachmentStatus');if(!holder)return;
+  const attachment=icpAssistantState.attachment;holder.replaceChildren();
+  if(!attachment){holder.hidden=true;return;}
+  holder.hidden=false;
+  holder.append(aiEl('span',null,'Attached: '+attachment.name+' · processed only for this answer'));
+  const remove=aiEl('button','icp-ai-attachment-remove','Remove');remove.type='button';remove.onclick=aiAttachmentClear;holder.appendChild(remove);
+}
+
+function aiChooseAttachment(event){
+  const file=event.target.files&&event.target.files[0];if(!file)return;
+  const allowed=['image/jpeg','image/png','image/webp','application/pdf'];
+  if(!allowed.includes(file.type)){aiSetStatus('Attach a JPG, PNG, WebP image or PDF.','error');event.target.value='';return;}
+  if(file.size>3*1024*1024){aiSetStatus('Use a file smaller than 3 MB.','error');event.target.value='';return;}
+  const reader=new FileReader();
+  reader.onload=()=>{icpAssistantState.attachment={name:file.name,mimeType:file.type,data:String(reader.result)};aiRenderAttachment();aiSetStatus('Attachment ready. It will be processed only for this answer.');};
+  reader.onerror=()=>{event.target.value='';aiSetStatus('The attachment could not be read. Please try another file.','error');};
+  reader.readAsDataURL(file);
 }
 
 function aiShowSignIn(){
@@ -270,25 +297,27 @@ function aiStartConversation(){
 function aiResizeComposer(input){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,180)+'px';}
 
 async function aiSend(){
-  if(icpAssistantState.busy)return;const input=document.getElementById('icpAiInput');const message=input.value.trim();if(message.length<2){aiSetStatus('Enter a question with at least two characters.','error');input.focus();return;}
+  if(icpAssistantState.busy)return;
+  const input=document.getElementById('icpAiInput');const message=input.value.trim();const attachment=icpAssistantState.attachment;
+  if(message.length<2){aiSetStatus('Enter a question with at least two characters.','error');input.focus();return;}
   if(message.length>4000){aiSetStatus('Keep your request under 4,000 characters.','error');return;}
-  let userMessage=null;
-  let progressTimer=null;
-  const requestController=new AbortController();
-  icpAssistantState.requestController=requestController;
-  icpAssistantState.requestCancelled=false;
+  const provider=document.getElementById('icpAiProvider').value;
+  if(attachment&&provider==='Gemini'){aiSetStatus('Image and PDF questions temporarily use OpenAI. Select OpenAI and try again.','error');return;}
+  let userMessage=null;let progressTimer=null;const requestController=new AbortController();
+  icpAssistantState.requestController=requestController;icpAssistantState.requestCancelled=false;
   try{
     const identity=await aiEnsureIdentity(false);if(!identity.auth.currentUser){aiShowSignIn();return;}
-    userMessage={id:'local-'+Date.now(),role:'user',content:message,payload:{},saved:false};icpAssistantState.messages.push(userMessage);aiRenderMessages();aiShowThinking();input.value='';aiResizeComposer(input);aiSetBusy(true);aiSetStatus('Thinking and preparing a clear answer…');
-    progressTimer=setTimeout(()=>aiSetStatus('Still working. Complex answers can take a little longer…'),12000);
-    const data=await mdcatPrivateRequest('aiChat',{conversationId:icpAssistantState.conversationId||undefined,message,provider:document.getElementById('icpAiProvider').value,mode:document.getElementById('icpAiMode').value,language:document.getElementById('icpAiLanguage').value,verifiedOnly:false,requestId:aiRequestId()},{controller:requestController,cancelledMessage:'Answer stopped.'});
+    const displayMessage=attachment?message+'\n\nAttachment: '+attachment.name:message;
+    userMessage={id:'local-'+Date.now(),role:'user',content:displayMessage,payload:{},saved:false};icpAssistantState.messages.push(userMessage);aiRenderMessages();aiShowThinking();
+    input.value='';aiResizeComposer(input);aiAttachmentClear();aiSetBusy(true);aiSetStatus(attachment?'Reading your attachment and preparing an answer…':'Thinking and preparing a clear answer…');
+    progressTimer=setTimeout(()=>aiSetStatus('Still working. Complex answers and attachments can take a little longer…'),12000);
+    const data=await mdcatPrivateRequest('aiChat',{conversationId:icpAssistantState.conversationId||undefined,message,attachment:attachment||undefined,provider,mode:document.getElementById('icpAiMode').value,language:document.getElementById('icpAiLanguage').value,verifiedOnly:false,requestId:aiRequestId()},{controller:requestController,cancelledMessage:'Answer stopped.'});
     icpAssistantState.conversationId=data.conversationId;icpAssistantState.messages.push(data.message);aiRenderMessages();await aiLoadHistory();aiSetStatus('');
   }catch(error){
-    const stopped=error && error.code==='ABORTED' && icpAssistantState.requestCancelled;
+    const stopped=error&&error.code==='ABORTED'&&icpAssistantState.requestCancelled;
     if(stopped){aiRenderMessages();aiSetStatus('Answer stopped.');}
-    else{icpAssistantState.messages=icpAssistantState.messages.filter(item=>item.id!==userMessage?.id);aiRenderMessages();input.value=message;aiResizeComposer(input);aiSetStatus(error.message||'The assistant could not answer. Please try again.','error');}
-  }
-  finally{if(progressTimer)clearTimeout(progressTimer);if(icpAssistantState.requestController===requestController)icpAssistantState.requestController=null;icpAssistantState.requestCancelled=false;aiSetBusy(false);}
+    else{icpAssistantState.messages=icpAssistantState.messages.filter(item=>item.id!==userMessage?.id);aiRenderMessages();input.value=message;aiResizeComposer(input);if(attachment){icpAssistantState.attachment=attachment;aiRenderAttachment();}aiSetStatus(error.message||'The assistant could not answer. Please try again.','error');}
+  }finally{if(progressTimer)clearTimeout(progressTimer);if(icpAssistantState.requestController===requestController)icpAssistantState.requestController=null;icpAssistantState.requestCancelled=false;aiSetBusy(false);}
 }
 
 function aiToggleVoice(){
@@ -326,9 +355,12 @@ function aiBuildShell(content){
   controls.append(provider,mode,language);header.append(historyButton,heading,controls);
   const feed=aiEl('div','icp-ai-messages');feed.id='icpAiMessages';feed.setAttribute('role','log');feed.setAttribute('aria-live','polite');
   const composerArea=aiEl('div','icp-ai-composer-area');const status=aiEl('p','icp-ai-status');status.id='icpAiStatus';status.setAttribute('role','status');
+  const attachmentInput=document.createElement('input');attachmentInput.id='icpAiAttachment';attachmentInput.type='file';attachmentInput.accept='image/jpeg,image/png,image/webp,application/pdf';attachmentInput.hidden=true;attachmentInput.onchange=aiChooseAttachment;
+  const attachmentStatus=aiEl('div','icp-ai-attachment-status');attachmentStatus.id='icpAiAttachmentStatus';attachmentStatus.hidden=true;
   const composer=aiEl('div','icp-ai-composer');const input=document.createElement('textarea');input.id='icpAiInput';input.rows=1;input.maxLength=4000;input.placeholder='Ask anything: study, writing, maths, ideas…';input.setAttribute('aria-label','Message ICP AI Assistant');input.oninput=()=>aiResizeComposer(input);input.onkeydown=event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}};
-  const mic=aiIconButton('Use voice input','⌁',aiToggleVoice);mic.id='icpAiMic';const send=aiEl('button','icp-ai-send','↑');send.id='icpAiSend';send.type='button';send.setAttribute('aria-label','Send');send.onclick=aiSend;composer.append(mic,input,send);
-  const note=aiEl('p','icp-ai-disclaimer','ICP AI may make mistakes. Verify deadlines, eligibility, health, legal, and financial information with official sources.');composerArea.append(status,composer,note);
+  const attach=aiIconButton('Attach an image or PDF','＋',()=>attachmentInput.click());attach.id='icpAiAttach';
+  const mic=aiIconButton('Use voice input','⌁',aiToggleVoice);mic.id='icpAiMic';const send=aiEl('button','icp-ai-send','↑');send.id='icpAiSend';send.type='button';send.setAttribute('aria-label','Send');send.onclick=aiSend;composer.append(attach,mic,input,send);
+  const note=aiEl('p','icp-ai-disclaimer','You can attach one image or PDF up to 3 MB. It is processed only for this answer and is not saved. ICP AI may make mistakes.');composerArea.append(status,attachmentStatus,attachmentInput,composer,note);
   main.append(header,feed,composerArea);shell.append(sidebar,main);content.appendChild(shell);
 }
 
