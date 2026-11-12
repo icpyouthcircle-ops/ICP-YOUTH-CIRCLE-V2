@@ -14,7 +14,9 @@ const icpAssistantState={
   conversations:[],
   busy:false,
   historyOpen:false,
-  recognition:null
+  recognition:null,
+  requestController:null,
+  requestCancelled:false
 };
 
 function aiEl(tag,className,text){
@@ -64,8 +66,16 @@ function aiSetStatus(message,type=''){
 function aiSetBusy(value){
   icpAssistantState.busy=value;
   const send=document.getElementById('icpAiSend');const input=document.getElementById('icpAiInput');
-  if(send){send.disabled=value;send.textContent=value?'…':'↑';send.setAttribute('aria-label',value?'Assistant is thinking':'Send');}
+  if(send){send.disabled=false;send.textContent=value?'■':'↑';send.onclick=value?aiStop:aiSend;send.setAttribute('aria-label',value?'Stop generating answer':'Send');send.title=value?'Stop generating answer':'Send';}
   if(input)input.disabled=value;
+}
+
+function aiStop(){
+  const controller=icpAssistantState.requestController;
+  if(!controller || !icpAssistantState.busy)return;
+  icpAssistantState.requestCancelled=true;
+  controller.abort();
+  aiSetStatus('Stopping the answer…');
 }
 
 function aiShowSignIn(){
@@ -265,14 +275,21 @@ async function aiSend(){
   if(message.length>4000){aiSetStatus('Keep your request under 4,000 characters.','error');return;}
   let userMessage=null;
   let progressTimer=null;
+  const requestController=new AbortController();
+  icpAssistantState.requestController=requestController;
+  icpAssistantState.requestCancelled=false;
   try{
     const identity=await aiEnsureIdentity(false);if(!identity.auth.currentUser){aiShowSignIn();return;}
     userMessage={id:'local-'+Date.now(),role:'user',content:message,payload:{},saved:false};icpAssistantState.messages.push(userMessage);aiRenderMessages();aiShowThinking();input.value='';aiResizeComposer(input);aiSetBusy(true);aiSetStatus('Thinking and preparing a clear answer…');
     progressTimer=setTimeout(()=>aiSetStatus('Still working. Complex answers can take a little longer…'),12000);
-    const data=await mdcatPrivateRequest('aiChat',{conversationId:icpAssistantState.conversationId||undefined,message,provider:document.getElementById('icpAiProvider').value,mode:document.getElementById('icpAiMode').value,language:document.getElementById('icpAiLanguage').value,verifiedOnly:false,requestId:aiRequestId()});
+    const data=await mdcatPrivateRequest('aiChat',{conversationId:icpAssistantState.conversationId||undefined,message,provider:document.getElementById('icpAiProvider').value,mode:document.getElementById('icpAiMode').value,language:document.getElementById('icpAiLanguage').value,verifiedOnly:false,requestId:aiRequestId()},{controller:requestController,cancelledMessage:'Answer stopped.'});
     icpAssistantState.conversationId=data.conversationId;icpAssistantState.messages.push(data.message);aiRenderMessages();await aiLoadHistory();aiSetStatus('');
-  }catch(error){icpAssistantState.messages=icpAssistantState.messages.filter(item=>item.id!==userMessage?.id);aiRenderMessages();input.value=message;aiResizeComposer(input);aiSetStatus(error.message||'The assistant could not answer. Please try again.','error');}
-  finally{if(progressTimer)clearTimeout(progressTimer);aiSetBusy(false);}
+  }catch(error){
+    const stopped=error && error.code==='ABORTED' && icpAssistantState.requestCancelled;
+    if(stopped){aiRenderMessages();aiSetStatus('Answer stopped.');}
+    else{icpAssistantState.messages=icpAssistantState.messages.filter(item=>item.id!==userMessage?.id);aiRenderMessages();input.value=message;aiResizeComposer(input);aiSetStatus(error.message||'The assistant could not answer. Please try again.','error');}
+  }
+  finally{if(progressTimer)clearTimeout(progressTimer);if(icpAssistantState.requestController===requestController)icpAssistantState.requestController=null;icpAssistantState.requestCancelled=false;aiSetBusy(false);}
 }
 
 function aiToggleVoice(){
