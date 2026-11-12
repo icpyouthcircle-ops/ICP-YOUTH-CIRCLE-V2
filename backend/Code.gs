@@ -32,6 +32,7 @@ const CONFIG = {
     NOTIFICATION_PREFERENCES: 'Notification_Preferences',
     FAQS: 'FAQs',
     FEEDBACK: 'Feedback',
+    ROADMAPS: 'Roadmaps',
     COUNTDOWNS: 'Countdowns',
     QNA_QUESTIONS: 'QNA_Questions',
     QNA_ANSWERS: 'QNA_Answers',
@@ -947,6 +948,10 @@ function doGet(e) {
       return cachedPublicJsonResponse_('publicNotifications',getPublicBellNotifications_,60);
     }
 
+    if (action === 'roadmaps') {
+      return cachedPublicJsonResponse_('roadmaps',getPublicRoadmaps_,300);
+    }
+
     if (action === 'countdowns') {
       return cachedPublicJsonResponse_('countdowns',getPublicCountdowns_,60);
     }
@@ -1279,6 +1284,44 @@ function getPublicBellNotifications_() {
   getPublicScholarships_().forEach(item=>add('Scholarship',item,item.Name || 'Scholarship opportunity',item.Description,item.PublishAt || item.CreatedAt || item.UpdatedAt || item.OpeningDate,'scholarships','Scholarships','NAV-005'));
   return rows.sort((a,b)=>portalScheduleTimestamp_(b.PublishedAt)-portalScheduleTimestamp_(a.PublishedAt)).slice(0,20);
 }
+function getPublicRoadmaps_() {
+  const rows=getOptionalSheetData_(CONFIG.SHEETS.ROADMAPS).filter(item=>isPortalRowPublished_(item));
+  return rows.map(item=>({
+    ID:String(item.ID||'').slice(0,120),Title:String(item.Title||'').slice(0,160),
+    Slug:String(item.Slug||'').toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,100),
+    Summary:String(item.Summary||'').slice(0,700),Audience:String(item.Audience||'').slice(0,180),
+    Duration:String(item.Duration||'').slice(0,100),Stages:String(item.Stages||'').slice(0,12000),
+    OfficialURL:String(item.OfficialURL||'').slice(0,2000),Featured:String(item.Featured||'').slice(0,20),
+    DisplayOrder:Number(item.DisplayOrder||0),UpdatedAt:item.UpdatedAt||'',PublishAt:item.PublishAt||''
+  })).filter(item=>item.ID&&item.Title&&item.Slug).sort((a,b)=>a.DisplayOrder-b.DisplayOrder||a.Title.localeCompare(b.Title));
+}
+
+function setupRoadmaps() {
+  const sheetName=CONFIG.SHEETS.ROADMAPS;
+  const headers=['ID','Title','Slug','Summary','Audience','Duration','Stages','OfficialURL','Featured','DisplayOrder','Status','CreatedAt','UpdatedAt','PublishAt','ExpiresAt'];
+  const spreadsheet=getSpreadsheet_();let sheet=spreadsheet.getSheetByName(sheetName);
+  if(!sheet)sheet=spreadsheet.insertSheet(sheetName);
+  if(sheet.getLastRow()===0)sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  const actual=(sheet.getDataRange().getValues()[0]||[]).map(value=>String(value).replace(/\uFEFF/g,'').trim()).filter(Boolean);
+  if(new Set(actual).size!==actual.length)mdcatError_('SETUP_REQUIRED','Roadmaps has duplicate headers.');
+  const missing=headers.filter(header=>!actual.includes(header));
+  if(missing.length)sheet.getRange(1,actual.length+1,1,missing.length).setValues([missing]);
+  sheet.setFrozenRows(1);
+  if(sheet.getLastRow()<2){
+    const now=new Date();
+    const rows=[
+      ['RMAP-001','Become a Doctor','become-a-doctor','A practical path from science studies to medical admission, MBBS and professional growth.','Pre-medical students','5 stages','Foundation: Choose FSc Pre-Medical and build strong Biology, Chemistry and Physics basics.|Entry test: Follow the current official MDCAT syllabus, practise consistently and review mistakes.|Apply: Check PMDC and university requirements, documents, merit criteria and deadlines.|Medical school: Develop study routines, clinical professionalism and healthy time management.|Beyond MBBS: Explore house job, specialisation pathways and lifelong learning.','', 'Yes',1,'Active',now,now,'',''],
+      ['RMAP-002','BSCS Roadmap','bscs-roadmap','A clear route from choosing Computer Science to building skills, projects and career direction.','Computer Science students','6 stages','Explore: Understand programming, problem solving and the difference between CS fields.|Prepare: Build fundamentals in maths, English, logic and basic computing.|Apply: Compare accredited universities, admission criteria, fees and deadlines.|First year: Learn programming carefully and practise through small projects.|Build: Create a portfolio with GitHub projects, teamwork and communication skills.|Career: Choose a direction such as software, AI, data, cybersecurity or web development.','', 'Yes',2,'Active',now,now,'',''],
+      ['RMAP-003','Study Abroad from Pakistan','study-abroad-from-pakistan','Plan an organised, verified path for applying to universities abroad from Pakistan.','Students planning international study','7 stages','Choose direction: Select a country, course, budget and intake based on your goals.|Research: Use official university and visa sources only; compare eligibility and deadlines.|Academic file: Prepare transcripts, passport, certificates and recommendation requirements.|English test: Plan IELTS or another required language test early.|Applications: Write honest statements and submit complete applications before deadlines.|Funding: Search official scholarships and understand total costs.|Visa and arrival: Follow the official visa process, finances, accommodation and pre-departure checklist.','', 'Yes',3,'Active',now,now,'',''],
+      ['RMAP-004','IELTS Preparation','ielts-preparation','Build skills steadily for Listening, Reading, Writing and Speaking.','IELTS candidates','6 stages','Baseline: Take a diagnostic test and identify your weakest skill.|Plan: Set a realistic target score and weekly timetable.|Build skills: Practise each module with feedback and targeted vocabulary.|Timed practice: Complete full sections under test conditions.|Review: Keep an error notebook and fix repeated weaknesses.|Book smartly: Register only when your practice scores are consistently near your target.','', 'Yes',4,'Active',now,now,'',''],
+      ['RMAP-005','University Admission Process','university-admission-process','A reliable checklist for choosing and applying to a college or university.','College and university applicants','6 stages','Shortlist: Compare recognised institutions, programmes, merit and affordability.|Confirm requirements: Check the official prospectus, eligibility, tests and documents.|Prepare documents: Organise marksheets, identity documents, photographs and certificates.|Apply: Submit accurate forms and save proof of submission.|Track: Monitor official merit lists, test dates, interviews and fee deadlines.|Decide: Verify your offer and complete admission steps before the closing date.','', 'Yes',5,'Active',now,now,'','']
+    ];
+    sheet.getRange(2,1,rows.length,headers.length).setValues(rows);
+  }
+  adminClearPublicCache_();
+  return 'Roadmaps are ready. Five starter roadmaps were added and you can edit or add unlimited goals from the Admin Dashboard.';
+}
+
 function getPublicCountdowns_() {
   return getOptionalSheetData_(CONFIG.SHEETS.COUNTDOWNS)
     .filter(item=>isPortalRowPublished_(item))
@@ -1798,7 +1841,7 @@ const ADMIN_TABLES_ = [
   ['AI_FEEDBACK','AI assistant feedback','AIF'],
   ['QNA_QUESTIONS','Q&A questions','QAQ'],['QNA_ANSWERS','Q&A answers','QAA'],
   ['QNA_REPORTS','Q&A reports','QAR'],['QNA_CONTRIBUTORS','Q&A verified contributors','QAC'],
-  ['FAQS','Frequently asked questions','FAQ'],['FEEDBACK','Anonymous feedback','FDBK'],
+  ['FAQS','Frequently asked questions','FAQ'],['FEEDBACK','Anonymous feedback','FDBK'],['ROADMAPS','Roadmaps','RMAP'],
   ['TEST_CATALOG','Test catalog','TST'],['NOTIFICATIONS','Notifications','NTF'],
   ['MDCAT_SUBJECTS','MDCAT subjects','MDS'],['MDCAT_UNITS','MDCAT units','MDU'],
   ['MDCAT_CHAPTERS','MDCAT chapters','MDC'],['MDCAT_TOPICS','MDCAT topics','MDT'],
@@ -1836,7 +1879,7 @@ function adminAuthenticate_(token) {
 
 function adminManifest_(admin) {
   const spreadsheet=getSpreadsheet_();
-  const optional={TEST_CATALOG:true,NOTIFICATIONS:true,FAQS:true,FEEDBACK:true,COUNTDOWNS:true,AI_FEEDBACK:true,QNA_QUESTIONS:true,QNA_ANSWERS:true,QNA_REPORTS:true,QNA_CONTRIBUTORS:true};
+  const optional={TEST_CATALOG:true,NOTIFICATIONS:true,FAQS:true,FEEDBACK:true,ROADMAPS:true,COUNTDOWNS:true,AI_FEEDBACK:true,QNA_QUESTIONS:true,QNA_ANSWERS:true,QNA_REPORTS:true,QNA_CONTRIBUTORS:true};
   return {
     email:admin.email,
     role:admin.role,
