@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Admin Dashboard | ICP YOUTH CIRCLE</title>
   <link rel="stylesheet" href="css/style.css?v=20261111-v2">
-  <link rel="stylesheet" href="css/admin.css?v=20261112-owner-actions-v1">
+  <link rel="stylesheet" href="css/admin.css?v=20261112-admin-clear-v2">
 </head>
 <body class="admin-page">
   <header>
@@ -28,7 +28,7 @@
 
     <section id="adminDashboard" hidden aria-labelledby="adminTitle">
       <div class="admin-title-row">
-        <div><h2 id="adminTitle">Content dashboard</h2><p id="adminUser"></p></div>
+        <div><p class="admin-kicker admin-page-kicker">OWNER DASHBOARD</p><h2 id="adminTitle">Manage ICP content</h2><p id="adminUser"></p></div>
         <button id="adminSignOut" type="button">Sign out</button>
       </div>
 
@@ -39,30 +39,30 @@
           <p>Choose a task below. The dashboard guides your content changes while the database structure stays protected in the background.</p>
         </div>
         <div class="admin-quick-actions" aria-label="Owner actions">
-          <button class="admin-quick-action" type="button" data-admin-task="publish-update"><strong>Publish update</strong><span>Create a verified announcement for students.</span></button>
-          <button class="admin-quick-action" type="button" data-admin-task="add-opportunity"><strong>Add opportunity</strong><span>Publish a scholarship or admission opportunity.</span></button>
-          <button class="admin-quick-action" type="button" data-admin-task="add-resource"><strong>Add study resource</strong><span>Add notes, past papers or study material.</span></button>
-          <button class="admin-quick-action admin-quick-action-alert" type="button" data-admin-task="archive-expired"><strong>Review expired content</strong><span>Archive past deadlines and enable daily expiry checks.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-task="publish-update"><strong>Publish update</strong><span>Share an important verified announcement.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-task="add-opportunity"><strong>Add opportunity</strong><span>Add a scholarship or admission opening.</span></button>
+          <button class="admin-quick-action" type="button" data-admin-task="add-resource"><strong>Add study resource</strong><span>Publish notes, past papers or study material.</span></button>
+          <button class="admin-quick-action admin-quick-action-alert" type="button" data-admin-task="archive-expired"><strong>Review expired content</strong><span>Remove closed deadlines from the public portal.</span></button>
         </div>
-        <p class="admin-control-center-note">Need advanced settings or the owner guide? Use the Portal section menu below.</p>
+        <p class="admin-control-center-note"><strong>Simple workflow:</strong> choose an action → add the details → preview → publish. Use the content library below only when you need to edit something already published.</p>
       </section>
 
       <div class="admin-layout">
         <aside class="admin-sidebar">
-          <label for="adminTable">Portal section</label>
+          <p class="admin-sidebar-eyebrow">CONTENT LIBRARY</p><label for="adminTable">Choose a section</label>
           <select id="adminTable"></select>
-          <button id="adminNew" class="resource-button" type="button">New record</button>
-          <button id="adminPdfToggle" type="button">Upload PDF</button>
+          <button id="adminNew" class="resource-button" type="button">Add new record</button>
+          <p class="admin-sidebar-divider">MORE TOOLS</p><button id="adminPdfToggle" type="button">Upload a PDF</button>
           <button id="adminBulkToggle" type="button">Paste multiple rows</button>
-          <button id="adminPerformanceToggle" type="button">Performance check</button>
+          <button id="adminPerformanceToggle" type="button">Check performance</button>
         </aside>
 
         <div class="admin-workspace">
           <p id="adminStatus" role="status" aria-live="polite"></p>
           <section class="admin-panel" aria-labelledby="adminRecordsTitle">
             <div class="admin-toolbar">
-              <div><h3 id="adminRecordsTitle">Records</h3><p id="adminCount"></p></div>
-              <div class="admin-search"><label for="adminQuery">Search records</label><input id="adminQuery" type="search"><button id="adminSearch" type="button">Search</button></div>
+              <div><h3 id="adminRecordsTitle">Published content</h3><p id="adminCount">Choose a section to view its records.</p></div>
+              <div class="admin-search"><label for="adminQuery">Search records</label><input id="adminQuery" type="search" placeholder="Search this section"><button id="adminSearch" type="button">Search</button></div>
             </div>
             <div id="adminTableWrap" class="admin-table-wrap"></div>
           </section>
