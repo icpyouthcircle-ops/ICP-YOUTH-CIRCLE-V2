@@ -42,7 +42,7 @@ async function mdcatPrivateRequest(action,body={}) {
   const user=identity.auth.currentUser;
   const idToken=await user.getIdToken();
   const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),60000);
+  const timeout=setTimeout(()=>controller.abort(),120000);
   try {
     const response=await fetch(API_BASE_URL,{
       method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},
