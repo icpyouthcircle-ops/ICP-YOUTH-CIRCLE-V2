@@ -1141,3 +1141,9 @@ footer{background:var(--icp-forest-dark)!important}
 .icp-ai-prompt span{display:none}
 .icp-ai-response-meta .icp-ai-confidence{display:none}
 @media(max-width:720px){.icp-ai-prompts{grid-template-columns:1fr}.icp-ai-prompt span{display:block}}
+
+
+/* Keep AI chat controls unobstructed during long conversations */
+body:has(.icp-ai-page) .icp-ai-launcher{display:none!important}
+.icp-ai-composer-area{position:relative;z-index:8}
+.icp-ai-messages{scroll-padding-bottom:28px}
