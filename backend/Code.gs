@@ -160,10 +160,72 @@ function portalScheduleTimestamp_(value) {
   return Number.isFinite(timestamp) ? timestamp : 0;
 }
 
+function portalExpiryTimestamp_(value) {
+  if (!value) return 0;
+  if (value instanceof Date) {
+    const copy=new Date(value.getTime());copy.setHours(23,59,59,999);return copy.getTime();
+  }
+  let text=String(value).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) text=text+'T23:59:59+05:00';
+  return portalScheduleTimestamp_(text);
+}
+
+function archiveExpiredPortalContent_() {
+  const now=Date.now();
+  const definitions=[
+    {key:'ADMISSIONS',dates:['Deadline','ClosingDate','ExpiresAt','ExpiryDate']},
+    {key:'SCHOLARSHIPS',dates:['Deadline','ClosingDate','ExpiresAt','ExpiryDate']},
+    {key:'ANNOUNCEMENTS',dates:['ExpiryDate','ExpiresAt','Deadline']},
+    {key:'OPPORTUNITIES',dates:['Deadline','ClosingDate','ExpiresAt','ExpiryDate']}
+  ];
+  const archived={Admissions:0,Scholarships:0,Announcements:0,Opportunities:0};
+  definitions.forEach(definition=>{
+    const sheet=getSpreadsheet_().getSheetByName(CONFIG.SHEETS[definition.key]);
+    if(!sheet || sheet.getLastRow()<2)return;
+    const values=sheet.getDataRange().getValues();
+    const headers=values[0].map(value=>String(value).replace(/\uFEFF/g,'').trim());
+    const statusIndex=headers.indexOf('Status');
+    if(statusIndex<0)return;
+    const updatedIndex=headers.indexOf('UpdatedAt');
+    const dateIndexes=definition.dates.map(name=>headers.indexOf(name)).filter(index=>index>=0);
+    if(!dateIndexes.length)return;
+    values.slice(1).forEach((row,index)=>{
+      const status=String(row[statusIndex] == null ? 'Active' : row[statusIndex]).trim().toLowerCase();
+      if(!['active','scheduled','published'].includes(status))return;
+      const expiry=dateIndexes.map(column=>portalExpiryTimestamp_(row[column])).find(Boolean);
+      if(!expiry || expiry>now)return;
+      const range=sheet.getRange(index+2,1,1,headers.length);
+      const next=row.slice();next[statusIndex]='Archived';if(updatedIndex>=0)next[updatedIndex]=new Date();
+      range.setValues([next]);archived[definition.key.charAt(0)+definition.key.slice(1).toLowerCase()]++;
+    });
+  });
+  adminClearPublicCache_();
+  return {archived:archived,checkedAt:new Date().toISOString()};
+}
+
+function ensureExpiryAutomation_() {
+  const handler='archiveExpiredPortalContent_';
+  const existing=ScriptApp.getProjectTriggers().some(trigger=>trigger.getHandlerFunction()===handler);
+  if(!existing)ScriptApp.newTrigger(handler).timeBased().everyDays(1).atHour(1).create();
+  return {enabled:true,created:!existing};
+}
+
+function setupExpiryAutomation() {
+  const automation=ensureExpiryAutomation_();
+  const result=archiveExpiredPortalContent_();
+  return Object.assign(result,{automation:automation});
+}
+
+function adminArchiveExpired_(admin) {
+  const automation=ensureExpiryAutomation_();
+  const result=archiveExpiredPortalContent_();
+  return Object.assign(result,{automation:automation,reviewedBy:admin.email});
+}
+
 function isPortalRowPublished_(item,now) {
   const status=String(item.Status == null ? 'Active' : item.Status).trim().toLowerCase();
   const publishAt=portalScheduleTimestamp_(item.PublishAt || item.PublishDate);
-  const expiresAt=portalScheduleTimestamp_(item.ExpiresAt || item.ExpiryDate);
+  const expiresAt=portalExpiryTimestamp_(item.ExpiresAt || item.ExpiryDate || item.Deadline || item.ClosingDate);
   const current=Number(now) || Date.now();
   if (status==='scheduled') {
     if (!publishAt || publishAt>current) return false;
@@ -2433,7 +2495,7 @@ function doPost(e) {
         return jsonResponse_(aiSaveMessage_(student,body));
       } finally {aiLock.releaseLock();}
     }
-    const adminActions=['adminSession','adminList','adminSave','adminBulk','adminArchive','adminUploadPdf'];
+    const adminActions=['adminSession','adminList','adminSave','adminBulk','adminArchive','adminArchiveExpired','adminUploadPdf'];
     if (adminActions.includes(body.action)) {
       const admin=adminAuthenticate_(body.idToken);
       if (body.action==='adminSession') return jsonResponse_(adminManifest_(admin));
@@ -2445,6 +2507,7 @@ function doPost(e) {
         if (body.action==='adminSave') adminData=adminSave_(body,admin);
         if (body.action==='adminBulk') adminData=adminBulk_(body,admin);
         if (body.action==='adminArchive') adminData=adminArchive_(body,admin);
+        if (body.action==='adminArchiveExpired') adminData=adminArchiveExpired_(admin);
         if (body.action==='adminUploadPdf') adminData=adminUploadPdf_(body,admin);
         adminClearPublicCache_();
         return jsonResponse_(adminData);
