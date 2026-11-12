@@ -1069,3 +1069,7 @@ footer{background:var(--icp-forest-dark)!important}
 .icp-ai-send{background:var(--icp-forest-dark)!important}
 .icp-ai-send:hover{background:var(--portal-brand)!important}
 @media(max-width:600px){header{background:var(--icp-cream)!important}}
+
+
+/* The hero is homepage-only. JavaScript switches its inline display value by route. */
+#homeHero[style*="display: none"] { display: none !important; }
