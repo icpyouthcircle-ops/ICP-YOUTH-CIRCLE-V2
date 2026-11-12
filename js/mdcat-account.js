@@ -36,13 +36,13 @@ async function mdcatLoadIdentity() {
   finally {mdcatIdentityLoading=null;}
 }
 
-async function mdcatPrivateRequest(action,body={}) {
+async function mdcatPrivateRequest(action,body={},options={}) {
   const identity=await mdcatLoadIdentity();
   if(!identity.auth.currentUser) throw new Error('Please sign in to continue.');
   const user=identity.auth.currentUser;
   const idToken=await user.getIdToken();
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),120000);
+  const controller=options.controller || new AbortController();
+  const timeout=options.controller?null:setTimeout(()=>controller.abort(),120000);
   try {
     const response=await fetch(API_BASE_URL,{
       method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},
@@ -58,9 +58,9 @@ async function mdcatPrivateRequest(action,body={}) {
     }
     return result.data;
   } catch(error) {
-    if(error.name==='AbortError') throw new Error('The server response was delayed. Retry the same request; it will not duplicate your attempt.');
+    if(error.name==='AbortError'){const aborted=new Error(options.cancelledMessage || 'The server response was delayed. Retry the same request; it will not duplicate your attempt.');aborted.code='ABORTED';throw aborted;}
     throw error;
-  } finally {clearTimeout(timeout);}
+  } finally {if(timeout)clearTimeout(timeout);}
 }
 
 function mdcatAccountError(error,grid,retry) {
