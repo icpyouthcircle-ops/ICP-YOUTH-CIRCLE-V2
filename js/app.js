@@ -11,7 +11,7 @@ const PUBLIC_NOTIFICATION_LIFETIME = 24 * 60 * 60 * 1000;
 const PORTAL_MDCAT_SCRIPTS = [
   'js/mdcat.js?v=20261013-speed-v2',
   'js/mdcat-study.js?v=20261013-speed-v2',
-  'js/mdcat-account.js?v=20261013-speed-v2'
+  'js/mdcat-account.js?v=20261112-ai-timeout-v1'
 ];
 const PORTAL_QA_SCRIPT = 'js/qa.js?v=20261013-community-v1';
 const PORTAL_AI_SCRIPT = 'js/assistant.js?v=20261112-general-chat-v1';
