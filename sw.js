@@ -1,4 +1,4 @@
-const CACHE_NAME = 'icp-portal-shell-20261112-v4';
+const CACHE_NAME = 'icp-portal-shell-20261112-v5';
 const SHELL_ASSETS = [
   './',
   './index.html',
@@ -7,8 +7,8 @@ const SHELL_ASSETS = [
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
   './assets/icons/icon-maskable-512.png',
-  './css/style.css?v=20261112-speed-effects-v1',
-  './js/app.js?v=20261112-speed-effects-v1',
+  './css/style.css?v=20261112-roadmaps-v1',
+  './js/app.js?v=20261112-roadmaps-v1',
   './js/portal-extras.js?v=20261111-v2',
   './assets/social/portal-share-1200x630.png'
 ];
