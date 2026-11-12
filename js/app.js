@@ -1364,6 +1364,9 @@ function handleNavigation(item,options={}) {
   renderPageBreadcrumb(item);
 
   content.innerHTML = '';
+  content.classList.remove('portal-page-enter');
+  void content.offsetWidth;
+  content.classList.add('portal-page-enter');
 
 const resourceCategories = {
   'notes': 'Notes',
