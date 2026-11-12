@@ -96,12 +96,15 @@ function adminRenderSession(session) {
   });
   select.onchange=()=>adminLoadTable();
   document.querySelectorAll('[data-admin-table]').forEach(button=>{
+    button.onclick=()=>adminOpenTask(button.dataset.adminTable,false);
+  });
+  document.querySelectorAll('[data-admin-task]').forEach(button=>{
     button.onclick=()=>{
-      const option=[...select.options].find(item=>item.value===button.dataset.adminTable);
-      if(!option) { adminSetStatus('This section is not available for your administrator account.','error'); return; }
-      select.value=option.value;
-      adminLoadTable();
-      document.querySelector('.admin-layout').scrollIntoView({behavior:'smooth',block:'start'});
+      const task=button.dataset.adminTask;
+      if(task==='publish-update')return adminOpenTask('ANNOUNCEMENTS',true);
+      if(task==='add-opportunity')return adminOpenTask('SCHOLARSHIPS',true);
+      if(task==='add-resource')return adminOpenTask('RESOURCES',true);
+      if(task==='archive-expired')return adminArchiveExpiredContent();
     };
   });
   adminLoadTable();
@@ -111,10 +114,47 @@ function adminSelectedManifest() {
   return adminSession.tables.find(table=>table.key===document.getElementById('adminTable').value);
 }
 
+function adminRenderState(message,type='empty'){
+  const wrap=document.getElementById('adminTableWrap');if(!wrap)return;
+  wrap.replaceChildren();
+  const state=document.createElement('div');state.className='admin-state admin-state-'+type;
+  const title=document.createElement('strong');title.textContent=type==='loading'?'Loading records…':type==='error'?'Could not load records':'Nothing here yet';
+  const text=document.createElement('span');text.textContent=message;
+  state.append(title,text);wrap.appendChild(state);
+}
+
+function adminRenderLoading(){
+  const wrap=document.getElementById('adminTableWrap');if(!wrap)return;
+  wrap.replaceChildren();
+  const loading=document.createElement('div');loading.className='admin-skeleton-list';loading.setAttribute('aria-label','Loading records');
+  for(let index=0;index<4;index++){const line=document.createElement('span');line.className='admin-skeleton-line';loading.appendChild(line);}
+  wrap.appendChild(loading);
+}
+
+async function adminOpenTask(tableKey,createNew){
+  const select=document.getElementById('adminTable');
+  const option=[...select.options].find(item=>item.value===tableKey);
+  if(!option){adminSetStatus('This section is not available for your administrator account.','error');return;}
+  select.value=option.value;await adminLoadTable();
+  document.querySelector('.admin-layout').scrollIntoView({behavior:'smooth',block:'start'});
+  if(createNew)adminOpenEditor({});
+}
+
+async function adminArchiveExpiredContent(){
+  if(!confirm('Archive every active admission, scholarship and update whose deadline has passed? This also enables a daily automatic expiry check.'))return;
+  adminSetStatus('Reviewing deadlines and archiving expired content…');
+  try{
+    const result=await adminRequest('adminArchiveExpired');
+    const parts=Object.entries(result.archived||{}).filter(([,count])=>count).map(([name,count])=>count+' '+name.toLowerCase());
+    adminSetStatus(parts.length?'Archived '+parts.join(', ')+'. Daily expiry checks are now enabled.':'No expired active content was found. Daily expiry checks are now enabled.','success');
+    await adminRefreshSession();
+  }catch(error){adminSetStatus(error.message||'Expired content could not be reviewed.','error');}
+}
+
 async function adminLoadTable() {
   const table=adminSelectedManifest();
   if (!table) return;
-  adminCurrentTable=table;adminSetStatus('Loading '+table.label+'…');
+  adminCurrentTable=table;adminSetStatus('Loading '+table.label+'…');adminRenderLoading();
   document.getElementById('adminEditorPanel').hidden=true;
   document.getElementById('adminBulkPanel').hidden=true;
   try {
@@ -124,12 +164,12 @@ async function adminLoadTable() {
     adminRenderRows(result.headers,adminCurrentRows);
     document.getElementById('adminHeaders').textContent=result.headers.join('\t');
     adminSetStatus('');
-  } catch(error) { adminSetStatus(error.message,'error'); }
+  } catch(error) { adminSetStatus(error.message,'error');adminRenderState(error.message||'Please try again.','error'); }
 }
 
 function adminRenderRows(headers,rows) {
   const wrap=document.getElementById('adminTableWrap');wrap.replaceChildren();
-  if (!rows.length) { const empty=document.createElement('p');empty.textContent='No records found. Use New record or paste rows.';empty.style.padding='16px';wrap.appendChild(empty);return; }
+  if (!rows.length) { adminRenderState('Create a new record or paste approved rows to get started.');return; }
   const table=document.createElement('table');table.className='admin-table';
   const head=document.createElement('thead');const headRow=document.createElement('tr');
   const actionHead=document.createElement('th');actionHead.textContent='Actions';headRow.appendChild(actionHead);
