@@ -72,7 +72,7 @@ function aiShowSignIn(){
   const feed=document.getElementById('icpAiMessages');if(!feed)return;
   feed.replaceChildren();
   const welcome=aiEl('section','icp-ai-welcome');
-  welcome.append(aiEl('span','icp-ai-mark','ICP AI'),aiEl('h3',null,'Your intelligent personal assistant'),aiEl('p',null,'Sign in with Google to ask questions on any subject, keep conversations private, save helpful answers, and use verified ICP sources when needed.'));
+  welcome.append(aiEl('span','icp-ai-mark','ICP AI'),aiEl('h3',null,'Your intelligent personal assistant'),aiEl('p',null,'Sign in to use your private AI chat history. Ask general questions about study, writing, maths, ideas and more. Portal resources are optional, not required.'));
   const button=aiEl('button','resource-button','Continue with Google');button.type='button';
   button.onclick=async()=>{button.disabled=true;aiSetStatus('Opening secure sign-in…');try{await aiEnsureIdentity(true);await aiLoadHistory();aiStartConversation();aiSetStatus('Signed in.');}catch(error){aiSetStatus(error.message||'Sign-in was not completed.','error');button.disabled=false;}};
   welcome.appendChild(button);feed.appendChild(welcome);
@@ -82,7 +82,7 @@ function aiWelcome(){
   const feed=document.getElementById('icpAiMessages');if(!feed)return;
   feed.replaceChildren();
   const welcome=aiEl('section','icp-ai-welcome');
-  welcome.append(aiEl('span','icp-ai-mark','ICP AI'),aiEl('h3',null,'What can I help with?'),aiEl('p',null,'Ask any safe question, solve a problem, improve your writing, explore an idea, create a quiz, or build a practical plan.'));
+  welcome.append(aiEl('span','icp-ai-mark','ICP AI'),aiEl('h3',null,'What can I help with?'),aiEl('p',null,'Ask any safe question like you would in ChatGPT or Gemini. Study, writing, maths, ideas and practical plans work even when no portal resource exists.'));
   const prompts=aiEl('div','icp-ai-prompts');
   [
     ['Ask any question','Why does the sky appear blue?','Explain'],
@@ -267,7 +267,7 @@ async function aiSend(){
   let progressTimer=null;
   try{
     const identity=await aiEnsureIdentity(false);if(!identity.auth.currentUser){aiShowSignIn();return;}
-    userMessage={id:'local-'+Date.now(),role:'user',content:message,payload:{},saved:false};icpAssistantState.messages.push(userMessage);aiRenderMessages();aiShowThinking();input.value='';aiResizeComposer(input);aiSetBusy(true);aiSetStatus('Reviewing sources and preparing a clear answer…');
+    userMessage={id:'local-'+Date.now(),role:'user',content:message,payload:{},saved:false};icpAssistantState.messages.push(userMessage);aiRenderMessages();aiShowThinking();input.value='';aiResizeComposer(input);aiSetBusy(true);aiSetStatus('Thinking and preparing a clear answer…');
     progressTimer=setTimeout(()=>aiSetStatus('Still working. Complex answers can take a little longer…'),12000);
     const data=await mdcatPrivateRequest('aiChat',{conversationId:icpAssistantState.conversationId||undefined,message,provider:document.getElementById('icpAiProvider').value,mode:document.getElementById('icpAiMode').value,language:document.getElementById('icpAiLanguage').value,verifiedOnly:false,requestId:aiRequestId()});
     icpAssistantState.conversationId=data.conversationId;icpAssistantState.messages.push(data.message);aiRenderMessages();await aiLoadHistory();aiSetStatus('');
@@ -310,7 +310,7 @@ function aiBuildShell(content){
   controls.append(provider,mode,language);header.append(historyButton,heading,controls);
   const feed=aiEl('div','icp-ai-messages');feed.id='icpAiMessages';feed.setAttribute('role','log');feed.setAttribute('aria-live','polite');
   const composerArea=aiEl('div','icp-ai-composer-area');const status=aiEl('p','icp-ai-status');status.id='icpAiStatus';status.setAttribute('role','status');
-  const composer=aiEl('div','icp-ai-composer');const input=document.createElement('textarea');input.id='icpAiInput';input.rows=1;input.maxLength=4000;input.placeholder='Ask anything';input.setAttribute('aria-label','Message ICP AI Assistant');input.oninput=()=>aiResizeComposer(input);input.onkeydown=event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}};
+  const composer=aiEl('div','icp-ai-composer');const input=document.createElement('textarea');input.id='icpAiInput';input.rows=1;input.maxLength=4000;input.placeholder='Ask anything: study, writing, maths, ideas…';input.setAttribute('aria-label','Message ICP AI Assistant');input.oninput=()=>aiResizeComposer(input);input.onkeydown=event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}};
   const mic=aiIconButton('Use voice input','⌁',aiToggleVoice);mic.id='icpAiMic';const send=aiEl('button','icp-ai-send','↑');send.id='icpAiSend';send.type='button';send.setAttribute('aria-label','Send');send.onclick=aiSend;composer.append(mic,input,send);
   const note=aiEl('p','icp-ai-disclaimer','ICP AI may make mistakes. Verify deadlines, eligibility, health, legal, and financial information with official sources.');composerArea.append(status,composer,note);
   main.append(header,feed,composerArea);shell.append(sidebar,main);content.appendChild(shell);
