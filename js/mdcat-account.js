@@ -64,7 +64,8 @@ async function mdcatPrivateRequest(action,body={}) {
 }
 
 function mdcatAccountError(error,grid,retry) {
-  document.getElementById('mdcatStatus').textContent=error.message || 'Unable to complete the request.';
+  const message=typeof error==='string' ? error : (error && error.message) || 'Unable to complete the request.';
+  document.getElementById('mdcatStatus').textContent=message;
   if(retry) grid.appendChild(mdcatButton('Retry',retry));
 }
 
