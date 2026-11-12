@@ -85,8 +85,21 @@ async function adminSignIn() {
   } catch(error) { adminSetStatus(error.message || 'Sign-in failed.','error');button.disabled=false; }
 }
 
+function adminTableCount(...keys) {
+  return (adminSession?.tables || []).filter(table=>keys.includes(table.key)).reduce((total,table)=>total+Number(table.rowCount || 0),0);
+}
+
+function adminRenderOverview() {
+  const set=(id,value)=>{const target=document.getElementById(id);if(target)target.textContent=String(value);};
+  set('adminStatUpdates',adminTableCount('ANNOUNCEMENTS','UPDATES'));
+  set('adminStatOpportunities',adminTableCount('ADMISSIONS','SCHOLARSHIPS'));
+  set('adminStatResources',adminTableCount('RESOURCES'));
+  set('adminStatTotal',(adminSession?.tables || []).reduce((total,table)=>total+Number(table.rowCount || 0),0));
+}
+
 function adminRenderSession(session) {
   adminSession=session;
+  adminRenderOverview();
   document.getElementById('adminLogin').hidden=true;
   document.getElementById('adminDashboard').hidden=false;
   document.getElementById('adminUser').textContent=session.email+' · '+session.role;
@@ -335,7 +348,7 @@ async function adminUploadPdf(event) {
 
 async function adminRefreshSession(preferredKey) {
   const key=preferredKey || (adminCurrentTable && adminCurrentTable.key);
-  const session=await adminRequest('adminSession');adminSession=session;
+  const session=await adminRequest('adminSession');adminSession=session;adminRenderOverview();
   const select=document.getElementById('adminTable');select.replaceChildren();
   session.tables.forEach(table=>{const option=document.createElement('option');option.value=table.key;option.textContent=table.label+' ('+table.rowCount+')';select.appendChild(option);});
   if(key) select.value=key;await adminLoadTable();
@@ -343,6 +356,7 @@ async function adminRefreshSession(preferredKey) {
 
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('adminSignIn').onclick=adminSignIn;
+  document.getElementById('adminReviewExpired').onclick=adminArchiveExpiredContent;
   document.getElementById('adminSearch').onclick=adminLoadTable;
   document.getElementById('adminQuery').onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();adminLoadTable();}};
   document.getElementById('adminNew').onclick=()=>adminOpenEditor({});
