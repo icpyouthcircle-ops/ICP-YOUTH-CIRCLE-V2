@@ -458,6 +458,14 @@ function registerPortalServiceWorker() {
         const community=navigation.find(item=>String(item.Slug)==='community');
         navigation.push({ID:'PORTAL-QA',Label:'Student Q&A',Slug:'questions',ParentID:community ? community.ID : '',DisplayOrder:998});
       }
+      if(!navigation.some(item=>String(item.Slug)==='help')){
+        const community=navigation.find(item=>String(item.Slug)==='community');
+        navigation.push({ID:'PORTAL-HELP',Label:'Help Centre',Slug:'help',ParentID:community ? community.ID : '',DisplayOrder:999});
+      }
+      if(!navigation.some(item=>String(item.Slug)==='privacy')){
+        const explore=navigation.find(item=>String(item.Slug)==='explore');
+        navigation.push({ID:'PORTAL-PRIVACY',Label:'Privacy & Safety',Slug:'privacy',ParentID:explore ? explore.ID : '',DisplayOrder:999});
+      }
       portalData = Object.assign({},data,{navigation:navigation});
 
       let fingerprint = '';
@@ -1047,6 +1055,37 @@ function renderAboutPage() {
   panel.append(intro,pillars);content.appendChild(panel);
 }
 
+function renderPrivacyPage() {
+  const filters=document.getElementById('resourceFilters');filters.innerHTML='';filters.style.display='none';
+  const content=document.getElementById('dynamicPageContent');content.replaceChildren();
+  const panel=document.createElement('section');panel.className='about-panel';
+  const intro=document.createElement('div');intro.className='about-intro';
+  intro.append(Object.assign(document.createElement('p'),{className:'about-eyebrow',textContent:'PRIVACY & SAFETY'}),Object.assign(document.createElement('h4'),{textContent:'A safer student space'}),Object.assign(document.createElement('p'),{textContent:'ICP YOUTH CIRCLE is designed for student learning, guidance and opportunities. Public browsing does not require an account.'}));
+  const pillars=document.createElement('div');pillars.className='about-pillars';
+  [
+    ['01','Use only what is needed','A student account uses Google sign-in for saved activity and requests. Administrators do not need your Google password.'],
+    ['02','Share safely','Do not post CNIC numbers, passwords, payment details, private documents or other sensitive personal information.'],
+    ['03','Use trusted sources','Check official links, dates and eligibility before submitting any application. Report suspicious content through the Help Centre.']
+  ].forEach(([number,title,text])=>{const card=document.createElement('article');card.className='about-pillar';card.append(Object.assign(document.createElement('span'),{textContent:number}),Object.assign(document.createElement('h5'),{textContent:title}),Object.assign(document.createElement('p'),{textContent:text}));pillars.appendChild(card);});
+  panel.append(intro,pillars);content.appendChild(panel);
+}
+
+function renderHelpPage() {
+  const filters=document.getElementById('resourceFilters');filters.innerHTML='';filters.style.display='none';
+  const content=document.getElementById('dynamicPageContent');content.replaceChildren();
+  const panel=document.createElement('section');panel.className='about-panel';
+  const intro=document.createElement('div');intro.className='about-intro';
+  intro.append(Object.assign(document.createElement('p'),{className:'about-eyebrow',textContent:'HELP CENTRE'}),Object.assign(document.createElement('h4'),{textContent:'Find what you need quickly'}),Object.assign(document.createElement('p'),{textContent:'Use these simple routes before sending a request. Every section is built to help you reach the right information faster.'}));
+  const pillars=document.createElement('div');pillars.className='about-pillars';
+  const actions=[
+    ['01','Study material','Open Study for notes, past papers, MCQs, videos and saved learning resources.','study'],
+    ['02','Admissions and deadlines','Open Admissions or Updates for official notices, dates, merit lists and guidance.','admissions'],
+    ['03','Need personal help?','Use Community → Student Help Desk to send a request to the portal team.','student-help-desk']
+  ];
+  actions.forEach(([number,title,text,slug])=>{const card=document.createElement('article');card.className='about-pillar';const button=document.createElement('button');button.type='button';button.className='resource-button';button.textContent='Open '+title;button.onclick=()=>handleNavigation({Slug:slug,Label:title});card.append(Object.assign(document.createElement('span'),{textContent:number}),Object.assign(document.createElement('h5'),{textContent:title}),Object.assign(document.createElement('p'),{textContent:text}),button);pillars.appendChild(card);});
+  panel.append(intro,pillars);content.appendChild(panel);
+}
+
 function createContactIcon(type) {
   const namespace='http://www.w3.org/2000/svg';
   const icon=document.createElement('span');
@@ -1120,8 +1159,10 @@ function getRouteDescription(slug, label) {
     'student-help-desk':'Send a question or request support from the portal administrators.',
     'suggestions':'Share anonymous feedback to help improve the student portal.',
     'prep-tracker':'Plan study tasks, track completion and focus on your next session.',
-    'faq':'Search answers to frequently asked questions about the portal.'
-    ,'questions':'Ask subject questions, share moderated answers and recognise verified contributors.'
+    'faq':'Search answers to frequently asked questions about the portal.',
+    'questions':'Ask subject questions, share moderated answers and recognise verified contributors.',
+    'help':'Find quick answers, submit a request, and learn how to use the student portal.',
+    'privacy':'Understand how ICP YOUTH CIRCLE protects student information and safe participation.'
   };
   return descriptions[slug] || 'Find published '+label.toLowerCase()+' information and resources from ICP YOUTH CIRCLE.';
 }
@@ -1383,6 +1424,10 @@ if (item.Slug === 'ai-assistant') {
   renderAboutPage();
 } else if (item.Slug === 'contact') {
   renderContactPage();
+} else if (item.Slug === 'privacy') {
+  renderPrivacyPage();
+} else if (item.Slug === 'help') {
+  renderHelpPage();
 } else if (item.Slug === 'prep-tracker') {
   renderPreparationTracker();
 } else if (item.Slug === 'submit-resource') {
