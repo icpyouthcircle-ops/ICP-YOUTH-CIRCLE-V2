@@ -195,13 +195,26 @@ async function openUserAccount(pending) {
     document.getElementById('mdcatStatus').textContent='';
     if(!identity.auth.currentUser) {
       const panel=mdcatElement('div',null,'mdcat-wide');
-      panel.appendChild(mdcatElement('p','Your Google account identifies your saved results and requests. You stay signed in during this browser session.'));
-      const signIn=mdcatButton('Continue with Google',async()=>{
+      panel.appendChild(mdcatElement('p','Create or access your student account with Google. Your first sign-in creates a student account automatically. This is separate from the administrator sign-in.'));
+      const signIn=mdcatButton('Create or continue with Google',async()=>{
         signIn.disabled=true;
         try {
           await identity.sdk.signInWithPopup(identity.auth,new identity.sdk.GoogleAuthProvider());
-          if(view===mdcatGradeView) openUserAccount(pending);
-        } catch(error) {if(view===mdcatGradeView) {mdcatAccountError(error,grid);signIn.disabled=false;}}
+          if(view!==mdcatGradeView)return;
+          if (typeof setPortalAccountButton === 'function') setPortalAccountButton(true);
+          openUserAccount(pending);
+        } catch(error) {
+          if(view!==mdcatGradeView)return;
+          const message=error && error.code==='auth/popup-closed-by-user'
+            ? 'The Google sign-in window was closed before completion. Please try again.'
+            : error && error.code==='auth/popup-blocked'
+              ? 'Your browser blocked the Google sign-in window. Allow pop-ups for this website, then try again.'
+              : error && error.code==='auth/unauthorized-domain'
+                ? 'This website address is not yet approved for Google sign-in. Please contact the portal owner.'
+                : error;
+          mdcatAccountError(message,grid);
+          signIn.disabled=false;
+        }
       });
       panel.appendChild(signIn);grid.appendChild(panel);return;
     }
