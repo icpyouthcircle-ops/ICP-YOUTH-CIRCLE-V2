@@ -1170,3 +1170,10 @@ body:has(.icp-ai-page) .icp-ai-launcher{display:none!important}
   .icp-ai-messages{padding-bottom:24px}
   .icp-ai-composer-area{position:sticky;bottom:0;z-index:12;background:var(--ai-surface);box-shadow:0 -10px 20px rgba(6,75,53,.06)}
 }
+
+
+/* ICP AI temporary attachment control */
+.icp-ai-attachment-status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 16px 8px;padding:9px 12px;border:1px solid rgba(151,32,50,.25);border-radius:12px;background:#fffaf0;color:#244536;font-size:.86rem}
+.icp-ai-attachment-remove{border:0;background:transparent;color:#8d1c2b;font:inherit;font-weight:700;cursor:pointer;padding:2px 0}
+#icpAiAttach{font-size:1.18rem;line-height:1}
+@media(max-width:900px){.icp-ai-attachment-status{margin:0 10px 8px;font-size:.8rem}.icp-ai-composer #icpAiAttach{min-width:42px}}
