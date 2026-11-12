@@ -1020,3 +1020,52 @@ header .brand-mark img{width:58px!important;height:58px!important;max-width:58px
 
 /* The simplified navigation now has seven primary items, so keep each visible. */
 #mainNavigation .nav-item:nth-child(n){display:block!important}
+
+
+/* ICP Youth Circle burgundy, forest green, gold and warm-cream theme. */
+:root{
+  --portal-ink:#173126;
+  --portal-muted:#5c675f;
+  --portal-line:#d8ddcb;
+  --portal-canvas:#fbf8ea;
+  --portal-brand:#7d1e2b;
+  --portal-brand-dark:#5d1420;
+  --portal-gold:#c99b2f;
+  --icp-forest:#0d5a38;
+  --icp-forest-dark:#073e27;
+  --icp-cream:#fffdf4;
+}
+body{background:var(--portal-canvas)!important;color:var(--portal-ink)!important}
+header{background:var(--icp-cream)!important;border-bottom-color:#e5dfc8!important;box-shadow:0 3px 18px rgba(44,56,38,.06)!important}
+.brand h1{color:var(--icp-forest-dark)!important}
+.brand p{color:#7d1e2b!important}
+#mainNavigation .nav-item-row>a,#mainNavigation .nav-item>a{color:#31463a!important}
+#mainNavigation .nav-item-row>a:hover,#mainNavigation .nav-item>a:hover{color:var(--portal-brand)!important;background:#f7efe5!important}
+.nav-account-button,.resource-button{background:var(--portal-brand)!important;color:#fff!important}
+.nav-account-button:hover,.resource-button:hover{background:var(--portal-brand-dark)!important}
+.hero{background:radial-gradient(ellipse at 84% 20%,rgba(201,155,47,.20),transparent 52%),linear-gradient(118deg,var(--icp-forest-dark),var(--icp-forest) 56%,#7d1e2b)!important}
+.hero h2{color:#fffdf4!important}
+.hero-tagline{color:#f1d47e!important}
+.hero-description{color:#eff4e8!important}
+.hero .search-box{background:#fffdf4!important;border-color:rgba(255,253,244,.75)!important}
+.hero .search-box input{background:#fffdf4!important;color:var(--portal-ink)!important}
+.hero .search-box button{background:var(--portal-brand)!important;color:#fff!important}
+.hero .search-box button:hover{background:var(--portal-brand-dark)!important}
+#homeExplore{background:var(--portal-canvas)!important}
+.section-eyebrow,.home-values span{color:var(--portal-brand)!important}
+.section-title h3,.study-intro h2,.study-utility h3{color:var(--icp-forest-dark)!important}
+.category-card,.study-utility,.study-next-steps{background:#fffdf8!important;border-color:#dfe1d0!important}
+.category-card::after{background:#edf3e7!important}
+.category-icon{background:#edf3e7!important;border-color:#d5e2d3!important;color:var(--icp-forest)!important}
+.category-action,.study-stats strong,#planStatus,#focusStatus,#marksResult{color:var(--portal-brand)!important}
+.category-card:hover{border-color:#c99b2f!important;box-shadow:0 16px 34px rgba(69,75,48,.12)!important}
+footer{background:var(--icp-forest-dark)!important}
+.home-study-banner{background:var(--icp-forest-dark)!important}
+.home-study-banner .resource-button{background:var(--portal-gold)!important;color:#3e3012!important}
+.public-countdown-card{background:#fffdf8!important}
+.public-countdown-card::before{background:var(--portal-gold)!important}
+.public-countdown-clock strong,.home-tool-eyebrow{color:var(--portal-brand)!important}
+.icp-ai-mark,.icp-ai-message.is-assistant .icp-ai-avatar{background:linear-gradient(145deg,var(--icp-forest-dark),var(--portal-brand))!important}
+.icp-ai-send{background:var(--icp-forest-dark)!important}
+.icp-ai-send:hover{background:var(--portal-brand)!important}
+@media(max-width:600px){header{background:var(--icp-cream)!important}}
