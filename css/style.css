@@ -1147,3 +1147,14 @@ footer{background:var(--icp-forest-dark)!important}
 body:has(.icp-ai-page) .icp-ai-launcher{display:none!important}
 .icp-ai-composer-area{position:relative;z-index:8}
 .icp-ai-messages{scroll-padding-bottom:28px}
+
+
+/* Desktop AI chat: use normal page flow rather than a clipped inner scroll area */
+@media(min-width:901px){
+  .icp-ai-shell{height:auto!important;min-height:680px;overflow:visible;align-items:stretch}
+  .icp-ai-sidebar{position:sticky;top:18px;align-self:start;height:min(680px,calc(100vh - 150px));max-height:680px}
+  .icp-ai-main{display:flex;flex-direction:column;min-height:680px;overflow:visible}
+  .icp-ai-header{position:sticky;top:0;z-index:10}
+  .icp-ai-messages{flex:1;min-height:500px;overflow:visible;padding-bottom:32px}
+  .icp-ai-composer-area{position:sticky;bottom:0;z-index:11;background:var(--ai-surface);box-shadow:0 -12px 24px rgba(6,75,53,.05)}
+}
