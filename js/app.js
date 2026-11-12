@@ -1295,6 +1295,12 @@ function handleNavigation(item,options={}) {
     return;
   }
 
+  // The large hero and its search box belong to the homepage only.
+  // Hide them before a section starts loading, including if that section has no content yet.
+  document.getElementById('homeHero').style.display = 'none';
+  document.getElementById('homeExplore').style.display = 'none';
+  const homeTools=document.getElementById('homeTools');if(homeTools)homeTools.hidden=true;
+
   const title =
     document.getElementById('dynamicPageTitle');
 
