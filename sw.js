@@ -38,7 +38,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  const isPortalNavigation = request.mode === 'navigate' && !url.pathname.endsWith('/admin.html');
+  const isPortalNavigation = request.mode === 'navigate' && !url.pathname.endsWith('/admin.html') && !url.pathname.endsWith('/studio.html');
   const isShellAsset = SHELL_ASSETS.some(asset => {
     const assetURL = new URL(asset, self.registration.scope);
     return assetURL.pathname === url.pathname && (!assetURL.search || assetURL.search === url.search);
