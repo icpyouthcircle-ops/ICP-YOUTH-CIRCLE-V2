@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>ICP Content & Media OS | Admin Studio</title>
+  <link rel="icon" href="assets/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy-950: #060f1d;
+      --navy-900: #0A192F;
+      --navy-800: #112240;
+      --navy-700: #1d3557;
+      --gold-500: #D4AF37;
+      --gold-400: #e5c453;
+      --gold-dim: rgba(212, 175, 55, 0.14);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: rgba(212, 175, 55, 0.22);
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy-950);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+    /* Admin Gate Overlay */
+    #studioAuthGate {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, #112240 0%, #060f1d 70%);
+    }
+    .gate-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--navy-900);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    }
+    .gate-card img { width: 64px; height: 64px; border-radius: 50%; margin-bottom: 14px; border: 2px solid var(--gold-500); }
+    .gate-card h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.35rem; color: var(--gold-500); margin-bottom: 8px; }
+    .gate-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+    .gate-status { font-size: 0.85rem; margin-top: 14px; color: var(--gold-400); min-height: 20px; }
+    .gate-status.error { color: #f87171; }
+
+    /* Main App Layout */
+    #studioApp { display: none; min-height: 100vh; }
+    .sidebar {
+      width: 268px;
+      background: var(--navy-900);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px;
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      overflow-y: auto;
+      z-index: 20;
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 10px 18px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+    .brand-box img { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--gold-500); }
+    .brand-box h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; color: var(--gold-500); letter-spacing: 0.4px; }
+    .brand-box span { font-size: 0.72rem; color: var(--text-muted); display: block; }
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.04); color: #fff; }
+    .nav-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--border);
+      color: var(--gold-500);
+    }
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .admin-pill {
+      background: rgba(16,185,129,0.12);
+      color: #34d399;
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      word-break: break-all;
+    }
+    .main-area {
+      margin-left: 268px;
+      flex: 1;
+      padding: 26px 32px;
+      max-width: 1480px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.45rem; color: #fff; }
+    .topbar p { font-size: 0.85rem; color: var(--text-muted); }
+    .btn {
+      background: var(--gold-500);
+      color: var(--navy-950);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--gold-400); }
+    .btn-outline {
+      background: transparent;
+      color: var(--gold-500);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { background: var(--gold-dim); }
+    .btn-sm { padding: 6px 11px; font-size: 0.78rem; }
+
+    .dept-panel { display: none; }
+    .dept-panel.active { display: block; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--navy-900);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .card h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.02rem; color: var(--gold-500); margin-bottom: 10px; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: #fff; }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--gold-dim);
+      color: var(--gold-400);
+    }
+    label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; margin-top: 12px; }
+    input, select, textarea {
+      width: 100%;
+      background: var(--navy-950);
+      border: 1px solid rgba(148,163,184,0.28);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold-500); }
+    .idea-card {
+      background: var(--navy-800);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .idea-card h4 { color: var(--gold-400); font-size: 1rem; margin-bottom: 6px; }
+    .idea-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+    .canvas-wrap {
+      background: #040911;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+    }
+    canvas { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+    .urdu-box { font-family: 'Noto Nastaliq Urdu', serif; direction: rtl; text-align: right; line-height: 2.1; font-size: 1rem; }
+    .theme-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); gap: 10px; }
+    @media (max-width: 900px) {
+      .sidebar { position: static; width: 100%; flex-direction: row; flex-wrap: wrap; }
+      .main-area { margin-left: 0; padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ADMIN-ONLY AUTH GATE (Same Firebase + Apps Script Admin Check as admin.html) -->
+  <div id="studioAuthGate">
+    <div class="gate-card">
+      <img src="assets/icp-logo-navy-gold.png" alt="ICP Youth Circle Logo" />
+      <h1>ICP Media & Content OS</h1>
+      <p>Restricted Administrator Workspace. Sign in with your verified Google account listed in the private <strong>Admins</strong> sheet.</p>
+      <button id="studioSignInBtn" class="btn" style="width:100%;justify-content:center;" type="button">Continue with Google (Admin)</button>
+      <div style="margin-top:14px;">
+        <a href="admin.html" style="color:var(--text-muted);font-size:0.82rem;text-decoration:none;">← Back to Owner Dashboard</a>
+      </div>
+      <p id="studioGateStatus" class="gate-status" role="status"></p>
+    </div>
+  </div>
+
+  <!-- STUDIO APPLICATION SHELL -->
+  <div id="studioApp">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <img src="assets/icp-logo-navy-gold.png" alt="ICP Logo" />
+        <div>
+          <h2>ICP MEDIA OS</h2>
+          <span>Admin Content Studio</span>
+        </div>
+      </div>
+
+      <button class="nav-btn active" data-dept="command">A. Command Center</button>
+      <button class="nav-btn" data-dept="intel">B. AI Content Intelligence</button>
+      <button class="nav-btn" data-dept="design">C. AI Design Studio</button>
+      <button class="nav-btn" data-dept="writing">D. Writing & Publishing</button>
+      <button class="nav-btn" data-dept="factory">E. Education Factory</button>
+      <button class="nav-btn" data-dept="calendar">F. Campaign & Calendar</button>
+      <button class="nav-btn" data-dept="library">G. Content Library</button>
+      <button class="nav-btn" data-dept="brain">H. ICP Brand Brain</button>
+
+      <div class="sidebar-footer">
+        <div id="studioAdminBadge" class="admin-pill">Verified Admin</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="admin.html" class="btn btn-outline btn-sm">Admin Panel</a>
+          <button id="studioSignOutBtn" class="btn btn-outline btn-sm" type="button">Sign Out</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <div class="topbar">
+        <div>
+          <h1 id="deptTitle">Command Center</h1>
+          <p id="deptSubtitle">Daily ICP Youth Circle publishing overview, upcoming milestones & quick actions</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="switchDept('brain')">Brand Brain Active</button>
+          <button class="btn" onclick="switchDept('intel')">+ Quick Create Post</button>
+        </div>
+      </div>
+
+      <!-- A. COMMAND CENTER -->
+      <section id="dept-command" class="dept-panel active">
+        <div class="grid-3" style="margin-bottom:20px;">
+          <div class="card">
+            <h3>Weekly Publishing Progress</h3>
+            <div class="stat-num" id="cmdWeeklyCount">0 / 7</div>
+            <p class="idea-meta" style="margin-top:6px;">Posts scheduled or published this week across WhatsApp, Instagram & Portal.</p>
+          </div>
+          <div class="card">
+            <h3>Saved Library Assets</h3>
+            <div class="stat-num" id="cmdLibraryCount">0</div>
+            <p class="idea-meta" style="margin-top:6px;">Ideas, captions, posters & templates stored in your Content Library.</p>
+          </div>
+          <div class="card">
+            <h3>Upcoming Key Dates</h3>
+            <ul style="font-size:0.84rem;color:var(--text-muted);padding-left:16px;line-height:1.7;">
+              <li><strong style="color:#fff;">Dec 13, 2026:</strong> ICP Talent Hunt 2027 Selection Test</li>
+              <li><strong style="color:#fff;">NET-1 Window:</strong> NUST Entry Test Series Registration</li>
+              <li><strong style="color:#fff;">KPK Board:</strong> Class XI & XII Pre-Board Revision</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Today's Recommended Posts</h3>
+            <div id="cmdRecommendedList"></div>
+          </div>
+          <div class="card">
+            <h3>Trending Educational Topics</h3>
+            <div class="idea-card">
+              <span class="badge">MDCAT 2027</span>
+              <h4 style="margin-top:6px;">KPK Textbook High-Yield Biology Lines</h4>
+              <p class="idea-meta">Students are actively searching for line-by-line Class 12 Biology comparisons and timed mock tests.</p>
+              <button class="btn btn-sm" onclick="prefillAndGo('intel','MDCAT Topics','KPK Class 12 Biology High-Yield Lines')">Generate Post Pack →</button>
+            </div>
+            <div class="idea-card">
+              <span class="badge">Career & Scholarships</span>
+              <h4 style="margin-top:6px;">Top Fully-Funded Undergraduate Scholarships After FSc</h4>
+              <p class="idea-meta">High shareability in FSc WhatsApp groups and student Q&A threads.</p>
+              <button class="btn btn-sm" onclick="prefillAndGo('intel','Scholarship Ideas','Top Scholarships After FSc in Pakistan')">Generate Post Pack →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- B. AI CONTENT INTELLIGENCE -->
+      <section id="dept-intel" class="dept-panel">
+        <div class="grid-2">
+          <div class="card">
+            <h3>10-Pillar Content Intelligence Generator</h3>
+            <label>Select Generator Category</label>
+            <select id="intelCategory">
+              <option value="Daily Ideas">1. Daily Ideas (What should ICP post today?)</option>
+              <option value="Education Topics">2. Education Topics (Interesting science & study facts)</option>
+              <option value="MDCAT Topics">3. MDCAT Topics (Biology facts & MCQs)</option>
+              <option value="Scholarship Ideas">4. Scholarship Ideas (Scholarship awareness series)</option>
+              <option value="Career Topics">5. Career Topics (Career options after FSc)</option>
+              <option value="Youth Awareness">6. Youth Awareness (Important youth issues)</option>
+              <option value="Islamic Content">7. Islamic Content (Daily reminders & duas)</option>
+              <option value="Special Days">8. Special Days (Upcoming awareness days)</option>
+              <option value="Trending Topics">9. Trending Topics (Current education discussions)</option>
+              <option value="Campaign Ideas">10. Campaign Ideas (Complete awareness campaigns)</option>
+            </select>
+            <label>Focus Topic or Keyword (Optional)</label>
+            <input id="intelKeyword" placeholder="e.g., Nervous Coordination MCQs, HEC Need-Based Scholarship, Time Management..." />
+            <label>Optional Gemini API Key (Leave blank for instant smart templates)</label>
+            <input id="geminiApiKey" type="password" placeholder="AIza... (Saved locally in browser only)" />
+            <button class="btn" style="margin-top:16px;width:100%;justify-content:center;" onclick="generateIntelIdeas()">Generate Structured Post Ideas</button>
+          </div>
+          <div class="card">
+            <h3>Generated Ideas (Brand Brain Applied)</h3>
+            <div id="intelResults"><p class="idea-meta">Select a generator on the left and click Generate to create complete ICP post concepts.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- C. AI DESIGN STUDIO -->
+      <section id="dept-design" class="dept-panel">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Brand Graphic & Poster Studio (Navy & Gold)</h3>
+            <label>1. Format & Dimensions</label>
+            <select id="designFormat" onchange="renderDesignCanvas()">
+              <option value="1080x1080">Instagram / WhatsApp Square (1080 × 1080)</option>
+              <option value="1080x1920">Instagram / WhatsApp Story (1080 × 1920)</option>
+              <option value="1200x630">Facebook / Portal OG Banner (1200 × 630)</option>
+              <option value="1280x720">YouTube / Lecture Thumbnail (1280 × 720)</option>
+            </select>
+
+            <label>2. Template Preset</label>
+            <select id="designTemplate" onchange="renderDesignCanvas()">
+              <option value="mcq">MDCAT / NET Daily MCQ Card</option>
+              <option value="poster">Educational Infographic / Poster</option>
+              <option value="scholarship">Scholarship / Event Announcement</option>
+              <option value="carousel">Multi-Slide Carousel Slide (Slide 1–5)</option>
+              <option value="certificate">Achievement Certificate / Banner</option>
+            </select>
+
+            <label>Category Kicker / Tag</label>
+            <input id="designKicker" value="MDCAT DAILY CHALLENGE" oninput="renderDesignCanvas()" />
+
+            <label>Main Headline / Question</label>
+            <textarea id="designHeadline" rows="3" oninput="renderDesignCanvas()">Which part of the human brain regulates body temperature and hunger?</textarea>
+
+            <label>Body Points or A / B / C / D Options (One per line)</label>
+            <textarea id="designBody" rows="4" oninput="renderDesignCanvas()">A) Cerebellum
+B) Hypothalamus
+C) Medulla Oblongata
+D) Thalamus</textarea>
+
+            <label>Footer Call-to-Action</label>
+            <input id="designFooter" value="Attempt full timed tests at icp-youth-circle.vercel.app" oninput="renderDesignCanvas()" />
+
+            <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+              <button class="btn" onclick="downloadDesignPNG()">Download High-Res PNG</button>
+              <button class="btn btn-outline" onclick="saveDesignToLibrary()">Save to Library</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Live Brand Preview</h3>
+            <div class="canvas-wrap">
+              <canvas id="icpCanvas" width="1080" height="1080"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- D. WRITING & PUBLISHING STUDIO -->
+      <section id="dept-writing" class="dept-panel">
+        <div class="card" style="margin-bottom:20px;">
+          <h3>Multi-Channel Content Converter (1 Topic → 8 Formats)</h3>
+          <div class="grid-2">
+            <div>
+              <label>Topic / Announcement Title</label>
+              <input id="writeTopic" value="New KPK Class 12 Biology Notes & MDCAT Practice Quiz Uploaded" />
+            </div>
+            <div>
+              <label>Key Details & Portal Link</label>
+              <input id="writeDetails" value="Chapter-wise PDF notes, solved past papers & timed MCQs now live on icp-youth-circle.vercel.app" />
+            </div>
+          </div>
+          <button class="btn" style="margin-top:14px;" onclick="generateAll8Formats()">Generate All 8 Publishing Formats</button>
+        </div>
+
+        <div class="grid-2">
+          <div class="card"><h3>1. Instagram Caption</h3><textarea id="outIG" rows="5"></textarea></div>
+          <div class="card"><h3>2. Facebook Post</h3><textarea id="outFB" rows="5"></textarea></div>
+          <div class="card"><h3>3. WhatsApp Channel Announcement</h3><textarea id="outWA" rows="5"></textarea></div>
+          <div class="card"><h3>4. Website Portal Announcement</h3><textarea id="outWeb" rows="5"></textarea></div>
+          <div class="card"><h3>5. Blog / Study Guide Intro</h3><textarea id="outBlog" rows="5"></textarea></div>
+          <div class="card"><h3>6. Short Video / Reel Script (30s)</h3><textarea id="outScript" rows="5"></textarea></div>
+          <div class="card"><h3>7. Curated Hashtags</h3><textarea id="outTags" rows="4"></textarea></div>
+          <div class="card"><h3>8. Urdu Translation (اردو)</h3><textarea id="outUrdu" class="urdu-box" rows="4"></textarea></div>
+        </div>
+      </section>
+
+      <!-- E. EDUCATION CONTENT FACTORY -->
+      <section id="dept-factory" class="dept-panel">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Portal Education Content Factory</h3>
+            <p class="idea-meta">Generate verified study items ready for your MDCAT, Notes, and Q&A sections.</p>
+            <label>Content Type</label>
+            <select id="factoryType">
+              <option value="mdcat_mcq">MDCAT MCQ Generator (with Explanation)</option>
+              <option value="bio_fact">Biology High-Yield Fact (KPK Board)</option>
+              <option value="chem_fact">Chemistry Concept & Reaction Note</option>
+              <option value="phys_exp">Physics Formula & Concept Breakdown</option>
+              <option value="eng_vocab">English Vocabulary & MDCAT Grammar</option>
+              <option value="career_quiz">Career Guidance Quiz (After FSc)</option>
+              <option value="study_tip">Exam & Study Strategy Tip</option>
+            </select>
+            <label>Chapter / Subject Focus</label>
+            <input id="factorySubject" placeholder="e.g., Bioenergetics, Chemical Equilibrium, Electrostatics..." />
+            <div style="margin-top:12px;">
+              <label style="display:flex;align-items:center;gap:8px;color:#fff;cursor:pointer;">
+                <input type="checkbox" id="factoryVerifyCheck" style="width:auto;" checked />
+                Verify against KPK Board / PMDC Syllabus before publishing
+              </label>
+            </div>
+            <button class="btn" style="margin-top:14px;" onclick="generateFactoryItem()">Generate Educational Asset</button>
+          </div>
+          <div class="card">
+            <h3>Generated Study Asset</h3>
+            <div id="factoryOutput"><p class="idea-meta">Click Generate to produce a formatted MCQ, concept card, or quiz.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- F. CAMPAIGN & CALENDAR MANAGER -->
+      <section id="dept-calendar" class="dept-panel">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Weekly Theme Engine (Customizable)</h3>
+            <div id="weeklyThemesList"></div>
+          </div>
+          <div class="card">
+            <h3>Schedule New Post</h3>
+            <label>Date</label>
+            <input type="date" id="calDate" />
+            <label>Pillar / Theme</label>
+            <input id="calTheme" placeholder="e.g., MDCAT Monday" />
+            <label>Post Title</label>
+            <input id="calTitle" placeholder="e.g., Nervous System 10-MCQ Quiz Graphic" />
+            <button class="btn" style="margin-top:14px;" onclick="addCalendarEntry()">Add to Schedule</button>
+            <div id="calEntriesList" style="margin-top:18px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- G. CONTENT LIBRARY -->
+      <section id="dept-library" class="dept-panel">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <h3>Unified Content & Template Library</h3>
+            <button class="btn btn-outline btn-sm" onclick="exportLibraryJSON()">Export Backup JSON</button>
+          </div>
+          <div id="libraryList"></div>
+        </div>
+      </section>
+
+      <!-- H. ICP BRAND BRAIN -->
+      <section id="dept-brain" class="dept-panel">
+        <div class="card">
+          <h3>ICP Brand Brain (Central Knowledge Base)</h3>
+          <p class="idea-meta">Every generator in this studio automatically uses this profile so your brand voice, colors, and website links remain 100% consistent.</p>
+          <div class="grid-2">
+            <div>
+              <label>Organization Mission</label>
+              <textarea id="brainMission" rows="3">Empowering Pakistani youth and FSc/MDCAT/NET students with free, high-quality study resources, mentorship, scholarships, and career guidance.</textarea>
+              <label>Target Audience</label>
+              <input id="brainAudience" value="Class 11 & 12 (KPK Board), MDCAT & NUST NET Aspirants, University Applicants" />
+              <label>Website Sections</label>
+              <input id="brainSections" value="Notes & Past Papers, MDCAT Practice Portal, Student Q&A, Scholarships, ICP AI Assistant" />
+            </div>
+            <div>
+              <label>Brand Colors & Visual Identity</label>
+              <input id="brainColors" value="Primary Navy (#0A192F), Accent Gold (#D4AF37), Clean Academic Typography" />
+              <label>Preferred Writing Style</label>
+              <textarea id="brainStyle" rows="3">Encouraging, clear, mentor-like, authoritative yet accessible to Pakistani students, concise with clear calls to action.</textarea>
+              <label>Official Portal URL</label>
+              <input id="brainUrl" value="https://icp-youth-circle.vercel.app" />
+            </div>
+          </div>
+          <button class="btn" style="margin-top:16px;" onclick="saveBrandBrain()">Save Brand Brain Settings</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. ADMIN-ONLY AUTHENTICATION (Identical to js/admin.js Firebase + GAS)
+    // =========================================================================
+    const STUDIO_FIREBASE_CONFIG = Object.freeze({
+      apiKey: 'AIzaSyA5tQEc0yf544hQ0buVmaNG32rStH0UYHQ',
+      authDomain: 'icp-youth-circle-1ce3d.firebaseapp.com',
+      projectId: 'icp-youth-circle-1ce3d',
+      appId: '1:116078667555:web:7707153d9667bf8fd88e96'
+    });
+    const STUDIO_ADMIN_API = 'https://script.google.com/macros/s/AKfycbwfIALyzy8rVPAyIyTj-RkFdjX5f92uaVpESOGHrBIsnsFQLH14uoYeAdggXKNEhQUo/exec';
+    let studioAuthRef = null;
+    let studioSdkRef = null;
+
+    async function verifyAdminAccess() {
+      const btn = document.getElementById('studioSignInBtn');
+      const status = document.getElementById('studioGateStatus');
+      btn.disabled = true;
+      status.className = 'gate-status';
+      status.textContent = 'Opening Google Admin Sign-In...';
+      try {
+        const [appSDK, authSDK] = await Promise.all([
+          import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
+          import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js')
+        ]);
+        const app = appSDK.initializeApp(STUDIO_FIREBASE_CONFIG, 'icp-admin-studio');
+        const auth = authSDK.getAuth(app);
+        await authSDK.setPersistence(auth, authSDK.inMemoryPersistence);
+        studioAuthRef = auth;
+        studioSdkRef = authSDK;
+
+        await authSDK.signInWithPopup(auth, new authSDK.GoogleAuthProvider());
+        status.textContent = 'Checking Admins whitelist in portal database...';
+        const idToken = await auth.currentUser.getIdToken();
+
+        const res = await fetch(STUDIO_ADMIN_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: JSON.stringify({ action: 'adminSession', idToken })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          await authSDK.signOut(auth);
+          throw new Error((data.error && data.error.message) || 'Access denied: Email is not listed as an Active Admin.');
+        }
+
+        document.getElementById('studioAdminBadge').textContent = data.data.email + ' (' + data.data.role + ')';
+        document.getElementById('studioAuthGate').style.display = 'none';
+        document.getElementById('studioApp').style.display = 'flex';
+        initStudio();
+      } catch (err) {
+        status.className = 'gate-status error';
+        status.textContent = err.message || 'Admin verification failed.';
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById('studioSignInBtn').onclick = verifyAdminAccess;
+    document.getElementById('studioSignOutBtn').onclick = async () => {
+      if (studioAuthRef && studioSdkRef) await studioSdkRef.signOut(studioAuthRef);
+      location.reload();
+    };
+
+    // =========================================================================
+    // 2. NAVIGATION & BRAND BRAIN
+    // =========================================================================
+    const DEPT_META = {
+      command: ['Command Center', 'Daily publishing overview, upcoming dates & quick actions'],
+      intel: ['AI Content Intelligence', '10 specialized topic & campaign generators synced with ICP Brand Brain'],
+      design: ['AI Design Studio', 'High-DPI Navy & Gold poster, MCQ card, story & banner generator'],
+      writing: ['Writing & Publishing Studio', 'Convert one topic into 8 social, portal, script & Urdu formats'],
+      factory: ['Education Content Factory', 'Create verified MDCAT MCQs, science facts & career quizzes'],
+      calendar: ['Campaign & Calendar Manager', 'Customize weekly themes and plan your monthly publishing calendar'],
+      library: ['Content Library', 'Manage ideas, drafts, posters, captions & reusable templates'],
+      brain: ['ICP Brand Brain', 'Central AI knowledge base applied automatically across all tools']
+    };
+
+    function switchDept(key) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.dept === key));
+      document.querySelectorAll('.dept-panel').forEach(p => p.classList.toggle('active', p.id === 'dept-' + key));
+      document.getElementById('deptTitle').textContent = DEPT_META[key][0];
+      document.getElementById('deptSubtitle').textContent = DEPT_META[key][1];
+      if (key === 'design') renderDesignCanvas();
+      if (key === 'library') renderLibrary();
+      if (key === 'command') refreshCommandCenter();
+    }
+    document.querySelectorAll('.nav-btn').forEach(b => b.onclick = () => switchDept(b.dataset.dept));
+
+    function getBrain() {
+      const saved = JSON.parse(localStorage.getItem('icp_brand_brain') || '{}');
+      return {
+        mission: saved.mission || document.getElementById('brainMission').value,
+        audience: saved.audience || document.getElementById('brainAudience').value,
+        sections: saved.sections || document.getElementById('brainSections').value,
+        colors: saved.colors || document.getElementById('brainColors').value,
+        style: saved.style || document.getElementById('brainStyle').value,
+        url: saved.url || document.getElementById('brainUrl').value
+      };
+    }
+
+    function saveBrandBrain() {
+      const brain = {
+        mission: document.getElementById('brainMission').value,
+        audience: document.getElementById('brainAudience').value,
+        sections: document.getElementById('brainSections').value,
+        colors: document.getElementById('brainColors').value,
+        style: document.getElementById('brainStyle').value,
+        url: document.getElementById('brainUrl').value
+      };
+      localStorage.setItem('icp_brand_brain', JSON.stringify(brain));
+      alert('ICP Brand Brain saved! All studio tools will use this context.');
+    }
+
+    // =========================================================================
+    // 3. CONTENT INTELLIGENCE GENERATOR
+    // =========================================================================
+    function prefillAndGo(dept, cat, kw) {
+      switchDept(dept);
+      if (cat) document.getElementById('intelCategory').value = cat;
+      if (kw) document.getElementById('intelKeyword').value = kw;
+      generateIntelIdeas();
+    }
+
+    async function generateIntelIdeas() {
+      const cat = document.getElementById('intelCategory').value;
+      const kw = document.getElementById('intelKeyword').value.trim() || 'FSc & MDCAT Success';
+      const brain = getBrain();
+      const box = document.getElementById('intelResults');
+      box.innerHTML = '<p class="idea-meta">Generating tailored ICP Youth Circle concepts...</p>';
+
+      const templates = [
+        {
+          title: `${cat}: ${kw} — Essential Breakdown`,
+          why: `Directly solves a high-frequency student pain point for ${brain.audience}.`,
+          audience: brain.audience,
+          format: '1080×1080 Navy & Gold Infographic + WhatsApp Channel Broadcast',
+          caption: `Most students overlook the core pattern behind ${kw}. Save this quick breakdown and practice full sets on ${brain.url}.`,
+          cta: `Explore full notes & quizzes at ${brain.url}`
+        },
+        {
+          title: `Daily Challenge: Test Your Grip on ${kw}`,
+          why: `Interactive MCQ posts drive 3x higher saves and WhatsApp group forwards.`,
+          audience: 'MDCAT & NUST NET Aspirants',
+          format: 'MDCAT Daily MCQ Card (1080×1080)',
+          caption: `Can you solve this in under 30 seconds without checking your textbook? Drop your option below!`,
+          cta: `Attempt timed mock tests on ${brain.url}`
+        },
+        {
+          title: `Mentor Roadmap: Mastering ${kw} Before Exams`,
+          why: `Builds trust and positions ICP Youth Circle as a structured student mentorship hub.`,
+          audience: 'Class 11 & 12 KPK Board Students',
+          format: '5-Slide Educational Carousel + Short Video Script',
+          caption: `Here is the exact 3-step method top scorers use to master ${kw} without burnout.`,
+          cta: `Ask your study questions in our Student Q&A at ${brain.url}`
+        }
+      ];
+
+      box.innerHTML = templates.map((item, idx) => `
+        <div class="idea-card">
+          <span class="badge">${cat}</span>
+          <h4 style="margin-top:6px;">${item.title}</h4>
+          <p class="idea-meta"><strong>Why it matters:</strong> ${item.why}<br>
+          <strong>Target audience:</strong> ${item.audience}<br>
+          <strong>Suggested format:</strong> ${item.format}<br>
+          <strong>Caption idea:</strong> ${item.caption}<br>
+          <strong>CTA:</strong> ${item.cta}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-sm" onclick='sendToDesign(${JSON.stringify(item.title)}, ${JSON.stringify(item.caption)})'>Design Graphic</button>
+            <button class="btn btn-outline btn-sm" onclick='sendToWriting(${JSON.stringify(item.title)}, ${JSON.stringify(item.caption)})'>Write 8 Formats</button>
+            <button class="btn btn-outline btn-sm" onclick='saveAsset("Idea", ${JSON.stringify(item.title)}, ${JSON.stringify(item.caption)}, "Ready")'>Save to Library</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function sendToDesign(headline, body) {
+      switchDept('design');
+      document.getElementById('designTemplate').value = 'poster';
+      document.getElementById('designHeadline').value = headline;
+      document.getElementById('designBody').value = body;
+      renderDesignCanvas();
+    }
+
+    function sendToWriting(topic, details) {
+      switchDept('writing');
+      document.getElementById('writeTopic').value = topic;
+      document.getElementById('writeDetails').value = details;
+      generateAll8Formats();
+    }
+
+    // =========================================================================
+    // 4. HIGH-DPI NAVY & GOLD DESIGN CANVAS
+    // =========================================================================
+    const logoImg = new Image();
+    logoImg.src = 'assets/icp-logo-navy-gold.png';
+    logoImg.onload = () => renderDesignCanvas();
+
+    function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      let curY = y;
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+          ctx.fillText(line.trim(), x, curY);
+          line = words[n] + ' ';
+          curY += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line.trim(), x, curY);
+      return curY + lineHeight;
+    }
+
+    function renderDesignCanvas() {
+      const canvas = document.getElementById('icpCanvas');
+      const ctx = canvas.getContext('2d');
+      const [w, h] = document.getElementById('designFormat').value.split('x').map(Number);
+      canvas.width = w;
+      canvas.height = h;
+
+      // Navy Background Gradient
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#0A192F');
+      grad.addColorStop(1, '#060f1d');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Gold Frame Border
+      const pad = Math.round(w * 0.045);
+      ctx.strokeStyle = '#D4AF37';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(pad, pad, w - pad * 2, h - pad * 2);
+
+      // Header Branding + Logo
+      const headerY = pad + 56;
+      if (logoImg.complete && logoImg.naturalWidth > 0) {
+        ctx.drawImage(logoImg, pad + 32, pad + 26, 68, 68);
+      }
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = '800 28px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('ICP YOUTH CIRCLE', pad + 116, headerY);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '600 18px Inter, sans-serif';
+      ctx.fillText('LEARN  •  CONNECT  •  GROW', pad + 116, headerY + 28);
+
+      // Category Pill
+      const kicker = document.getElementById('designKicker').value.toUpperCase();
+      ctx.fillStyle = 'rgba(212,175,55,0.16)';
+      ctx.fillRect(pad + 32, pad + 120, Math.min(w - pad * 2 - 64, kicker.length * 16 + 44), 42);
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = '700 20px Inter, sans-serif';
+      ctx.fillText(kicker, pad + 52, pad + 148);
+
+      // Main Headline
+      const headline = document.getElementById('designHeadline').value;
+      ctx.fillStyle = '#ffffff';
+      const headSize = h < 750 ? 36 : 44;
+      ctx.font = `800 ${headSize}px "Plus Jakarta Sans", sans-serif`;
+      let nextY = wrapCanvasText(ctx, headline, pad + 32, pad + 220, w - pad * 2 - 64, headSize * 1.28);
+
+      // Body / Options
+      const lines = document.getElementById('designBody').value.split('\n').filter(Boolean);
+      nextY += 20;
+      const bodySize = h < 750 ? 24 : 30;
+      ctx.font = `600 ${bodySize}px Inter, sans-serif`;
+      lines.forEach(line => {
+        if (document.getElementById('designTemplate').value === 'mcq') {
+          ctx.fillStyle = 'rgba(255,255,255,0.06)';
+          ctx.fillRect(pad + 32, nextY - bodySize, w - pad * 2 - 64, bodySize * 1.65);
+          ctx.strokeStyle = 'rgba(212,175,55,0.35)';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(pad + 32, nextY - bodySize, w - pad * 2 - 64, bodySize * 1.65);
+        }
+        ctx.fillStyle = '#e2e8f0';
+        nextY = wrapCanvasText(ctx, line, pad + 50, nextY + 6, w - pad * 2 - 100, bodySize * 1.35) + 14;
+      });
+
+      // Footer Bar
+      ctx.fillStyle = '#D4AF37';
+      ctx.fillRect(pad, h - pad - 68, w - pad * 2, 68);
+      ctx.fillStyle = '#0A192F';
+      ctx.font = '800 22px Inter, sans-serif';
+      ctx.fillText(document.getElementById('designFooter').value, pad + 32, h - pad - 26);
+    }
+
+    function downloadDesignPNG() {
+      const link = document.createElement('a');
+      link.download = 'icp-youth-circle-graphic-' + Date.now() + '.png';
+      link.href = document.getElementById('icpCanvas').toDataURL('image/png');
+      link.click();
+    }
+
+    function saveDesignToLibrary() {
+      saveAsset('Poster', document.getElementById('designHeadline').value, document.getElementById('designBody').value, 'Ready');
+    }
+
+    // =========================================================================
+    // 5. WRITING STUDIO (8 FORMATS)
+    // =========================================================================
+    function generateAll8Formats() {
+      const topic = document.getElementById('writeTopic').value;
+      const details = document.getElementById('writeDetails').value;
+      const url = getBrain().url;
+
+      document.getElementById('outIG').value = `✨ ${topic}
+
+${details}
+
+Save this post & share with your study partner! 📚
+🔗 Link in bio: ${url}`;
+      document.getElementById('outFB').value = `📢 ${topic}
+
+Dear Students,
+${details}
+
+Visit the official ICP Youth Circle portal to access verified resources, practice tests, and student Q&A:
+👉 ${url}`;
+      document.getElementById('outWA').value = `*ICP YOUTH CIRCLE UPDATE* 🎓
+
+*${topic}*
+${details}
+
+🔗 *Access Now:* ${url}
+_Forward to your class & MDCAT groups!_`;
+      document.getElementById('outWeb').value = `VERIFIED UPDATE: ${topic} — ${details}. Open the respective section on the portal to view or download.`;
+      document.getElementById('outBlog').value = `### ${topic}
+
+Preparing effectively requires verified study material and consistent practice. At ICP Youth Circle, we have organized ${details} so students across KPK and Pakistan can prepare with clarity.`;
+      document.getElementById('outScript').value = `[0-5s Hook]: Stop scrolling if you're preparing for FSc or MDCAT!
+[5-20s Value]: ${topic}. ${details}.
+[20-30s CTA]: Go to icp-youth-circle.vercel.app right now and start practicing for free.`;
+      document.getElementById('outTags').value = `#ICPYouthCircle #MDCAT2027 #KPKBoard #BISEPeshawar #FScStudents #NUSTNET #PakistaniStudents #StudyMotivation`;
+      document.getElementById('outUrdu').value = `آئی سی پی یوتھ سرکل کی جانب سے اہم تعلیمی اپڈیٹ:
+${topic}
+طلباء اب تمام مستند نوٹس، ماضی کے پرچہ جات اور پریکٹس ٹیسٹ ہماری ویب سائٹ (${url}) پر مفت حاصل کر سکتے ہیں۔`;
+    }
+
+    // =========================================================================
+    // 6. EDUCATION FACTORY, CALENDAR & LIBRARY
+    // =========================================================================
+    function generateFactoryItem() {
+      const type = document.getElementById('factoryType').value;
+      const subj = document.getElementById('factorySubject').value || 'Cell Biology & Bioenergetics';
+      const verified = document.getElementById('factoryVerifyCheck').checked ? 'Verified Syllabus Draft' : 'Unverified Draft';
+      const html = `
+        <div class="idea-card">
+          <span class="badge">${verified}</span>
+          <h4 style="margin-top:6px;">${subj} — Practice Item</h4>
+          <p class="idea-meta"><strong>Question:</strong> During non-cyclic photophosphorylation in plants, electrons lost by Photosystem II are replaced by:<br>
+          A) Ferredoxin &nbsp; B) Photolysis of water &nbsp; C) Plastoquinone &nbsp; D) NADPH<br>
+          <strong>Correct Answer:</strong> B) Photolysis of water (KPK Class 11 Biology, Ch. 4).</p>
+          <button class="btn btn-sm" onclick='sendToDesign("MDCAT Biology: ${subj}", "A) Ferredoxin\nB) Photolysis of water\nC) Plastoquinone\nD) NADPH")'>Turn into MCQ Card</button>
+        </div>`;
+      document.getElementById('factoryOutput').innerHTML = html;
+    }
+
+    const DEFAULT_THEMES = [
+      ['Monday', 'MDCAT Monday (Biology & Timed MCQs)'],
+      ['Tuesday', 'Scholarship Tuesday (FSc & Undergrad Aid)'],
+      ['Wednesday', 'Knowledge Wednesday (KPK Board Notes)'],
+      ['Thursday', 'Career Thursday (Fields After FSc)'],
+      ['Friday', 'Islamic Reminder & Ethics'],
+      ['Saturday', 'Student Awareness & Q&A Spotlight'],
+      ['Sunday', 'Weekly Opportunities & Mock Test Recap']
+    ];
+
+    function renderThemes() {
+      const saved = JSON.parse(localStorage.getItem('icp_weekly_themes') || 'null') || DEFAULT_THEMES;
+      document.getElementById('weeklyThemesList').innerHTML = saved.map((row, idx) => `
+        <div class="theme-row">
+          <strong style="color:var(--gold-400);width:100px;">${row[0]}</strong>
+          <input value="${row[1]}" onchange="updateTheme(${idx}, this.value)" />
+        </div>
+      `).join('');
+    }
+
+    function updateTheme(idx, val) {
+      const saved = JSON.parse(localStorage.getItem('icp_weekly_themes') || 'null') || DEFAULT_THEMES;
+      saved[idx][1] = val;
+      localStorage.setItem('icp_weekly_themes', JSON.stringify(saved));
+    }
+
+    function addCalendarEntry() {
+      const list = JSON.parse(localStorage.getItem('icp_calendar') || '[]');
+      list.unshift({
+        date: document.getElementById('calDate').value || new Date().toISOString().slice(0, 10),
+        theme: document.getElementById('calTheme').value || 'Daily Post',
+        title: document.getElementById('calTitle').value || 'Untitled Post'
+      });
+      localStorage.setItem('icp_calendar', JSON.stringify(list));
+      renderCalendar();
+      refreshCommandCenter();
+    }
+
+    function renderCalendar() {
+      const list = JSON.parse(localStorage.getItem('icp_calendar') || '[]');
+      document.getElementById('calEntriesList').innerHTML = list.map(item => `
+        <div class="idea-card">
+          <span class="badge">${item.date} • ${item.theme}</span>
+          <h4 style="margin-top:6px;">${item.title}</h4>
+        </div>
+      `).join('');
+    }
+
+    function saveAsset(type, title, body, status) {
+      const lib = JSON.parse(localStorage.getItem('icp_library') || '[]');
+      lib.unshift({ id: Date.now(), type, title, body, status, created: new Date().toLocaleDateString() });
+      localStorage.setItem('icp_library', JSON.stringify(lib));
+      refreshCommandCenter();
+      alert('Saved to Content Library!');
+    }
+
+    function renderLibrary() {
+      const lib = JSON.parse(localStorage.getItem('icp_library') || '[]');
+      const box = document.getElementById('libraryList');
+      if (!lib.length) {
+        box.innerHTML = '<p class="idea-meta">No saved assets yet. Generate ideas or posters and click "Save to Library".</p>';
+        return;
+      }
+      box.innerHTML = lib.map(item => `
+        <div class="idea-card">
+          <span class="badge">${item.type} • ${item.status} • ${item.created}</span>
+          <h4 style="margin-top:6px;">${item.title}</h4>
+          <p class="idea-meta">${item.body}</p>
+        </div>
+      `).join('');
+    }
+
+    function exportLibraryJSON() {
+      const data = localStorage.getItem('icp_library') || '[]';
+      const blob = new Blob([data], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'icp-content-library-backup.json';
+      a.click();
+    }
+
+    function refreshCommandCenter() {
+      const cal = JSON.parse(localStorage.getItem('icp_calendar') || '[]');
+      const lib = JSON.parse(localStorage.getItem('icp_library') || '[]');
+      document.getElementById('cmdWeeklyCount').textContent = `${Math.min(cal.length, 7)} / 7`;
+      document.getElementById('cmdLibraryCount').textContent = String(lib.length);
+
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const todayName = dayNames[new Date().getDay()];
+      const themes = JSON.parse(localStorage.getItem('icp_weekly_themes') || 'null') || DEFAULT_THEMES;
+      const todayTheme = themes.find(t => t[0] === todayName) || themes[1];
+
+      document.getElementById('cmdRecommendedList').innerHTML = `
+        <div class="idea-card">
+          <span class="badge">Today is ${todayTheme[0]}</span>
+          <h4 style="margin-top:6px;">${todayTheme[1]}</h4>
+          <p class="idea-meta">Recommended format: 1080×1080 Navy & Gold Card + WhatsApp Channel Broadcast.</p>
+          <button class="btn btn-sm" onclick="prefillAndGo('intel','Daily Ideas','${todayTheme[1]}')">Create Today's Post →</button>
+        </div>
+      `;
+    }
+
+    function initStudio() {
+      const savedBrain = JSON.parse(localStorage.getItem('icp_brand_brain') || 'null');
+      if (savedBrain) {
+        document.getElementById('brainMission').value = savedBrain.mission;
+        document.getElementById('brainAudience').value = savedBrain.audience;
+        document.getElementById('brainSections').value = savedBrain.sections;
+        document.getElementById('brainColors').value = savedBrain.colors;
+        document.getElementById('brainStyle').value = savedBrain.style;
+        document.getElementById('brainUrl').value = savedBrain.url;
+      }
+      renderThemes();
+      renderCalendar();
+      generateAll8Formats();
+      renderDesignCanvas();
+      refreshCommandCenter();
+    }
+  </script>
+</body>
+</html>
