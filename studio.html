@@ -1,866 +1,769 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex,nofollow" />
   <meta name="referrer" content="no-referrer" />
-  <title>ICP Studio Pro | All-in-One Website & Media Command Center</title>
+  <title>ICP Creative Studio | AI Media & Portal Command Center</title>
   <link rel="icon" href="assets/icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #060f1d;
-      --surface: #0b192e;
-      --surface-2: #112442;
-      --gold: #D4AF37;
-      --gold-bright: #e8c758;
-      --gold-soft: rgba(212, 175, 55, 0.14);
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --border: rgba(212, 175, 55, 0.22);
-      --green: #10b981;
-      --red: #f87171;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-    /* Auth Gate */
-    #authGate {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
-      background: radial-gradient(circle at top, #112442 0%, #060f1d 70%);
-    }
-    .gate-card {
-      width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 18px; padding: 34px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.55);
-    }
-    .gate-card img { width: 68px; height: 68px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 14px; }
-    .gate-card h1 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--gold); font-size: 1.4rem; margin-bottom: 8px; }
-    .gate-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.55; margin-bottom: 22px; }
-    #gateStatus { margin-top: 14px; font-size: 0.85rem; color: var(--gold); min-height: 20px; }
-    #gateStatus.err { color: var(--red); }
-
-    /* App Shell */
-    #app { display: none; min-height: 100vh; }
-    .topbar {
-      position: sticky; top: 0; z-index: 30;
-      background: rgba(11, 25, 46, 0.94); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border); padding: 14px 24px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;
-    }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand img { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--gold); }
-    .brand h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; color: var(--gold); }
-    .brand span { font-size: 0.76rem; color: var(--muted); display: block; }
-
-    .nav-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-    .tab-btn {
-      background: transparent; color: var(--muted); border: 1px solid transparent;
-      padding: 9px 14px; border-radius: 9px; font-weight: 700; font-size: 0.84rem; cursor: pointer; transition: 0.15s;
-    }
-    .tab-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
-    .tab-btn.active { background: var(--gold); color: #060f1d; }
-
-    .container { max-width: 1320px; margin: 0 auto; padding: 24px; }
-    .panel { display: none; }
-    .panel.active { display: block; }
-
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 20px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
-    .card h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; color: #fff; margin-bottom: 10px; }
-    .card h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.96rem; color: var(--gold); margin-bottom: 8px; }
-    .stat-num { font-size: 2rem; font-weight: 800; color: #fff; margin: 4px 0; }
-    .muted { color: var(--muted); font-size: 0.84rem; line-height: 1.5; }
-    .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; background: var(--gold-soft); color: var(--gold); }
-    .badge-green { background: rgba(16,185,129,0.16); color: #34d399; }
-
-    .preset-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin: 12px 0 16px; }
-    .preset-btn {
-      background: var(--surface-2); border: 2px solid transparent; border-radius: 12px; padding: 13px;
-      text-align: left; color: #fff; cursor: pointer; transition: 0.15s;
-    }
-    .preset-btn:hover { border-color: rgba(212,175,55,0.45); }
-    .preset-btn.selected { border-color: var(--gold); background: var(--gold-soft); }
-    .preset-btn strong { display: block; color: var(--gold); font-size: 0.9rem; margin-bottom: 3px; }
-    .preset-btn span { font-size: 0.76rem; color: var(--muted); }
-
-    label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin: 12px 0 5px; }
-    input, select, textarea {
-      width: 100%; background: var(--bg); border: 1px solid rgba(148,163,184,0.28);
-      color: #fff; padding: 10px 12px; border-radius: 9px; font-family: inherit; font-size: 0.9rem;
-    }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
-
-    .btn {
-      background: var(--gold); color: #060f1d; border: none; padding: 10px 16px; border-radius: 9px;
-      font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
-    }
-    .btn:hover { background: var(--gold-bright); }
-    .btn:disabled { opacity: 0.55; cursor: wait; }
-    .btn-green { background: var(--green); color: #042f2e; }
-    .btn-green:hover { background: #34d399; }
-    .btn-outline { background: transparent; color: var(--gold); border: 1px solid var(--border); }
-    .btn-outline:hover { background: var(--gold-soft); }
-    .btn-danger { background: rgba(248,113,113,0.16); color: var(--red); border: 1px solid rgba(248,113,113,0.35); }
-    .btn-sm { padding: 6px 11px; font-size: 0.78rem; }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
-
-    .canvas-wrap { background: #030710; border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
-    canvas { max-width: 100%; height: auto; border-radius: 8px; }
-    .urdu { font-family: 'Noto Nastaliq Urdu', serif; direction: rtl; text-align: right; line-height: 2; }
-
-    .msg { margin-top: 12px; padding: 10px 14px; border-radius: 9px; font-size: 0.84rem; display: none; }
-    .msg.ok { display: block; background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.35); }
-    .msg.info { display: block; background: var(--gold-soft); color: var(--gold); border: 1px solid var(--border); }
-    .msg.err { display: block; background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.35); }
-
-    .slide-tabs { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-    .slide-tab { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 0.78rem; font-weight: 700; cursor: pointer; }
-    .slide-tab.active { background: var(--gold); color: #060f1d; }
-
-    .table-wrap { overflow-x: auto; margin-top: 14px; border: 1px solid var(--border); border-radius: 10px; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
-    th { background: var(--surface-2); color: var(--gold); font-weight: 700; }
-    tr:hover td { background: rgba(255,255,255,0.03); }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&family=Playfair+Display:wght@700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/studio.css?v=20261119-cs1" />
 </head>
 <body>
 
-  <!-- ADMIN LOGIN GATE -->
-  <div id="authGate">
-    <div class="gate-card">
-      <img src="assets/icp-logo-navy-gold.png" alt="ICP Logo" />
-      <h1>ICP Studio Pro</h1>
-      <p>All-in-One Website Management, PDF Publishing, Live AI Content & Brand Graphic Studio for verified ICP Administrators.</p>
-      <button id="signInBtn" class="btn" style="width:100%;justify-content:center;" type="button">Continue with Google (Admin)</button>
-      <div style="margin-top:14px;"><a href="admin.html" style="color:var(--muted);font-size:0.84rem;text-decoration:none;">← Open Classic Admin Dashboard</a></div>
-      <p id="gateStatus"></p>
+  <!-- ADMIN-ONLY FIREBASE AUTH GATE -->
+  <div id="authGate" class="auth-gate">
+    <div class="auth-card">
+      <img class="auth-logo" src="assets/icp-logo-navy-gold.png" alt="ICP Youth Circle Logo" />
+      <div class="auth-kicker">Administrator Workspace</div>
+      <h1>ICP Creative Studio</h1>
+      <p>Sign in with your verified Google account listed as <strong>Active</strong> in the private <strong>Admins</strong> sheet.</p>
+      <button id="signInBtn" class="btn" style="width:100%;" type="button">Continue with Google (Admin)</button>
+      <div style="margin-top:16px;display:flex;justify-content:center;gap:16px;">
+        <a href="admin.html" class="muted" style="text-decoration:none;">Classic Admin Panel</a>
+        <a href="index.html" class="muted" style="text-decoration:none;">Public Portal</a>
+      </div>
+      <div id="authStatus" class="auth-status" role="status" aria-live="polite"></div>
     </div>
   </div>
 
-  <!-- MAIN APPLICATION -->
-  <div id="app">
-    <header class="topbar">
-      <div class="brand">
-        <img src="assets/icp-logo-navy-gold.png" alt="ICP Logo" />
+  <!-- MAIN SAAS STUDIO SHELL -->
+  <div id="studioShell" class="studio-shell">
+    <aside id="studioSidebar" class="sidebar" aria-label="Studio navigation">
+      <div class="sidebar-brand">
+        <img id="sidebarBrandLogo" src="assets/icp-logo-navy-gold.png" alt="ICP Logo" />
         <div>
-          <h1>ICP STUDIO PRO</h1>
-          <span id="adminLabel">Verified Administrator</span>
+          <h2 id="sidebarBrandName">ICP Creative Studio</h2>
+          <span>AI Media &amp; Portal OS</span>
         </div>
       </div>
-      <nav class="nav-tabs">
-        <button class="tab-btn active" onclick="openTab('home', this)">1. Overview</button>
-        <button class="tab-btn" onclick="openTab('create', this)">2. AI Post & Publish</button>
-        <button class="tab-btn" onclick="openTab('design', this)">3. Graphic & Carousel</button>
-        <button class="tab-btn" onclick="openTab('pdf', this)">4. Upload PDF</button>
-        <button class="tab-btn" onclick="openTab('manage', this)">5. Portal Manager</button>
-      </nav>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <a href="index.html" target="_blank" class="btn btn-outline btn-sm">View Live Site ↗</a>
-        <button id="signOutBtn" class="btn btn-outline btn-sm" type="button">Sign Out</button>
+
+      <div class="nav-group-label">Command</div>
+      <button class="nav-item active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-view="ai">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        AI Provider Center
+      </button>
+
+      <div class="nav-group-label">Create</div>
+      <button class="nav-item" data-view="ideas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>
+        Ideas Studio
+      </button>
+      <button class="nav-item" data-view="writing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        Writing Studio
+      </button>
+      <button class="nav-item" data-view="design">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Design Studio
+      </button>
+
+      <div class="nav-group-label">Assets &amp; Brand</div>
+      <button class="nav-item" data-view="library">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Creative Library
+      </button>
+      <button class="nav-item" data-view="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Brand Brain
+      </button>
+
+      <div class="nav-group-label">ICP Portal</div>
+      <button class="nav-item" data-view="pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        Upload PDF
+      </button>
+      <button class="nav-item" data-view="portal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        Portal Manager
+      </button>
+
+      <div class="sidebar-footer">
+        <div id="adminProfileChip" class="admin-chip">Verified Admin</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a href="admin.html" class="btn btn-secondary btn-sm" style="flex:1;">Admin Panel</a>
+          <button id="signOutBtn" class="btn btn-outline btn-sm" type="button">Sign Out</button>
+        </div>
       </div>
-    </header>
+    </aside>
 
-    <main class="container">
-
-      <!-- 1. OVERVIEW / COMMAND CENTER -->
-      <section id="tab-home" class="panel active">
-        <div class="grid-4">
-          <div class="card">
-            <h3>Published Updates</h3>
-            <div class="stat-num" id="statUpdates">—</div>
-            <p class="muted">Announcements & Notices</p>
-          </div>
-          <div class="card">
-            <h3>Opportunities</h3>
-            <div class="stat-num" id="statOpps">—</div>
-            <p class="muted">Scholarships & Admissions</p>
-          </div>
-          <div class="card">
-            <h3>Study Resources</h3>
-            <div class="stat-num" id="statResources">—</div>
-            <p class="muted">Notes, Past Papers & PDFs</p>
-          </div>
-          <div class="card">
-            <h3>Total Portal Records</h3>
-            <div class="stat-num" id="statTotal">—</div>
-            <p class="muted">Synced with Google Sheets</p>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="Toggle Menu">☰</button>
+          <div>
+            <h1 id="viewTitle">Creative Command Center</h1>
+            <div id="viewSubtitle" class="topbar-sub">Real-time portal metrics, AI provider status &amp; creative workflows</div>
           </div>
         </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <span class="badge">QUICK WORKFLOWS</span>
-            <h2 style="margin-top:8px;">What do you want to do right now?</h2>
-            <div class="row">
-              <button class="btn" onclick="openTab('create', document.querySelectorAll('.tab-btn')[1])">✨ Create AI Post & Publish</button>
-              <button class="btn btn-outline" onclick="openTab('design', document.querySelectorAll('.tab-btn')[2])">🎨 Make Graphic / MCQ Card</button>
-              <button class="btn btn-outline" onclick="openTab('pdf', document.querySelectorAll('.tab-btn')[3])">📄 Upload Student PDF</button>
-              <button class="btn btn-outline" onclick="openTab('manage', document.querySelectorAll('.tab-btn')[4])">🗂 Manage Live Records</button>
-            </div>
-            <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">
-              <h3>Portal Maintenance</h3>
-              <p class="muted">Automatically remove expired admission & scholarship deadlines from the public website.</p>
-              <button id="btnArchiveExpired" class="btn btn-danger btn-sm" style="margin-top:10px;" onclick="runArchiveExpired()">Archive Expired Deadlines Now</button>
-              <div id="homeStatus" class="msg"></div>
-            </div>
-          </div>
-
-          <div class="card">
-            <span class="badge badge-green">TODAY'S RECOMMENDED POST</span>
-            <h2 id="todayThemeTitle" style="margin-top:8px;">Loading today's theme...</h2>
-            <p class="muted" id="todayThemeDesc">Consistent daily posting keeps students engaged on WhatsApp, Instagram, and your portal.</p>
-            <div class="row">
-              <button class="btn" onclick="startTodayPost()">Create Today's Post →</button>
-            </div>
-          </div>
+        <div class="topbar-actions">
+          <span id="topAiStatusPill" class="pill pill-blue"><span class="dot"></span> Checking AI...</span>
+          <button id="themeToggleBtn" class="btn btn-secondary btn-sm" type="button">Light Mode</button>
+          <a href="index.html" target="_blank" class="btn btn-outline btn-sm">Live Portal ↗</a>
         </div>
-      </section>
+      </header>
 
-      <!-- 2. AI POST & DIRECT PORTAL PUBLISHER -->
-      <section id="tab-create" class="panel">
-        <div class="card">
-          <span class="badge">STEP 1 • CHOOSE TYPE & TOPIC</span>
-          <h2 style="margin-top:6px;">Generate Social Posts, Graphic & Portal Entry Together</h2>
-          <div class="preset-grid">
-            <button type="button" class="preset-btn selected" onclick="pickPostType('mcq', this)">
-              <strong>MDCAT / NET Daily MCQ</strong>
-              <span>Question + 4 options + Answer card</span>
-            </button>
-            <button type="button" class="preset-btn" onclick="pickPostType('scholarship', this)">
-              <strong>Scholarship / Admission</strong>
-              <span>Deadline poster + Portal listing</span>
-            </button>
-            <button type="button" class="preset-btn" onclick="pickPostType('announcement', this)">
-              <strong>Portal Announcement</strong>
-              <span>Exam update, result, or notice</span>
-            </button>
-            <button type="button" class="preset-btn" onclick="pickPostType('reminder', this)">
-              <strong>Study Tip / Islamic Post</strong>
-              <span>Daily motivation, dua, or advice</span>
-            </button>
+      <main class="content-body">
+
+        <!-- ================================================================ -->
+        <!-- 1. PROFESSIONAL DASHBOARD -->
+        <!-- ================================================================ -->
+        <section id="view-dashboard" class="view-panel active">
+          <div class="card" style="background:linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-2) 100%);border-color:var(--border-gold);">
+            <div class="card-header" style="margin-bottom:6px;">
+              <div>
+                <span class="pill">Administrator Command Center</span>
+                <h2 id="dashWelcome" style="font-size:1.35rem;margin-top:8px;">Welcome back</h2>
+                <p id="dashProfileMeta" class="muted">Verified ICP Youth Circle Administrator</p>
+              </div>
+              <div class="btn-row" style="margin-top:0;">
+                <button class="btn" onclick="StudioApp.switchView('ideas')">+ Generate Ideas</button>
+                <button class="btn btn-secondary" onclick="StudioApp.switchView('writing')">New Writing Draft</button>
+                <button class="btn btn-secondary" onclick="StudioApp.switchView('design')">Open Design Canvas</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real Data KPIs (Never Fabricated) -->
+          <div class="grid-4">
+            <div class="card">
+              <h3>Creative Projects</h3>
+              <div id="statProjects" class="stat-value">0</div>
+              <div class="muted">Saved in Creative Library</div>
+            </div>
+            <div class="card">
+              <h3>Generated Images</h3>
+              <div id="statImages" class="stat-value">0</div>
+              <div class="muted">AI Artwork &amp; Saved Designs</div>
+            </div>
+            <div class="card">
+              <h3>AI Generations</h3>
+              <div id="statAiRuns" class="stat-value">0</div>
+              <div class="muted">Logged in Generation History</div>
+            </div>
+            <div class="card">
+              <h3>Live Portal Records</h3>
+              <div id="statPortalRecords" class="stat-value">—</div>
+              <div class="muted">Across Active Google Sheets</div>
+            </div>
           </div>
 
           <div class="grid-2">
-            <div>
-              <label>Topic or Title</label>
-              <input id="pTopic" placeholder="e.g., HEC Need-Based Scholarship 2027, or Class 12 Biology MCQ..." />
-            </div>
-            <div>
-              <label>Official Link (Optional — for Portal Publishing)</label>
-              <input id="pUrl" placeholder="https://..." />
-            </div>
-          </div>
-
-          <div class="row">
-            <button id="btnGenAI" class="btn" type="button" onclick="generatePostPack(true)">✨ Generate with Live Portal AI</button>
-            <button class="btn btn-outline" type="button" onclick="generatePostPack(false)">⚡ Instant Template</button>
-          </div>
-          <div id="createStatus" class="msg"></div>
-        </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <span class="badge">STEP 2 • READY CAPTIONS</span>
-            <h2 style="margin-top:6px;">Copy for Social Media</h2>
-            <label>WhatsApp Channel / Study Group</label>
-            <textarea id="outWA" rows="4"></textarea>
-            <button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="copyEl('outWA')">Copy WhatsApp</button>
-
-            <label>Instagram / Facebook</label>
-            <textarea id="outIG" rows="4"></textarea>
-            <button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="copyEl('outIG')">Copy IG / FB</button>
-
-            <label>Urdu Translation (اردو)</label>
-            <textarea id="outUrdu" class="urdu" rows="3"></textarea>
-            <button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="copyEl('outUrdu')">Copy Urdu</button>
-          </div>
-
-          <div class="card">
-            <span class="badge badge-green">STEP 3 • PUBLISH TO WEBSITE</span>
-            <h2 style="margin-top:6px;">Send Directly to Live Portal</h2>
-            <label>Destination Portal Section</label>
-            <select id="pubTable">
-              <option value="ANNOUNCEMENTS">Announcements (Updates & Notices)</option>
-              <option value="SCHOLARSHIPS">Scholarships</option>
-              <option value="ADMISSIONS">Admissions</option>
-              <option value="OPPORTUNITIES">Career Opportunities</option>
-            </select>
-            <label>Publishing Status</label>
-            <select id="pubStatusChoice">
-              <option value="Draft">Save as Draft (Safe — Review first)</option>
-              <option value="Active">Publish Live Immediately (Active)</option>
-            </select>
-            <div class="row" style="margin-top:16px;">
-              <button id="btnPubLive" class="btn btn-green" type="button" onclick="publishDirectToPortal()">🚀 Publish to Website Portal</button>
-              <button class="btn btn-outline" type="button" onclick="openTab('design', document.querySelectorAll('.tab-btn')[2])">Open Graphic Preview →</button>
-            </div>
-            <div id="pubMsg" class="msg"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. PRO GRAPHIC & 5-SLIDE CAROUSEL MAKER -->
-      <section id="tab-design" class="panel">
-        <div class="grid-2">
-          <div class="card">
-            <h2>Navy & Gold Brand Graphic Studio</h2>
-            <div class="grid-2" style="gap:10px;">
-              <div>
-                <label>Image Size</label>
-                <select id="gSize" onchange="renderCanvas()">
-                  <option value="1080x1080">Square (1080×1080 • IG/WA)</option>
-                  <option value="1080x1920">Story (1080×1920 • Status)</option>
-                  <option value="1200x630">Banner (1200×630 • FB/Web)</option>
-                  <option value="1280x720">Thumbnail (1280×720 • YT)</option>
-                </select>
+            <!-- AI Provider & System Status -->
+            <div class="card">
+              <div class="card-header">
+                <h2>AI Providers &amp; System Status</h2>
+                <button class="btn btn-outline btn-sm" onclick="StudioApp.refreshSystemStatus()">Refresh</button>
               </div>
-              <div>
-                <label>Mode</label>
-                <select id="gMode" onchange="onModeChange()">
-                  <option value="mcq">Daily MCQ Card (with Answer Reveal)</option>
-                  <option value="carousel">5-Slide Educational Carousel</option>
-                  <option value="poster">Announcement / Scholarship Poster</option>
-                </select>
+              <div id="dashSystemStatus" class="muted">Loading live backend configuration...</div>
+              <div class="btn-row">
+                <button class="btn btn-secondary btn-sm" onclick="StudioApp.switchView('ai')">Configure Providers</button>
+                <button class="btn btn-danger btn-sm" onclick="StudioApp.archiveExpired()">Archive Expired Deadlines</button>
+              </div>
+              <div id="dashStatusMsg" class="status-msg"></div>
+            </div>
+
+            <!-- Creative Workflow Shortcuts -->
+            <div class="card">
+              <h2>Creative Workflow Shortcuts</h2>
+              <p class="muted" style="margin-bottom:12px;">Jump straight into common ICP Youth Circle publishing tasks.</p>
+              <div class="btn-row" style="margin-top:0;">
+                <button class="btn btn-secondary btn-sm" onclick="StudioApp.quickWorkflow('mcq')">Daily MDCAT MCQ Card</button>
+                <button class="btn btn-secondary btn-sm" onclick="StudioApp.quickWorkflow('scholarship')">Scholarship Campaign</button>
+                <button class="btn btn-secondary btn-sm" onclick="StudioApp.quickWorkflow('carousel')">5-Slide Educational Carousel</button>
+                <button class="btn btn-secondary btn-sm" onclick="StudioApp.switchView('pdf')">Upload Student PDF</button>
+                <button class="btn btn-secondary btn-sm" onclick="StudioApp.switchView('brand')">Edit Brand Brain</button>
               </div>
             </div>
+          </div>
 
-            <div id="carouselBar" style="display:none;margin-top:10px;">
-              <label style="margin-top:0;">Edit Slide (1 to 5)</label>
-              <div class="slide-tabs">
-                <button type="button" class="slide-tab active" onclick="pickSlide(0)">Slide 1</button>
-                <button type="button" class="slide-tab" onclick="pickSlide(1)">Slide 2</button>
-                <button type="button" class="slide-tab" onclick="pickSlide(2)">Slide 3</button>
-                <button type="button" class="slide-tab" onclick="pickSlide(3)">Slide 4</button>
-                <button type="button" class="slide-tab" onclick="pickSlide(4)">Slide 5</button>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <h2>Recent Creative Projects</h2>
+                <button class="btn btn-outline btn-sm" onclick="StudioApp.switchView('library')">View All</button>
               </div>
+              <div id="dashRecentProjects" class="muted">No saved creative projects yet.</div>
             </div>
 
-            <div id="mcqBar" class="row" style="background:var(--surface-2);padding:10px 12px;border-radius:10px;">
-              <label style="margin:0;display:flex;align-items:center;gap:8px;color:#34d399;cursor:pointer;">
-                <input type="checkbox" id="gReveal" style="width:auto;" onchange="renderCanvas()" />
-                Highlight Correct Answer
-              </label>
-              <select id="gCorrect" style="width:auto;padding:6px 10px;" onchange="renderCanvas()">
-                <option value="A">Option A</option>
-                <option value="B" selected>Option B</option>
-                <option value="C">Option C</option>
-                <option value="D">Option D</option>
+            <div class="card">
+              <div class="card-header">
+                <h2>Recent Publishing &amp; Portal Activity</h2>
+                <button class="btn btn-outline btn-sm" onclick="StudioApp.switchView('portal')">Portal Manager</button>
+              </div>
+              <div id="dashPublishingActivity" class="muted">No publishing actions recorded in this session yet.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- 2. AI PROVIDER CENTER -->
+        <!-- ================================================================ -->
+        <section id="view-ai" class="view-panel">
+          <div class="grid-2">
+            <div class="card">
+              <h2>AI Provider &amp; Model Configuration</h2>
+              <p class="muted">All OpenAI and Google Gemini calls run securely through your Google Apps Script backend. Private API keys are never exposed in browser JavaScript.</p>
+
+              <label for="aiProviderSelect">Active Text Provider</label>
+              <select id="aiProviderSelect" onchange="StudioApp.onProviderChange()">
+                <option value="Auto">Auto (Smart Fallback)</option>
+                <option value="Gemini">Google Gemini</option>
+                <option value="OpenAI">OpenAI</option>
               </select>
+
+              <label for="aiTextModelSelect">Text Model</label>
+              <select id="aiTextModelSelect">
+                <option value="gemini-3.8-flash">gemini-3.8-flash (Gemini Default)</option>
+                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+                <option value="gpt-5.4-mini">gpt-5.4-mini (OpenAI Default)</option>
+                <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+                <option value="gpt-4.1">gpt-4.1</option>
+              </select>
+
+              <label for="aiImageProviderSelect">Image Generation Provider</label>
+              <select id="aiImageProviderSelect">
+                <option value="Auto">Auto</option>
+                <option value="OpenAI">OpenAI (gpt-image-1 / dall-e-3)</option>
+                <option value="Gemini">Google Gemini (Imagen 3)</option>
+              </select>
+
+              <label for="aiImageModelSelect">Image Model</label>
+              <select id="aiImageModelSelect">
+                <option value="gpt-image-1">gpt-image-1 (OpenAI)</option>
+                <option value="dall-e-3">dall-e-3 (OpenAI)</option>
+                <option value="imagen-3.0-generate-002">imagen-3.0-generate-002 (Gemini)</option>
+              </select>
+
+              <div class="btn-row">
+                <button class="btn" type="button" onclick="StudioApp.saveProviderPrefs()">Save Provider Preferences</button>
+                <button class="btn btn-secondary" type="button" onclick="StudioApp.refreshSystemStatus()">Check Live Status</button>
+              </div>
+              <div id="aiProviderStatusMsg" class="status-msg"></div>
             </div>
 
-            <label>Top Tag</label>
-            <input id="gTag" value="MDCAT DAILY CHALLENGE" oninput="syncAndRender()" />
-            <label>Headline / Question</label>
-            <textarea id="gHead" rows="3" oninput="syncAndRender()">Which part of the human brain regulates body temperature and hunger?</textarea>
-            <label>Points or A / B / C / D Options (One per line)</label>
-            <textarea id="gBody" rows="4" oninput="syncAndRender()">A) Cerebellum
-B) Hypothalamus
-C) Medulla Oblongata
-D) Thalamus</textarea>
-            <label>Bottom Website Bar</label>
-            <input id="gFooter" value="Practice free tests at icp-youth-circle.vercel.app" oninput="renderCanvas()" />
-
-            <div class="row">
-              <button class="btn" type="button" onclick="downloadPNG()">⬇ Download PNG</button>
-              <button id="btnPair" class="btn btn-green" type="button" onclick="downloadMCQPair()">⬇ Download Q + Answer (2 PNGs)</button>
-              <button id="btnAll5" class="btn btn-green" style="display:none;" type="button" onclick="downloadCarousel5()">⬇ Download All 5 Slides</button>
+            <div class="card">
+              <h2>AI Playground &amp; Prompt Enhancer</h2>
+              <label for="aiPlaygroundPrompt">Prompt</label>
+              <textarea id="aiPlaygroundPrompt" rows="4" placeholder="Enter a rough idea or image prompt to enhance or generate variations..."></textarea>
+              <label for="aiPlaygroundVariations">Variations</label>
+              <select id="aiPlaygroundVariations">
+                <option value="1">1 Output</option>
+                <option value="2">2 Variations</option>
+                <option value="3">3 Variations</option>
+              </select>
+              <div class="btn-row">
+                <button id="btnAiEnhance" class="btn btn-secondary" type="button" onclick="StudioApp.runPlayground('enhance')">Enhance Prompt</button>
+                <button id="btnAiGenerate" class="btn" type="button" onclick="StudioApp.runPlayground('generate')">Generate Text</button>
+                <button id="btnAiRegen" class="btn btn-outline" type="button" onclick="StudioApp.runPlayground('generate')">Regenerate</button>
+              </div>
+              <div id="aiPlaygroundMsg" class="status-msg"></div>
+              <label for="aiPlaygroundOutput">Result</label>
+              <textarea id="aiPlaygroundOutput" rows="6" readonly placeholder="AI response will appear here..."></textarea>
             </div>
           </div>
 
           <div class="card">
-            <h2>Live Brand Preview</h2>
-            <div class="canvas-wrap"><canvas id="studioCanvas" width="1080" height="1080"></canvas></div>
+            <div class="card-header">
+              <h2>Generation History</h2>
+              <button class="btn btn-outline btn-sm" onclick="StudioApp.clearAiHistory()">Clear Local Log</button>
+            </div>
+            <div id="aiHistoryList" class="muted">No generations logged yet.</div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- 4. UPLOAD STUDENT PDF (DIRECT TO DRIVE + AUTO-PROMOTE) -->
-      <section id="tab-pdf" class="panel">
-        <div class="card" style="max-width:780px;margin:0 auto;">
-          <span class="badge">GOOGLE DRIVE + RESOURCES</span>
-          <h2 style="margin-top:6px;">Upload & Publish Student PDF</h2>
-          <p class="muted" style="margin-bottom:14px;">Uploads your PDF (max 8 MB) directly to the portal's Google Drive and publishes it to the public Resources section.</p>
-          <form id="pdfForm">
-            <label>PDF File * (Max 8 MB)</label>
-            <input id="pdfFile" type="file" accept="application/pdf,.pdf" required />
-            <div class="grid-2" style="gap:12px;">
+        <!-- ================================================================ -->
+        <!-- 3. IDEAS STUDIO -->
+        <!-- ================================================================ -->
+        <section id="view-ideas" class="view-panel">
+          <div class="grid-2">
+            <div class="card">
+              <h2>AI Ideas Studio</h2>
+              <p class="muted">Generate structured campaign concepts, calendars, and headlines powered by your Brand Brain and live AI provider.</p>
+
+              <label for="ideasCategory">Idea Category</label>
+              <select id="ideasCategory">
+                <option value="Campaign Ideas">Campaign Ideas</option>
+                <option value="Social Media Ideas">Social Media Ideas</option>
+                <option value="Educational Campaigns">Educational Campaigns</option>
+                <option value="Student Engagement Campaigns">Student Engagement Campaigns</option>
+                <option value="Event Promotion Ideas">Event Promotion Ideas</option>
+                <option value="Marketing Concepts">Marketing Concepts</option>
+                <option value="7-Day Content Calendar">Content Calendars</option>
+                <option value="Creative Headlines">Creative Headlines</option>
+              </select>
+
+              <label for="ideasTopic">Focus Topic, Exam, or Event</label>
+              <input id="ideasTopic" placeholder="e.g., MDCAT 2027 Biology Revision, Talent Hunt Selection Test, HEC Scholarships..." />
+
+              <label for="ideasCount">Number of Suggestions</label>
+              <select id="ideasCount">
+                <option value="3">3 Structured Ideas</option>
+                <option value="5">5 Structured Ideas</option>
+              </select>
+
+              <div class="btn-row">
+                <button id="btnIdeasGenerate" class="btn" type="button" onclick="StudioApp.generateIdeas()">Generate Ideas with AI</button>
+              </div>
+              <div id="ideasStatusMsg" class="status-msg"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>AI Suggestions</h2>
+                <button class="btn btn-outline btn-sm" onclick="StudioApp.saveIdeasBatch()">Save All to Library</button>
+              </div>
+              <div id="ideasOutput" class="muted">Select a category, enter a focus topic, and click Generate Ideas with AI.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- 4. WRITING STUDIO -->
+        <!-- ================================================================ -->
+        <section id="view-writing" class="view-panel">
+          <div class="grid-2">
+            <div class="card">
+              <h2>AI Writing Editor</h2>
+              <div class="grid-2" style="gap:10px;margin-bottom:0;">
+                <div>
+                  <label for="writeFormat">Content Format</label>
+                  <select id="writeFormat">
+                    <option value="Social Media Caption">Social Media Caption</option>
+                    <option value="Portal Announcement">Announcement</option>
+                    <option value="Educational Article">Educational Article</option>
+                    <option value="Scholarship Announcement">Scholarship Announcement</option>
+                    <option value="Event Description">Event Description</option>
+                    <option value="Marketing Copy">Marketing Copy</option>
+                    <option value="Headlines & Slogans">Headlines &amp; Slogans</option>
+                    <option value="Facebook & Instagram Post">Facebook &amp; Instagram Post</option>
+                    <option value="WhatsApp Channel Announcement">WhatsApp Announcement</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="writeTone">Tone</label>
+                  <select id="writeTone">
+                    <option value="Professional & Mentor-like">Professional &amp; Mentor-like</option>
+                    <option value="Inspiring & Energetic">Inspiring &amp; Energetic</option>
+                    <option value="Academic & Precise">Academic &amp; Precise</option>
+                    <option value="Urgent & Deadline-Focused">Urgent &amp; Deadline-Focused</option>
+                    <option value="Warm & Conversational">Warm &amp; Conversational</option>
+                  </select>
+                </div>
+              </div>
+
+              <label for="writeTitle">Title / Topic</label>
+              <input id="writeTitle" placeholder="e.g., HEC Need-Based Undergraduate Scholarship 2027" />
+
+              <label for="writeBrief">Key Details / Official Facts</label>
+              <textarea id="writeBrief" rows="3" placeholder="Paste key facts, eligibility, dates, or source notes..."></textarea>
+
+              <label for="writeOfficialUrl">Official Link (Optional — for ICP Portal Publishing)</label>
+              <input id="writeOfficialUrl" placeholder="https://..." />
+
+              <div class="btn-row">
+                <button id="btnWriteGenerate" class="btn" type="button" onclick="StudioApp.generateWriting('create')">Generate Draft (AI)</button>
+                <button class="btn btn-secondary btn-sm" type="button" onclick="StudioApp.generateWriting('improve')">Rewrite &amp; Improve</button>
+                <button class="btn btn-secondary btn-sm" type="button" onclick="StudioApp.generateWriting('expand')">Expand</button>
+                <button class="btn btn-secondary btn-sm" type="button" onclick="StudioApp.generateWriting('shorten')">Shorten</button>
+              </div>
+              <div id="writeStatusMsg" class="status-msg"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>Document Editor &amp; Publishing</h2>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn btn-secondary btn-sm" type="button" onclick="StudioApp.copyWriting()">Copy</button>
+                  <button class="btn btn-secondary btn-sm" type="button" onclick="StudioApp.exportWriting('txt')">Export .TXT</button>
+                  <button class="btn btn-outline btn-sm" type="button" onclick="StudioApp.saveWritingDraft()">Save Draft</button>
+                </div>
+              </div>
+              <textarea id="writeEditor" rows="12" placeholder="Your generated or edited copy appears here..."></textarea>
+
+              <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-subtle);">
+                <h3>Direct Publishing to ICP Youth Circle</h3>
+                <div class="grid-2" style="gap:10px;margin-bottom:0;">
+                  <div>
+                    <label for="writePubTable" style="margin-top:4px;">Portal Section</label>
+                    <select id="writePubTable">
+                      <option value="ANNOUNCEMENTS">Announcements</option>
+                      <option value="SCHOLARSHIPS">Scholarships</option>
+                      <option value="ADMISSIONS">Admissions</option>
+                      <option value="OPPORTUNITIES">Opportunities</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="writePubStatus" style="margin-top:4px;">Status</label>
+                    <select id="writePubStatus">
+                      <option value="Draft">Draft (Safe Review)</option>
+                      <option value="Active">Active (Publish Live)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="btn-row">
+                  <button id="btnWritePublish" class="btn btn-success" type="button" onclick="StudioApp.publishWritingToPortal()">Publish to Portal</button>
+                  <button class="btn btn-outline btn-sm" type="button" onclick="StudioApp.sendWritingToDesign()">Send to Design Studio →</button>
+                </div>
+                <div id="writePubMsg" class="status-msg"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- 5. ADVANCED EDITABLE DESIGN STUDIO -->
+        <!-- ================================================================ -->
+        <section id="view-design" class="view-panel">
+          <div class="design-layout">
+            <!-- Left Panel: Templates, Add Elements & AI Image Gen -->
+            <div class="design-panel">
+              <h3>Templates &amp; Size</h3>
+              <label for="canvasSizeSelect">Canvas Size</label>
+              <select id="canvasSizeSelect" onchange="DesignStudio.setCanvasSize(this.value)">
+                <option value="1080x1080">Instagram / WhatsApp Square (1080×1080)</option>
+                <option value="1080x1920">Story / Status (1080×1920)</option>
+                <option value="1200x630">Facebook / Portal OG (1200×630)</option>
+                <option value="1280x720">YouTube Thumbnail (1280×720)</option>
+                <option value="1240x1754">A4 Poster (1240×1754)</option>
+              </select>
+
+              <label for="designTemplateSelect">Editable Template</label>
+              <select id="designTemplateSelect" onchange="DesignStudio.loadTemplate(this.value)">
+                <option value="mcq">MDCAT / NET Daily MCQ Card</option>
+                <option value="carousel">5-Slide Educational Carousel</option>
+                <option value="poster">Announcement / Event Poster</option>
+                <option value="scholarship">Scholarship Spotlight Poster</option>
+                <option value="blank">Blank Navy &amp; Gold Canvas</option>
+              </select>
+
+              <!-- 5-Slide Carousel Switcher -->
+              <div id="carouselSlideWrap" style="display:none;margin-top:10px;">
+                <label style="margin-top:0;">Carousel Slides (Editable Individually)</label>
+                <div class="slide-bar" id="carouselSlideBar">
+                  <button type="button" class="slide-pill active" onclick="DesignStudio.selectSlide(0)">1</button>
+                  <button type="button" class="slide-pill" onclick="DesignStudio.selectSlide(1)">2</button>
+                  <button type="button" class="slide-pill" onclick="DesignStudio.selectSlide(2)">3</button>
+                  <button type="button" class="slide-pill" onclick="DesignStudio.selectSlide(3)">4</button>
+                  <button type="button" class="slide-pill" onclick="DesignStudio.selectSlide(4)">5</button>
+                </div>
+              </div>
+
+              <!-- MCQ Answer Highlighting -->
+              <div id="mcqControlsWrap" style="margin-top:12px;padding:10px;border-radius:10px;background:var(--bg-surface-2);border:1px solid var(--border-subtle);">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                  <label style="margin:0;display:flex;align-items:center;gap:6px;cursor:pointer;color:#10b981;">
+                    <input type="checkbox" id="mcqRevealToggle" style="width:auto;" onchange="DesignStudio.render()" />
+                    Answer Reveal
+                  </label>
+                  <select id="mcqCorrectSelect" style="width:auto;padding:4px 8px;" onchange="DesignStudio.render()">
+                    <option value="A">Ans: A</option>
+                    <option value="B" selected>Ans: B</option>
+                    <option value="C">Ans: C</option>
+                    <option value="D">Ans: D</option>
+                  </select>
+                </div>
+              </div>
+
+              <hr style="border:0;border-top:1px solid var(--border-subtle);margin:14px 0;" />
+              <h3>Add Objects (Drag on Canvas)</h3>
+              <div class="btn-row" style="margin-top:6px;">
+                <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.addText()">+ Text</button>
+                <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.addShape('rect')">+ Box</button>
+                <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.addShape('circle')">+ Circle</button>
+                <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.addBadge()">+ Badge</button>
+                <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.addLogo()">+ ICP Logo</button>
+              </div>
+
+              <label for="designUploadImage">Upload Image Layer</label>
+              <input id="designUploadImage" type="file" accept="image/*" onchange="DesignStudio.handleImageUpload(event)" />
+
+              <label>Background Style</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <input id="bgColor1" type="color" value="#0A192F" onchange="DesignStudio.updateBackground()" title="Primary Color" />
+                <input id="bgColor2" type="color" value="#050d1a" onchange="DesignStudio.updateBackground()" title="Gradient End Color" />
+              </div>
+
+              <hr style="border:0;border-top:1px solid var(--border-subtle);margin:14px 0;" />
+              <h3>AI Background / Artwork</h3>
+              <textarea id="designAiPrompt" rows="2" placeholder="Describe background artwork (e.g., minimalist dark navy geometric academic pattern with subtle gold lines, no text)..."></textarea>
+              <div class="btn-row" style="margin-top:8px;">
+                <button id="btnDesignAiImage" class="btn btn-sm" style="width:100%;" type="button" onclick="DesignStudio.generateAiArtwork()">Generate AI Artwork</button>
+              </div>
+              <div id="designAiMsg" class="status-msg"></div>
+            </div>
+
+            <!-- Center Stage: Interactive Editable Canvas -->
+            <div class="canvas-stage">
+              <div class="canvas-toolbar">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.undo()">↶ Undo</button>
+                  <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.redo()">↷ Redo</button>
+                  <button class="btn btn-outline btn-sm" type="button" onclick="DesignStudio.saveToLibrary()">Save Project</button>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <button class="btn btn-sm" type="button" onclick="DesignStudio.exportPNG()">PNG</button>
+                  <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.exportPDF()">PDF</button>
+                  <button id="btnExportMcqPair" class="btn btn-success btn-sm" type="button" onclick="DesignStudio.exportMCQPair()">Q+A Pair</button>
+                  <button id="btnExportCarousel" class="btn btn-success btn-sm" style="display:none;" type="button" onclick="DesignStudio.exportAllSlides()">All 5 Slides</button>
+                </div>
+              </div>
+              <canvas id="designCanvas" width="1080" height="1080"></canvas>
+              <div id="canvasAutosaveNote" class="muted" style="font-size:0.76rem;">Click any element to select &amp; drag. Autosaves locally.</div>
+            </div>
+
+            <!-- Right Panel: Selected Object Inspector & Layers -->
+            <div class="design-panel">
+              <h3>Object Inspector</h3>
+              <div id="inspectorEmpty" class="muted">Click any text, shape, or image on the canvas to edit its properties.</div>
+              <div id="inspectorControls" style="display:none;">
+                <label for="propText">Text Content</label>
+                <textarea id="propText" rows="3" oninput="DesignStudio.updateSelectedProp('text', this.value)"></textarea>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <div>
+                    <label for="propFont">Font</label>
+                    <select id="propFont" onchange="DesignStudio.updateSelectedProp('fontFamily', this.value)">
+                      <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+                      <option value="Inter">Inter</option>
+                      <option value="Playfair Display">Playfair Display</option>
+                      <option value="Georgia">Georgia</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="propFontSize">Size</label>
+                    <input id="propFontSize" type="number" min="12" max="140" oninput="DesignStudio.updateSelectedProp('fontSize', Number(this.value))" />
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <div>
+                    <label for="propColor">Color</label>
+                    <input id="propColor" type="color" onchange="DesignStudio.updateSelectedProp('color', this.value)" />
+                  </div>
+                  <div>
+                    <label for="propOpacity">Opacity</label>
+                    <input id="propOpacity" type="range" min="0.1" max="1" step="0.05" oninput="DesignStudio.updateSelectedProp('opacity', Number(this.value))" />
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <div>
+                    <label for="propWidth">Width</label>
+                    <input id="propWidth" type="number" min="20" max="1800" oninput="DesignStudio.updateSelectedProp('w', Number(this.value))" />
+                  </div>
+                  <div>
+                    <label for="propHeight">Height</label>
+                    <input id="propHeight" type="number" min="20" max="1800" oninput="DesignStudio.updateSelectedProp('h', Number(this.value))" />
+                  </div>
+                </div>
+
+                <!-- Image Crop / Zoom Controls -->
+                <div id="propImageCropWrap" style="display:none;">
+                  <label for="propCropZoom">Image Crop Zoom</label>
+                  <input id="propCropZoom" type="range" min="1" max="2.5" step="0.05" value="1" oninput="DesignStudio.updateSelectedProp('cropZoom', Number(this.value))" />
+                </div>
+
+                <div class="btn-row">
+                  <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.moveLayer(1)">Bring Forward</button>
+                  <button class="btn btn-secondary btn-sm" type="button" onclick="DesignStudio.moveLayer(-1)">Send Back</button>
+                  <button class="btn btn-danger btn-sm" type="button" onclick="DesignStudio.deleteSelected()">Delete</button>
+                </div>
+              </div>
+
+              <hr style="border:0;border-top:1px solid var(--border-subtle);margin:16px 0;" />
+              <h3>Layers</h3>
+              <div id="layersList"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- 6. CREATIVE LIBRARY -->
+        <!-- ================================================================ -->
+        <section id="view-library" class="view-panel">
+          <div class="card">
+            <div class="card-header">
               <div>
-                <label>Title *</label>
-                <input id="pdfTitle" required placeholder="e.g., Class 12 Biology Ch. 15 Notes" />
+                <h2>Creative Project Library</h2>
+                <p class="muted">Re-open editable designs, writing drafts, ideas, and generated images anytime.</p>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-secondary btn-sm" type="button" onclick="StudioApp.syncLibraryFromBackend()">Sync Cloud</button>
+                <button class="btn btn-outline btn-sm" type="button" onclick="StudioApp.exportLibraryJSON()">Export JSON</button>
+              </div>
+            </div>
+
+            <div class="grid-4" style="margin-bottom:14px;">
+              <input id="libSearch" placeholder="Search projects..." oninput="StudioApp.renderLibrary()" />
+              <select id="libFilterType" onchange="StudioApp.renderLibrary()">
+                <option value="all">All Asset Types</option>
+                <option value="design">Editable Designs</option>
+                <option value="image">Generated Images</option>
+                <option value="writing">Writing Projects</option>
+                <option value="idea">Ideas</option>
+              </select>
+              <select id="libFilterFolder" onchange="StudioApp.renderLibrary()">
+                <option value="all">All Folders</option>
+                <option value="General">General</option>
+                <option value="MDCAT">MDCAT</option>
+                <option value="Scholarships">Scholarships</option>
+                <option value="Events">Events</option>
+                <option value="Campaigns">Campaigns</option>
+              </select>
+              <label style="margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input id="libFavOnly" type="checkbox" style="width:auto;" onchange="StudioApp.renderLibrary()" />
+                Favorites Only
+              </label>
+            </div>
+            <div id="libStatusMsg" class="status-msg"></div>
+            <div id="libraryGrid" class="grid-3"></div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- 7. BRAND BRAIN -->
+        <!-- ================================================================ -->
+        <section id="view-brand" class="view-panel">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2>ICP Brand Brain</h2>
+                <p class="muted">Central identity profile automatically injected into every AI generation and Design Studio template.</p>
+              </div>
+              <button class="btn" type="button" onclick="StudioApp.saveBrandBrain()">Save Brand Brain</button>
+            </div>
+            <div class="grid-2" style="margin-bottom:0;">
+              <div>
+                <label for="brandOrgName">Organization Name</label>
+                <input id="brandOrgName" value="ICP YOUTH CIRCLE" />
+
+                <label for="brandTagline">Tagline / Messaging</label>
+                <input id="brandTagline" value="LEARN • CONNECT • GROW" />
+
+                <label for="brandUrl">Official Website URL</label>
+                <input id="brandUrl" value="https://icp-youth-circle.vercel.app" />
+
+                <label for="brandDescription">Organization Description &amp; Mission</label>
+                <textarea id="brandDescription" rows="3">Empowering Pakistani students (FSc, KPK Board, MDCAT, NUST NET) with free study resources, mentorship, scholarships, admissions guidance, and verified opportunities.</textarea>
+
+                <label for="brandWritingStyle">Preferred Writing Style &amp; Guidelines</label>
+                <textarea id="brandWritingStyle" rows="3">Authoritative yet encouraging mentor tone. Clear, concise English. Fact-first, never invent dates or eligibility. End with a clear call-to-action to the official portal.</textarea>
               </div>
               <div>
-                <label>Category *</label>
-                <select id="pdfCat" required>
-                  <option value="Notes">Notes</option>
-                  <option value="Past Papers">Past Papers</option>
-                  <option value="Study Resources">Study Resources</option>
+                <label>Brand Colors (Navy &amp; Gold Identity)</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                  <div><label style="margin-top:4px;">Primary Navy</label><input id="brandPrimaryColor" type="color" value="#0A192F" /></div>
+                  <div><label style="margin-top:4px;">Accent Gold</label><input id="brandAccentColor" type="color" value="#D4AF37" /></div>
+                  <div><label style="margin-top:4px;">Text White</label><input id="brandTextColor" type="color" value="#FFFFFF" /></div>
+                </div>
+
+                <label for="brandTypography">Primary Typography</label>
+                <select id="brandTypography">
+                  <option value="Plus Jakarta Sans">Plus Jakarta Sans + Inter</option>
+                  <option value="Playfair Display">Playfair Display + Inter</option>
+                  <option value="Inter">Inter Modern Sans</option>
                 </select>
-              </div>
-              <div>
-                <label>Subject</label>
-                <input id="pdfSubj" placeholder="e.g., Biology" />
-              </div>
-              <div>
-                <label>Class / Level</label>
-                <input id="pdfLevel" placeholder="e.g., Class 12 / MDCAT" />
-              </div>
-              <div>
-                <label>Board / Institution</label>
-                <input id="pdfBoard" placeholder="e.g., KPK Board / BISE Peshawar" />
-              </div>
-              <div>
-                <label>Year</label>
-                <input id="pdfYear" placeholder="2026" />
-              </div>
-            </div>
-            <label>Description</label>
-            <textarea id="pdfDesc" rows="3" placeholder="Short summary of what this PDF covers..."></textarea>
-            <label style="display:flex;align-items:center;gap:8px;color:#fff;cursor:pointer;margin-top:14px;">
-              <input id="pdfRights" type="checkbox" style="width:auto;" required />
-              I confirm ICP YOUTH CIRCLE has permission to share this PDF publicly.
-            </label>
-            <div class="row">
-              <button id="btnUploadPdf" class="btn btn-green" type="submit">🚀 Upload & Publish PDF</button>
-              <button class="btn btn-outline" type="button" onclick="promotePdfAsPost()">✨ Turn into WhatsApp + Graphic Post</button>
-            </div>
-            <div id="pdfMsg" class="msg"></div>
-          </form>
-        </div>
-      </section>
 
-      <!-- 5. LIVE PORTAL MANAGER -->
-      <section id="tab-manage" class="panel">
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-            <div>
-              <h2>Live Portal Database Manager</h2>
-              <p class="muted">View, search, and archive live records directly from Google Sheets.</p>
+                <label for="brandLogoUpload">Brand Logo (Defaults to assets/icp-logo-navy-gold.png)</label>
+                <input id="brandLogoUpload" type="file" accept="image/*" onchange="StudioApp.handleBrandLogoUpload(event)" />
+                <div style="margin-top:10px;display:flex;align-items:center;gap:12px;">
+                  <img id="brandLogoPreview" src="assets/icp-logo-navy-gold.png" alt="Brand Logo Preview" style="width:56px;height:56px;border-radius:50%;border:2px solid var(--accent-gold);object-fit:cover;" />
+                  <button class="btn btn-secondary btn-sm" type="button" onclick="StudioApp.resetBrandLogo()">Reset Default Logo</button>
+                </div>
+              </div>
             </div>
-            <a href="admin.html" class="btn btn-outline btn-sm">Open Full Table Editor (admin.html) ↗</a>
+            <div id="brandStatusMsg" class="status-msg"></div>
           </div>
-          <div class="row">
-            <select id="mgrTable" style="max-width:280px;" onchange="loadManagerTable()"></select>
-            <input id="mgrQuery" style="max-width:260px;" placeholder="Search records..." onkeydown="if(event.key==='Enter')loadManagerTable()" />
-            <button class="btn btn-sm" onclick="loadManagerTable()">Search / Refresh</button>
-          </div>
-          <div id="mgrMsg" class="msg"></div>
-          <div class="table-wrap" id="mgrTableWrap"></div>
-        </div>
-      </section>
+        </section>
 
-    </main>
+        <!-- ================================================================ -->
+        <!-- 8. UPLOAD PDF (PRESERVED GOOGLE DRIVE INTEGRATION) -->
+        <!-- ================================================================ -->
+        <section id="view-pdf" class="view-panel">
+          <div class="card" style="max-width:820px;margin:0 auto;">
+            <span class="pill">Google Drive + Resources Sheet</span>
+            <h2 style="margin-top:8px;">Upload &amp; Publish Student PDF</h2>
+            <p class="muted" style="margin-bottom:14px;">Uploads a PDF (max 8 MB) directly to the portal's Google Drive folder and publishes it in Resources.</p>
+            <form id="pdfUploadForm">
+              <label for="pdfFile">PDF File * (Max 8 MB)</label>
+              <input id="pdfFile" type="file" accept="application/pdf,.pdf" required />
+              <div class="grid-2" style="gap:12px;margin-bottom:0;">
+                <div><label for="pdfTitle">Title *</label><input id="pdfTitle" required placeholder="e.g., Class 12 Biology Ch. 15 Notes" /></div>
+                <div>
+                  <label for="pdfCategory">Category *</label>
+                  <select id="pdfCategory" required>
+                    <option value="Notes">Notes</option>
+                    <option value="Past Papers">Past Papers</option>
+                    <option value="Study Resources">Study Resources</option>
+                  </select>
+                </div>
+                <div><label for="pdfSubject">Subject</label><input id="pdfSubject" placeholder="e.g., Biology" /></div>
+                <div><label for="pdfLevel">Class / Level</label><input id="pdfLevel" placeholder="e.g., Class 12 / MDCAT" /></div>
+                <div><label for="pdfInstitution">Board / Institution</label><input id="pdfInstitution" placeholder="e.g., KPK Board" /></div>
+                <div><label for="pdfYear">Year</label><input id="pdfYear" placeholder="2026" /></div>
+              </div>
+              <label for="pdfDescription">Description</label>
+              <textarea id="pdfDescription" rows="3" placeholder="Brief description for students..."></textarea>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text-primary);margin-top:14px;">
+                <input id="pdfRights" type="checkbox" style="width:auto;" required />
+                I confirm ICP YOUTH CIRCLE has permission to share this PDF publicly.
+              </label>
+              <div class="btn-row">
+                <button id="btnPdfSubmit" class="btn btn-success" type="submit">Upload &amp; Publish PDF</button>
+                <button class="btn btn-outline" type="button" onclick="StudioApp.promotePdf()">Create Promotion Post →</button>
+              </div>
+              <div id="pdfStatusMsg" class="status-msg"></div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- 9. PORTAL MANAGER (PRESERVED LIVE GOOGLE SHEETS INTEGRATION) -->
+        <!-- ================================================================ -->
+        <section id="view-portal" class="view-panel">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2>ICP Portal Database Manager</h2>
+                <p class="muted">Inspect, search, and archive live portal records directly from Google Sheets.</p>
+              </div>
+              <a href="admin.html" class="btn btn-outline btn-sm">Open Classic Admin Editor ↗</a>
+            </div>
+            <div class="btn-row" style="margin-top:0;">
+              <select id="portalTableSelect" style="max-width:260px;" onchange="StudioApp.loadPortalTable()"></select>
+              <input id="portalSearchInput" style="max-width:260px;" placeholder="Search records..." onkeydown="if(event.key==='Enter')StudioApp.loadPortalTable()" />
+              <button class="btn btn-sm" type="button" onclick="StudioApp.loadPortalTable()">Load / Refresh</button>
+            </div>
+            <div id="portalStatusMsg" class="status-msg"></div>
+            <div id="portalTableWrap" class="table-wrap"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
   </div>
 
-  <script>
-    const FIREBASE_CFG = Object.freeze({
-      apiKey: 'AIzaSyA5tQEc0yf544hQ0buVmaNG32rStH0UYHQ',
-      authDomain: 'icp-youth-circle-1ce3d.firebaseapp.com',
-      projectId: 'icp-youth-circle-1ce3d',
-      appId: '1:116078667555:web:7707153d9667bf8fd88e96'
-    });
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwfIALyzy8rVPAyIyTj-RkFdjX5f92uaVpESOGHrBIsnsFQLH14uoYeAdggXKNEhQUo/exec';
-    let authRef = null, sdkRef = null, sessionData = null, activePostType = 'mcq';
+  <!-- PREVIEW MODAL -->
+  <div id="previewModal" class="modal-backdrop" onclick="if(event.target===this)StudioApp.closePreview()">
+    <div class="modal-box">
+      <div class="card-header">
+        <h2 id="previewModalTitle">Project Preview</h2>
+        <button class="btn btn-secondary btn-sm" type="button" onclick="StudioApp.closePreview()">Close</button>
+      </div>
+      <div id="previewModalBody"></div>
+    </div>
+  </div>
 
-    async function apiCall(action, body = {}) {
-      const idToken = await authRef.currentUser.getIdToken();
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body: JSON.stringify({ ...body, action, idToken }),
-        redirect: 'follow'
-      });
-      if (!res.ok) throw new Error('Server error (' + res.status + ')');
-      const json = await res.json();
-      if (!json.success) throw new Error((json.error && json.error.message) || 'Backend request failed.');
-      return json.data;
-    }
-
-    function setMsg(id, text, cls) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.className = 'msg' + (cls ? ' ' + cls : '');
-      el.textContent = text || '';
-    }
-
-    document.getElementById('signInBtn').onclick = async () => {
-      const btn = document.getElementById('signInBtn');
-      const st = document.getElementById('gateStatus');
-      btn.disabled = true; st.className = ''; st.textContent = 'Opening Google sign-in...';
-      try {
-        const [appSDK, authSDK] = await Promise.all([
-          import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
-          import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js')
-        ]);
-        const app = appSDK.initializeApp(FIREBASE_CFG, 'icp-studio-pro');
-        const auth = authSDK.getAuth(app);
-        await authSDK.setPersistence(auth, authSDK.inMemoryPersistence);
-        authRef = auth; sdkRef = authSDK;
-        await authSDK.signInWithPopup(auth, new authSDK.GoogleAuthProvider());
-        st.textContent = 'Verifying Admin access...';
-        sessionData = await apiCall('adminSession');
-        document.getElementById('adminLabel').textContent = sessionData.email + ' • ' + sessionData.role;
-        document.getElementById('authGate').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        initProStudio();
-      } catch (e) {
-        if (authRef && sdkRef) { try { await sdkRef.signOut(authRef); } catch (_) {} }
-        st.className = 'err'; st.textContent = e.message || 'Sign-in failed.';
-        btn.disabled = false;
-      }
-    };
-
-    document.getElementById('signOutBtn').onclick = async () => {
-      if (authRef && sdkRef) await sdkRef.signOut(authRef);
-      location.reload();
-    };
-
-    function openTab(name, btn) {
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('tab-' + name).classList.add('active');
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      if (name === 'design') renderCanvas();
-      if (name === 'manage' && !document.getElementById('mgrTableWrap').innerHTML) loadManagerTable();
-    }
-
-    // 1. OVERVIEW
-    const WEEK_PLAN = [
-      ['Sunday', 'Weekly Opportunities & Mock Test Recap', 'announcement'],
-      ['Monday', 'MDCAT Biology High-Yield MCQ', 'mcq'],
-      ['Tuesday', 'Scholarship & Financial Aid Alert', 'scholarship'],
-      ['Wednesday', 'KPK Board Notes & Past Papers', 'announcement'],
-      ['Thursday', 'Career Guidance After FSc', 'reminder'],
-      ['Friday', 'Islamic Friday Reminder & Dua', 'reminder'],
-      ['Saturday', 'Student Q&A Spotlight', 'announcement']
-    ];
-
-    function updateOverviewStats() {
-      const tables = (sessionData && sessionData.tables) || [];
-      const sum = (...keys) => tables.filter(t => keys.includes(t.key)).reduce((a, b) => a + Number(b.rowCount || 0), 0);
-      document.getElementById('statUpdates').textContent = sum('ANNOUNCEMENTS', 'UPDATES');
-      document.getElementById('statOpps').textContent = sum('SCHOLARSHIPS', 'ADMISSIONS');
-      document.getElementById('statResources').textContent = sum('RESOURCES');
-      document.getElementById('statTotal').textContent = tables.reduce((a, b) => a + Number(b.rowCount || 0), 0);
-
-      const sel = document.getElementById('mgrTable');
-      sel.replaceChildren();
-      tables.forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t.key; opt.textContent = `${t.label} (${t.rowCount})`;
-        sel.appendChild(opt);
-      });
-
-      const today = WEEK_PLAN[new Date().getDay()];
-      document.getElementById('todayThemeTitle').textContent = `${today[0]}: ${today[1]}`;
-    }
-
-    function startTodayPost() {
-      const today = WEEK_PLAN[new Date().getDay()];
-      activePostType = today[2];
-      document.getElementById('pTopic').value = today[1];
-      openTab('create', document.querySelectorAll('.tab-btn')[1]);
-      generatePostPack(false);
-    }
-
-    async function runArchiveExpired() {
-      if (!confirm('Archive all expired admissions, scholarships, and announcements?')) return;
-      setMsg('homeStatus', 'Checking deadlines and archiving expired records...', 'info');
-      try {
-        const res = await apiCall('adminArchiveExpired');
-        const parts = Object.entries(res.archived || {}).filter(([, c]) => c).map(([k, c]) => `${c} ${k.toLowerCase()}`);
-        setMsg('homeStatus', parts.length ? 'Archived: ' + parts.join(', ') : 'No expired records found. Portal is clean!', 'ok');
-        sessionData = await apiCall('adminSession');
-        updateOverviewStats();
-      } catch (e) { setMsg('homeStatus', 'Error: ' + e.message, 'err'); }
-    }
-
-    // 2. AI POST & DIRECT PUBLISH
-    function pickPostType(type, btn) {
-      activePostType = type;
-      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
-      if (btn) btn.classList.add('selected');
-      document.getElementById('pubTable').value = type === 'scholarship' ? 'SCHOLARSHIPS' : 'ANNOUNCEMENTS';
-    }
-
-    async function generatePostPack(useAI) {
-      const topic = document.getElementById('pTopic').value.trim() || 'ICP Youth Circle Student Update';
-      const url = 'https://icp-youth-circle.vercel.app';
-
-      // Sync to Graphic Studio
-      document.getElementById('gTag').value = activePostType === 'mcq' ? 'MDCAT DAILY MCQ' : activePostType === 'scholarship' ? 'SCHOLARSHIP ALERT' : 'ICP PORTAL UPDATE';
-      document.getElementById('gHead').value = topic;
-      document.getElementById('gBody').value = activePostType === 'mcq'
-        ? 'A) Option A\nB) Option B\nC) Option C\nD) Option D'
-        : '• Verified details for Pakistani students\n• Free notes, past papers & timed tests\n• Visit icp-youth-circle.vercel.app';
-
-      if (useAI) {
-        const btn = document.getElementById('btnGenAI');
-        btn.disabled = true;
-        setMsg('createStatus', 'Generating with your live ICP AI backend...', 'info');
-        try {
-          const reqId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : ('pro-' + Date.now());
-          const ai = await apiCall('aiChat', {
-            message: `You are ICP Youth Circle (${url}). Write a crisp WhatsApp Channel announcement for a "${activePostType}" post about: "${topic}". Keep it engaging for Pakistani FSc/MDCAT students.`,
-            provider: 'Auto', mode: 'Explain', language: 'English', verifiedOnly: false, requestId: reqId
-          });
-          const reply = (ai && ai.message && ai.message.content) || '';
-          if (reply) document.getElementById('outWA').value = reply;
-          setMsg('createStatus', 'Live AI post generated! Graphic preview is also updated.', 'ok');
-        } catch (e) {
-          setMsg('createStatus', 'Live AI unavailable (' + e.message + '). Filled instant template.', 'err');
-          fillCaptions(topic, url);
-        } finally { btn.disabled = false; }
-      } else {
-        setMsg('createStatus', 'Instant template ready!', 'ok');
-        fillCaptions(topic, url);
-      }
-      if (useAI) fillCaptions(topic, url, true);
-      renderCanvas();
-    }
-
-    function fillCaptions(topic, url, keepWA = false) {
-      if (!keepWA) document.getElementById('outWA').value = `*ICP YOUTH CIRCLE* 🎓\n\n*${topic}*\nAccess verified resources, past papers & free timed tests:\n👉 ${url}\n\n_Forward to your class & MDCAT groups!_`;
-      document.getElementById('outIG').value = `✨ ${topic}\n\nSave this post & visit ${url} for free notes, scholarships & MDCAT prep.\n\n#ICPYouthCircle #MDCAT #KPKBoard #PakistaniStudents`;
-      document.getElementById('outUrdu').value = `آئی سی پی یوتھ سرکل کی اہم تعلیمی اپڈیٹ:\n${topic}\nمکمل تفصیلات اور مفت نوٹس ہماری ویب سائٹ (${url}) پر دستیاب ہیں۔`;
-    }
-
-    function copyEl(id) {
-      navigator.clipboard.writeText(document.getElementById(id).value);
-      setMsg('pubMsg', 'Copied to clipboard!', 'ok');
-    }
-
-    async function publishDirectToPortal() {
-      const table = document.getElementById('pubTable').value;
-      const status = document.getElementById('pubStatusChoice').value;
-      const title = document.getElementById('pTopic').value.trim() || document.getElementById('gHead').value.trim();
-      const details = document.getElementById('outWA').value.trim();
-      const officialUrl = document.getElementById('pUrl').value.trim();
-      if (!title) { alert('Enter a Topic / Title first.'); return; }
-
-      setMsg('pubMsg', `Publishing to ${table} as ${status}...`, 'info');
-      try {
-        let record = { Title: title, Category: 'Announcement', Summary: details.slice(0, 300), Content: details, OfficialURL: officialUrl, Priority: 'Normal', Status: status };
-        if (table === 'SCHOLARSHIPS') record = { Name: title, Provider: 'ICP Youth Circle', Type: 'Scholarship', Country: 'Pakistan', OfficialURL: officialUrl, Description: details, Status: status };
-        if (table === 'ADMISSIONS') record = { Institution: 'Official Notice', Program: title, OfficialURL: officialUrl, Description: details, Status: status };
-        if (table === 'OPPORTUNITIES') record = { Title: title, Organization: 'ICP Youth Circle', Type: 'Student Program', OfficialURL: officialUrl, Description: details, Status: status };
-        await apiCall('adminSave', { table, record });
-        setMsg('pubMsg', `Saved to ${table} (${status})! Public portal cache refreshed.`, 'ok');
-        sessionData = await apiCall('adminSession');
-        updateOverviewStats();
-      } catch (e) { setMsg('pubMsg', 'Publish failed: ' + e.message, 'err'); }
-    }
-
-    // 3. GRAPHIC & 5-SLIDE CAROUSEL STUDIO
-    const logo = new Image();
-    logo.src = 'assets/icp-logo-navy-gold.png';
-    logo.onload = () => renderCanvas();
-
-    let slideIdx = 0;
-    const slides = [
-      { tag: 'SLIDE 1 OF 5 • COVER', head: '5 High-Yield MDCAT Biology Rules', body: 'Swipe through this quick KPK Board revision guide.\nSave for exam week!' },
-      { tag: 'SLIDE 2 OF 5 • POINT 1', head: '1. Enzymes Lower Activation Energy', body: '• Do not change equilibrium constant.\n• Reusable and substrate-specific.' },
-      { tag: 'SLIDE 3 OF 5 • POINT 2', head: '2. Photolysis Replaces PS-II Electrons', body: '• Water splits in the thylakoid lumen.\n• Releases O2, H+ ions & electrons.' },
-      { tag: 'SLIDE 4 OF 5 • POINT 3', head: '3. Hypothalamus Controls Homeostasis', body: '• Regulates temperature, hunger & thirst.\n• Links nervous & endocrine systems.' },
-      { tag: 'SLIDE 5 OF 5 • CTA', head: 'Attempt Free Timed Tests', body: 'Visit icp-youth-circle.vercel.app for chapter-wise MCQs & KPK notes.' }
-    ];
-
-    function onModeChange() {
-      const m = document.getElementById('gMode').value;
-      document.getElementById('carouselBar').style.display = m === 'carousel' ? 'block' : 'none';
-      document.getElementById('btnAll5').style.display = m === 'carousel' ? 'inline-flex' : 'none';
-      document.getElementById('mcqBar').style.display = m === 'mcq' ? 'flex' : 'none';
-      document.getElementById('btnPair').style.display = m === 'mcq' ? 'inline-flex' : 'none';
-      if (m === 'carousel') loadSlide(slideIdx);
-      renderCanvas();
-    }
-
-    function pickSlide(i) {
-      slideIdx = i;
-      document.querySelectorAll('.slide-tab').forEach((b, idx) => b.classList.toggle('active', idx === i));
-      loadSlide(i);
-      renderCanvas();
-    }
-
-    function loadSlide(i) {
-      document.getElementById('gTag').value = slides[i].tag;
-      document.getElementById('gHead').value = slides[i].head;
-      document.getElementById('gBody').value = slides[i].body;
-    }
-
-    function syncAndRender() {
-      if (document.getElementById('gMode').value === 'carousel') {
-        slides[slideIdx] = { tag: document.getElementById('gTag').value, head: document.getElementById('gHead').value, body: document.getElementById('gBody').value };
-      }
-      renderCanvas();
-    }
-
-    function wrapText(ctx, text, x, y, maxW, lh) {
-      const words = text.split(' ');
-      let line = '', cy = y;
-      for (let i = 0; i < words.length; i++) {
-        const test = line + words[i] + ' ';
-        if (ctx.measureText(test).width > maxW && i > 0) {
-          ctx.fillText(line.trim(), x, cy); line = words[i] + ' '; cy += lh;
-        } else line = test;
-      }
-      ctx.fillText(line.trim(), x, cy);
-      return cy + lh;
-    }
-
-    function renderCanvas() {
-      const c = document.getElementById('studioCanvas');
-      const ctx = c.getContext('2d');
-      const [w, h] = document.getElementById('gSize').value.split('x').map(Number);
-      const mode = document.getElementById('gMode').value;
-      const reveal = document.getElementById('gReveal').checked;
-      const correct = document.getElementById('gCorrect').value;
-      c.width = w; c.height = h;
-
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, '#0A192F'); grad.addColorStop(1, '#050d1a');
-      ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
-
-      const p = Math.round(w * 0.045);
-      ctx.strokeStyle = '#D4AF37'; ctx.lineWidth = 4;
-      ctx.strokeRect(p, p, w - p * 2, h - p * 2);
-
-      if (logo.complete && logo.naturalWidth > 0) ctx.drawImage(logo, p + 30, p + 26, 66, 66);
-      ctx.fillStyle = '#D4AF37'; ctx.font = '800 28px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('ICP YOUTH CIRCLE', p + 112, p + 56);
-      ctx.fillStyle = '#94a3b8'; ctx.font = '600 18px Inter, sans-serif';
-      ctx.fillText('LEARN  •  CONNECT  •  GROW', p + 112, p + 84);
-
-      const tag = document.getElementById('gTag').value.toUpperCase() + (mode === 'mcq' && reveal ? ' • ANSWER' : '');
-      ctx.fillStyle = (mode === 'mcq' && reveal) ? 'rgba(16,185,129,0.2)' : 'rgba(212,175,55,0.16)';
-      ctx.fillRect(p + 30, p + 120, Math.min(w - p * 2 - 60, tag.length * 15 + 42), 42);
-      ctx.fillStyle = (mode === 'mcq' && reveal) ? '#34d399' : '#D4AF37'; ctx.font = '700 20px Inter, sans-serif';
-      ctx.fillText(tag, p + 48, p + 148);
-
-      ctx.fillStyle = '#ffffff';
-      const hs = h < 750 ? 36 : 44;
-      ctx.font = `800 ${hs}px "Plus Jakarta Sans", sans-serif`;
-      let y = wrapText(ctx, document.getElementById('gHead').value, p + 30, p + 220, w - p * 2 - 60, hs * 1.28) + 20;
-
-      const lines = document.getElementById('gBody').value.split('\n').filter(Boolean);
-      const bs = h < 750 ? 24 : 30;
-      ctx.font = `600 ${bs}px Inter, sans-serif`;
-      lines.forEach(line => {
-        const isAns = mode === 'mcq' && reveal && line.trim().toUpperCase().startsWith(correct + ')');
-        if (mode === 'mcq') {
-          ctx.fillStyle = isAns ? 'rgba(16,185,129,0.25)' : 'rgba(255,255,255,0.06)';
-          ctx.fillRect(p + 30, y - bs, w - p * 2 - 60, bs * 1.6);
-          ctx.strokeStyle = isAns ? '#10b981' : 'rgba(212,175,55,0.35)';
-          ctx.lineWidth = isAns ? 3 : 1.5;
-          ctx.strokeRect(p + 30, y - bs, w - p * 2 - 60, bs * 1.6);
-        }
-        ctx.fillStyle = isAns ? '#6ee7b7' : '#e2e8f0';
-        y = wrapText(ctx, isAns ? line + '  ✓' : line, p + 46, y + 6, w - p * 2 - 92, bs * 1.35) + 14;
-      });
-
-      ctx.fillStyle = '#D4AF37'; ctx.fillRect(p, h - p - 66, w - p * 2, 66);
-      ctx.fillStyle = '#0A192F'; ctx.font = '800 22px Inter, sans-serif';
-      ctx.fillText(document.getElementById('gFooter').value, p + 30, h - p - 25);
-    }
-
-    function downloadPNG(name) {
-      const a = document.createElement('a');
-      a.download = name || ('icp-graphic-' + Date.now() + '.png');
-      a.href = document.getElementById('studioCanvas').toDataURL('image/png');
-      a.click();
-    }
-
-    function downloadMCQPair() {
-      const cb = document.getElementById('gReveal'), prev = cb.checked;
-      cb.checked = false; renderCanvas(); downloadPNG('icp-mcq-question.png');
-      setTimeout(() => { cb.checked = true; renderCanvas(); downloadPNG('icp-mcq-answer.png'); cb.checked = prev; renderCanvas(); }, 450);
-    }
-
-    function downloadCarousel5() {
-      const prev = slideIdx;
-      slides.forEach((_, i) => setTimeout(() => { pickSlide(i); downloadPNG(`icp-slide-${i+1}.png`); if (i === 4) setTimeout(() => pickSlide(prev), 300); }, i * 500));
-    }
-
-    // 4. UPLOAD PDF
-    document.getElementById('pdfForm').onsubmit = async (e) => {
-      e.preventDefault();
-      const file = document.getElementById('pdfFile').files[0];
-      if (!file || file.size > 8 * 1024 * 1024) { setMsg('pdfMsg', 'Select a PDF under 8 MB.', 'err'); return; }
-      const btn = document.getElementById('btnUploadPdf');
-      btn.disabled = true; setMsg('pdfMsg', 'Uploading PDF to Google Drive & publishing to Resources...', 'info');
-      try {
-        const dataBase64 = await new Promise((res, rej) => {
-          const r = new FileReader();
-          r.onload = () => res(String(r.result || '').split(',')[1] || '');
-          r.onerror = () => rej(new Error('Could not read PDF file.'));
-          r.readAsDataURL(file);
-        });
-        const out = await apiCall('adminUploadPdf', {
-          fileName: file.name, mimeType: 'application/pdf', dataBase64,
-          title: document.getElementById('pdfTitle').value,
-          category: document.getElementById('pdfCat').value,
-          subject: document.getElementById('pdfSubj').value,
-          level: document.getElementById('pdfLevel').value,
-          institution: document.getElementById('pdfBoard').value,
-          year: document.getElementById('pdfYear').value,
-          description: document.getElementById('pdfDesc').value,
-          rightsConfirmed: document.getElementById('pdfRights').checked
-        });
-        setMsg('pdfMsg', `Published successfully as ${out.resourceId}! Click "Turn into WhatsApp + Graphic Post" to promote it.`, 'ok');
-        sessionData = await apiCall('adminSession');
-        updateOverviewStats();
-      } catch (err) { setMsg('pdfMsg', 'Upload failed: ' + err.message, 'err'); }
-      finally { btn.disabled = false; }
-    };
-
-    function promotePdfAsPost() {
-      const title = document.getElementById('pdfTitle').value.trim() || 'New Study PDF Uploaded';
-      activePostType = 'announcement';
-      document.getElementById('pTopic').value = `New PDF Uploaded: ${title}`;
-      openTab('create', document.querySelectorAll('.tab-btn')[1]);
-      generatePostPack(false);
-    }
-
-    // 5. LIVE PORTAL MANAGER
-    async function loadManagerTable() {
-      const table = document.getElementById('mgrTable').value;
-      if (!table) return;
-      setMsg('mgrMsg', 'Loading records from Google Sheets...', 'info');
-      try {
-        const res = await apiCall('adminList', { table, query: document.getElementById('mgrQuery').value, limit: 50 });
-        setMsg('mgrMsg', `Showing ${res.rows.length} of ${res.total} records.`, 'ok');
-        const cols = res.headers.slice(0, 6);
-        const keyCol = res.headers.includes('ID') ? 'ID' : res.headers[0];
-        let html = '<table><thead><tr><th>Action</th>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
-        res.rows.forEach(r => {
-          const k = String(r[keyCol] || '');
-          html += `<tr><td><button class="btn btn-danger btn-sm" onclick="archiveRecord('${table}','${k.replace(/'/g, '')}')">Archive</button></td>` +
-            cols.map(c => `<td>${String(r[c] == null ? '' : r[c]).replace(/</g, '&lt;')}</td>`).join('') + '</tr>';
-        });
-        html += '</tbody></table>';
-        document.getElementById('mgrTableWrap').innerHTML = res.rows.length ? html : '<p class="muted" style="padding:16px;">No records found.</p>';
-      } catch (e) { setMsg('mgrMsg', 'Error: ' + e.message, 'err'); }
-    }
-
-    async function archiveRecord(table, key) {
-      if (!confirm(`Archive ${key}? It will be hidden from the public portal.`)) return;
-      setMsg('mgrMsg', `Archiving ${key}...`, 'info');
-      try {
-        await apiCall('adminArchive', { table, key });
-        loadManagerTable();
-      } catch (e) { setMsg('mgrMsg', 'Archive failed: ' + e.message, 'err'); }
-    }
-
-    function initProStudio() {
-      updateOverviewStats();
-      onModeChange();
-      generatePostPack(false);
-      renderCanvas();
-    }
-  </script>
+  <script src="js/studio-core.js?v=20261119-cs1"></script>
+  <script src="js/studio-canvas.js?v=20261119-cs1"></script>
 </body>
 </html>
