@@ -1398,7 +1398,228 @@ header .brand-mark img {
   box-shadow: 0 16px 38px rgba(7, 62, 39, 0.12) !important;
   padding: 6px !important;
 }
+/* ==========================================================================
+   Phase 5: Hero Section Redesign
+   ========================================================================== */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 76px 24px 68px !important;
+  text-align: center !important;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(201, 155, 47, 0.22), transparent 42%),
+    radial-gradient(circle at 12% 88%, rgba(125, 30, 43, 0.34), transparent 46%),
+    linear-gradient(125deg, var(--icp-forest-dark) 0%, var(--icp-forest) 58%, #4d1924 100%) !important;
+  border-bottom: 3px solid rgba(201, 155, 47, 0.45);
+}
 
+.hero-inner {
+  max-width: 860px !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+/* Restore and style the student community eyebrow pill */
+.hero-eyebrow {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 auto 20px !important;
+  padding: 7px 14px;
+  border: 1px solid rgba(241, 212, 126, 0.35);
+  border-radius: 999px;
+  background: rgba(7, 62, 39, 0.45);
+  color: #f3dc92 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase;
+}
+
+.hero-eyebrow span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--icp-gold);
+  flex-shrink: 0;
+}
+
+/* Main Hero Title & Tagline */
+.hero h2 {
+  margin: 0 0 12px !important;
+  color: var(--icp-cream) !important;
+  font-size: clamp(36px, 5vw, 60px) !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.08 !important;
+}
+
+.hero-tagline {
+  margin: 0 0 18px !important;
+  color: #f1d47e !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase;
+}
+
+.hero-description {
+  max-width: 660px !important;
+  margin: 0 auto 30px !important;
+  color: #eaf1e6 !important;
+  font-size: 17px !important;
+  line-height: 1.68 !important;
+}
+
+/* Upgraded Search Bar */
+.hero .search-box {
+  display: flex !important;
+  align-items: stretch;
+  max-width: 680px !important;
+  margin: 0 auto !important;
+  padding: 6px !important;
+  border: 1.5px solid rgba(255, 253, 244, 0.85) !important;
+  border-radius: 14px !important;
+  background: var(--icp-cream) !important;
+  box-shadow: 0 16px 38px rgba(7, 31, 21, 0.24) !important;
+  gap: 6px;
+}
+
+.hero .search-box:focus-within {
+  border-color: var(--icp-gold) !important;
+  box-shadow: 0 18px 42px rgba(7, 31, 21, 0.28), 0 0 0 3px rgba(201, 155, 47, 0.28) !important;
+}
+
+.hero .search-box input {
+  flex: 1 !important;
+  min-width: 0;
+  padding: 14px 16px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--icp-text) !important;
+  font-size: 15px !important;
+}
+
+.hero .search-box input::placeholder {
+  color: #6b766e;
+}
+
+.hero .search-box button {
+  min-width: 118px !important;
+  padding: 14px 22px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--icp-burgundy) !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.hero .search-box button:hover,
+.hero .search-box button:focus-visible {
+  background: var(--icp-burgundy-dark) !important;
+}
+
+/* Restore and style Popular Destination Pills */
+.hero-shortcuts {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px !important;
+  margin: 24px auto 0 !important;
+  font-size: 13px !important;
+}
+
+.hero-shortcuts span {
+  color: #dce7dc !important;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.hero-shortcuts a {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border: 1px solid rgba(255, 253, 244, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 253, 244, 0.1);
+  color: var(--icp-cream) !important;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.hero-shortcuts a:hover,
+.hero-shortcuts a:focus-visible {
+  background: var(--icp-gold);
+  border-color: var(--icp-gold);
+  color: var(--icp-forest-dark) !important;
+  transform: translateY(-1px);
+}
+
+/* Critical safety rule: keep hero hidden on inner pages */
+#homeHero[style*="display: none"] {
+  display: none !important;
+}
+
+/* Mobile Hero Refinement */
+@media (max-width: 600px) {
+  .hero {
+    padding: 48px 16px 44px !important;
+  }
+
+  .hero-eyebrow {
+    font-size: 9.5px !important;
+    letter-spacing: 0.1em !important;
+    margin-bottom: 16px !important;
+  }
+
+  .hero h2 {
+    font-size: 32px !important;
+  }
+
+  .hero-tagline {
+    font-size: 11px !important;
+    letter-spacing: 0.15em !important;
+  }
+
+  .hero-description {
+    font-size: 15px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .hero .search-box {
+    flex-direction: row !important;
+    padding: 5px !important;
+  }
+
+  .hero .search-box input {
+    padding: 12px 12px !important;
+    font-size: 14px !important;
+  }
+
+  .hero .search-box button {
+    min-width: 88px !important;
+    padding: 12px 14px !important;
+    font-size: 14px !important;
+  }
+
+  .hero-shortcuts {
+    margin-top: 20px !important;
+    gap: 8px !important;
+  }
+
+  .hero-shortcuts span {
+    width: 100%;
+    margin-right: 0;
+  }
+}
 .dropdown-menu a {
   color: var(--icp-text) !important;
   font-size: 13.5px !important;
