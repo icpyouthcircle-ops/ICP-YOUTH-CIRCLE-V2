@@ -2000,141 +2000,149 @@ header .brand-mark img {
   }
 }
 /* ==========================================================================
-   Pre-Phase 8: WhatsApp-First Alert Strip Styling
+   Phase 8: Admissions, Scholarships, Entry Tests & Community Sections
    ========================================================================== */
-#whatsappAlertBar.whatsapp-alert-bar {
-  display: block !important;
-  padding: 10px 24px !important;
-  border-bottom: 1px solid rgba(201, 155, 47, 0.35) !important;
-  background: var(--icp-forest-dark) !important;
-  color: var(--icp-cream) !important;
-  text-align: left !important;
+/* Restore and style the 3-Pillar Homepage Values (Learn • Connect • Grow) */
+#homeExplore .home-values {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 22px !important;
+  margin-top: 44px !important;
 }
 
-/* Allow the dismiss (×) button to hide the strip cleanly */
-#whatsappAlertBar.whatsapp-alert-bar[style*="display: none"] {
-  display: none !important;
+#homeExplore .home-values article {
+  padding: 28px 26px !important;
+  border: 1px solid #e2decb !important;
+  border-top: 3px solid var(--icp-gold) !important;
+  border-radius: var(--icp-radius-lg) !important;
+  background: var(--icp-cream) !important;
+  box-shadow: 0 6px 20px rgba(7, 62, 39, 0.045);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.whatsapp-alert-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+#homeExplore .home-values article:hover {
+  transform: translateY(-3px);
+  border-color: var(--icp-gold) !important;
+  box-shadow: 0 14px 30px rgba(7, 62, 39, 0.09);
 }
 
-.whatsapp-alert-badge {
-  flex-shrink: 0;
+#homeExplore .home-values span {
+  display: inline-block;
   padding: 4px 10px;
-  border: 1px solid rgba(201, 155, 47, 0.5);
   border-radius: 999px;
-  background: rgba(201, 155, 47, 0.16);
-  color: #f3dc92;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  background: #edf4ea;
+  color: var(--icp-forest-dark) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
 }
 
-.whatsapp-alert-text {
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-  color: var(--icp-cream);
-  font-size: 13.5px;
-  font-weight: 500;
-  line-height: 1.45;
+#homeExplore .home-values h3 {
+  margin: 16px 0 10px !important;
+  color: var(--icp-forest-dark) !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em;
 }
 
-.whatsapp-alert-actions {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+#homeExplore .home-values p {
+  margin: 0 !important;
+  color: var(--icp-text-secondary) !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
 }
 
-.whatsapp-alert-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 7px 14px;
-  border-radius: 8px;
-  background: #167942;
-  color: #ffffff !important;
-  font-size: 12.5px;
-  font-weight: 700;
-  text-decoration: none !important;
-  white-space: nowrap;
-  transition: background-color 0.16s ease, transform 0.16s ease;
+/* Admissions, Scholarships & Sub-Category Cards */
+.section-link-card {
+  border: 1px solid #e2decb !important;
+  border-radius: var(--icp-radius-lg) !important;
+  background: var(--icp-cream) !important;
+  box-shadow: 0 6px 18px rgba(7, 62, 39, 0.045) !important;
 }
 
-.whatsapp-alert-btn:hover,
-.whatsapp-alert-btn:focus-visible {
-  background: #1b914f;
-  transform: translateY(-1px);
+.section-link-card:hover {
+  border-color: var(--icp-gold) !important;
+  box-shadow: 0 14px 30px rgba(7, 62, 39, 0.1) !important;
 }
 
-.whatsapp-alert-close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  border: 1px solid rgba(255, 253, 244, 0.25);
-  border-radius: 8px;
-  background: transparent;
-  color: #dce7dc;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+.section-link-card h4 {
+  color: var(--icp-forest-dark) !important;
+  font-weight: 800 !important;
 }
 
-.whatsapp-alert-close:hover,
-.whatsapp-alert-close:focus-visible {
-  border-color: var(--icp-gold);
-  background: rgba(255, 253, 244, 0.1);
-  color: #ffffff;
+/* Entry Tests & MDCAT 2027 Hub Polish */
+.mdcat-tools {
+  border: 1px solid #e2decb !important;
+  border-radius: var(--icp-radius-md) !important;
+  background: var(--icp-cream) !important;
 }
 
-/* Keep AI full-screen chat unobstructed on mobile */
-@media (max-width: 900px) {
-  body:has(.icp-ai-page) #whatsappAlertBar.whatsapp-alert-bar {
-    display: none !important;
+.mdcat-tools button {
+  color: var(--icp-forest-dark) !important;
+  font-weight: 700 !important;
+}
+
+.mdcat-tools button:hover,
+.mdcat-tools button:focus-visible {
+  background: #edf4ea !important;
+  color: var(--icp-burgundy) !important;
+}
+
+.mdcat-subject-card,
+.mdcat-study-card,
+.mdcat-question {
+  border: 1px solid #e2decb !important;
+  border-radius: var(--icp-radius-lg) !important;
+  background: var(--icp-cream) !important;
+}
+
+.mdcat-subject-icon {
+  background: #edf4ea !important;
+  color: var(--icp-forest) !important;
+}
+
+.mdcat-result {
+  background: #edf4ea !important;
+  border: 1px solid #cfe0ce !important;
+  color: var(--icp-forest-dark) !important;
+}
+
+/* Student Community & Q&A Cards */
+.qa-question-card,
+.qa-answer-card,
+.qa-form,
+.about-pillar,
+.contact-card {
+  border: 1px solid #e2decb !important;
+  border-radius: var(--icp-radius-lg) !important;
+  background: var(--icp-cream) !important;
+  box-shadow: 0 6px 18px rgba(7, 62, 39, 0.045) !important;
+}
+
+.qa-question-detail {
+  border-left: 5px solid var(--icp-forest) !important;
+}
+
+.qa-policy {
+  border-left: 4px solid var(--icp-gold) !important;
+  background: #f9f2df !important;
+  color: var(--icp-text) !important;
+}
+
+.qa-subject {
+  background: #edf4ea !important;
+  color: var(--icp-forest-dark) !important;
+}
+
+/* Mobile Responsive Layout for 3-Pillar Values */
+@media (max-width: 820px) {
+  #homeExplore .home-values {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-top: 32px !important;
   }
-}
 
-/* Mobile & Tablet Responsive Layout */
-@media (max-width: 760px) {
-  #whatsappAlertBar.whatsapp-alert-bar {
-    padding: 10px 16px !important;
-  }
-
-  .whatsapp-alert-inner {
-    flex-wrap: wrap;
-    gap: 8px 10px;
-  }
-
-  .whatsapp-alert-text {
-    flex: 1 1 100%;
-    order: 2;
-    font-size: 12.5px;
-  }
-
-  .whatsapp-alert-badge {
-    order: 1;
-  }
-
-  .whatsapp-alert-actions {
-    order: 1;
-    margin-left: auto;
-  }
-
-  .whatsapp-alert-btn {
-    padding: 6px 11px;
-    font-size: 12px;
+  #homeExplore .home-values article {
+    padding: 22px 20px !important;
   }
 }
