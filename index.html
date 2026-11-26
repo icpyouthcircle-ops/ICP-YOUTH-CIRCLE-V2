@@ -62,7 +62,26 @@
 
   <div id="app" style="display:none;">
 
-    <div class="portal-notice" role="status">Your student portal for trusted resources, opportunities and guidance.</div>
+    <div id="whatsappAlertBar" class="portal-notice whatsapp-alert-bar" role="region" aria-label="WhatsApp student alerts">
+      <div class="whatsapp-alert-inner">
+        <span class="whatsapp-alert-badge">WHATSAPP ALERTS</span>
+        <p class="whatsapp-alert-text">Get instant PMDC, KMU, HSSC &amp; scholarship deadlines on WhatsApp.</p>
+        <div class="whatsapp-alert-actions">
+          <a
+            id="whatsappAlertLink"
+            class="whatsapp-alert-btn"
+            href="#contact"
+            onclick="var u=window.portalData&&portalData.settings&&portalData.settings.whatsapp_channel;if(u){this.href=u;this.target='_blank';this.rel='noopener noreferrer';return true;}event.preventDefault();if(typeof handleNavigation==='function'){handleNavigation({Slug:'contact',Label:'Contact'});}"
+          >Join WhatsApp Alerts ↗</a>
+          <button
+            type="button"
+            class="whatsapp-alert-close"
+            aria-label="Dismiss WhatsApp alert bar"
+            onclick="var b=document.getElementById('whatsappAlertBar');if(b)b.style.display='none';"
+          >×</button>
+        </div>
+      </div>
+    </div>
 
     <header>
       <div class="header-inner">
