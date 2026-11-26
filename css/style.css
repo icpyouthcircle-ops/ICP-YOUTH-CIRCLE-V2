@@ -1999,3 +1999,142 @@ header .brand-mark img {
     text-align: center;
   }
 }
+/* ==========================================================================
+   Pre-Phase 8: WhatsApp-First Alert Strip Styling
+   ========================================================================== */
+#whatsappAlertBar.whatsapp-alert-bar {
+  display: block !important;
+  padding: 10px 24px !important;
+  border-bottom: 1px solid rgba(201, 155, 47, 0.35) !important;
+  background: var(--icp-forest-dark) !important;
+  color: var(--icp-cream) !important;
+  text-align: left !important;
+}
+
+/* Allow the dismiss (×) button to hide the strip cleanly */
+#whatsappAlertBar.whatsapp-alert-bar[style*="display: none"] {
+  display: none !important;
+}
+
+.whatsapp-alert-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.whatsapp-alert-badge {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid rgba(201, 155, 47, 0.5);
+  border-radius: 999px;
+  background: rgba(201, 155, 47, 0.16);
+  color: #f3dc92;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.whatsapp-alert-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--icp-cream);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.whatsapp-alert-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.whatsapp-alert-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: #167942;
+  color: #ffffff !important;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: background-color 0.16s ease, transform 0.16s ease;
+}
+
+.whatsapp-alert-btn:hover,
+.whatsapp-alert-btn:focus-visible {
+  background: #1b914f;
+  transform: translateY(-1px);
+}
+
+.whatsapp-alert-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(255, 253, 244, 0.25);
+  border-radius: 8px;
+  background: transparent;
+  color: #dce7dc;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.whatsapp-alert-close:hover,
+.whatsapp-alert-close:focus-visible {
+  border-color: var(--icp-gold);
+  background: rgba(255, 253, 244, 0.1);
+  color: #ffffff;
+}
+
+/* Keep AI full-screen chat unobstructed on mobile */
+@media (max-width: 900px) {
+  body:has(.icp-ai-page) #whatsappAlertBar.whatsapp-alert-bar {
+    display: none !important;
+  }
+}
+
+/* Mobile & Tablet Responsive Layout */
+@media (max-width: 760px) {
+  #whatsappAlertBar.whatsapp-alert-bar {
+    padding: 10px 16px !important;
+  }
+
+  .whatsapp-alert-inner {
+    flex-wrap: wrap;
+    gap: 8px 10px;
+  }
+
+  .whatsapp-alert-text {
+    flex: 1 1 100%;
+    order: 2;
+    font-size: 12.5px;
+  }
+
+  .whatsapp-alert-badge {
+    order: 1;
+  }
+
+  .whatsapp-alert-actions {
+    order: 1;
+    margin-left: auto;
+  }
+
+  .whatsapp-alert-btn {
+    padding: 6px 11px;
+    font-size: 12px;
+  }
+}
