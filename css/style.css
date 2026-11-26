@@ -1296,3 +1296,197 @@ body {
 #dynamicPageDescription {
   color: var(--icp-text-secondary) !important;
 }
+/* ==========================================================================
+   Phase 4: Header, Navigation & Original Logo Polish
+   ========================================================================== */
+header {
+  background: rgba(255, 253, 244, 0.96) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #e5dfc8 !important;
+  box-shadow: 0 4px 20px rgba(7, 62, 39, 0.05) !important;
+  padding: 12px 24px !important;
+  transition: box-shadow 0.2s ease;
+}
+
+.header-inner {
+  max-width: 1280px !important;
+  gap: 18px !important;
+  align-items: center;
+}
+
+/* Original Logo & Brand Lockup */
+header .brand {
+  grid-template-columns: 56px minmax(0, 1fr) !important;
+  gap: 2px 12px !important;
+  align-items: center;
+}
+
+header .brand-mark {
+  width: 56px !important;
+  height: 56px !important;
+  min-width: 56px !important;
+  min-height: 56px !important;
+  max-width: 56px !important;
+  max-height: 56px !important;
+  padding: 3px;
+  border: 1.5px solid rgba(201, 155, 47, 0.45);
+  border-radius: 50% !important;
+  background: var(--icp-cream) !important;
+  box-shadow: 0 3px 10px rgba(7, 62, 39, 0.08);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+header .brand-mark:hover {
+  transform: scale(1.03);
+  border-color: var(--icp-gold);
+}
+
+header .brand-mark img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  border-radius: 50% !important;
+}
+
+.brand h1 {
+  color: var(--icp-forest-dark) !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.1 !important;
+}
+
+.brand p {
+  margin: 3px 0 0 !important;
+  color: var(--icp-burgundy) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase;
+}
+
+/* Desktop Navigation Links & Dropdowns */
+#mainNavigation {
+  gap: 6px !important;
+}
+
+#mainNavigation .nav-item-row > a,
+#mainNavigation .nav-item > a {
+  padding: 9px 12px !important;
+  border-radius: var(--icp-radius-sm);
+  color: #263f31 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+#mainNavigation .nav-item-row > a:hover,
+#mainNavigation .nav-item > a:hover,
+#mainNavigation .nav-item-row > a[aria-current="page"],
+#mainNavigation .nav-item > a[aria-current="page"] {
+  background-color: #f3ead8 !important;
+  color: var(--icp-burgundy) !important;
+}
+
+.dropdown-menu {
+  border: 1px solid #e5dfc8 !important;
+  border-radius: var(--icp-radius-md) !important;
+  background: var(--icp-cream) !important;
+  box-shadow: 0 16px 38px rgba(7, 62, 39, 0.12) !important;
+  padding: 6px !important;
+}
+
+.dropdown-menu a {
+  color: var(--icp-text) !important;
+  font-size: 13.5px !important;
+  font-weight: 500;
+  border-radius: 7px !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu a:focus-visible {
+  background-color: #f3ead8 !important;
+  color: var(--icp-burgundy) !important;
+}
+
+/* Notification Bell & Mobile Menu Button */
+.public-notification-button,
+.menu-toggle {
+  min-height: 40px;
+  border: 1px solid #dcd5be !important;
+  border-radius: 10px !important;
+  background: var(--icp-cream) !important;
+  color: var(--icp-forest-dark) !important;
+  transition: border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease;
+}
+
+.public-notification-button:hover,
+.public-notification-button:focus-visible,
+.menu-toggle:hover,
+.menu-toggle:focus-visible {
+  border-color: var(--icp-gold) !important;
+  background: #f5efe0 !important;
+  color: var(--icp-burgundy) !important;
+}
+
+.public-notification-badge {
+  background: var(--icp-burgundy) !important;
+  border-color: var(--icp-cream) !important;
+}
+
+/* Responsive Header & Mobile Drawer */
+@media (max-width: 1240px) {
+  header {
+    padding: 12px 16px !important;
+  }
+
+  #mainNavigation {
+    margin-top: 12px !important;
+    padding: 10px !important;
+    border: 1px solid #e5dfc8 !important;
+    border-radius: var(--icp-radius-md) !important;
+    background: var(--icp-cream) !important;
+    box-shadow: 0 18px 40px rgba(7, 62, 39, 0.12) !important;
+  }
+
+  .nav-item-row {
+    border-bottom-color: #ece6d4 !important;
+  }
+
+  .dropdown-menu {
+    background: transparent !important;
+    border: 0 !important;
+    border-left: 2px solid var(--icp-gold) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  header .brand {
+    grid-template-columns: 46px minmax(0, 1fr) !important;
+    gap: 2px 10px !important;
+  }
+
+  header .brand-mark {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    min-height: 46px !important;
+    max-width: 46px !important;
+    max-height: 46px !important;
+  }
+
+  .brand h1 {
+    font-size: 16px !important;
+  }
+
+  .brand p {
+    font-size: 8.5px !important;
+    letter-spacing: 0.16em !important;
+  }
+}
